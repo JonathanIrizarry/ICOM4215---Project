@@ -1,3 +1,10 @@
+module instr_mem (output reg [31:0] DataOut, input [8:0] Address);
+reg [7:0] Mem[0:511]; //512 localizaciones de 8 bits
+always @ (Address)
+		DataOut <= {Mem[Address], Mem[Address + 1], Mem[Address + 2], Mem[Address + 3]};
+endmodule
+
+
 module SimplePipeline(
     input wire clk,
     input wire reset,
@@ -11,6 +18,7 @@ reg [31:0] instruction_reg;
 reg [31:0] alu_result;
 reg [31:0] mem_result;
 reg [31:0] result_reg;
+reg [8:0] address;
 
 // Load enable for PC and nPC
 reg le_pc, le_npc;
@@ -23,6 +31,12 @@ wire [4:0] rd;
 wire [15:0] immediate;
 wire [5:0] funct;
 
+// Initialization of Instruction Memory
+instr_mem imem (
+    .DataOut(instruction_reg),
+    .Address(address)
+);
+
 // Etapa IF (Fetch)
 always @(posedge clk or posedge reset) begin
     if (reset) begin
@@ -33,6 +47,7 @@ always @(posedge clk or posedge reset) begin
         le_npc <= 1'b0;
     end else begin
         if (le_pc) pc_reg <= npc_reg;
+				   address <= pc_reg;
         if (le_npc) npc_reg <= npc_reg + 4;
         instruction_reg <= instruction_in;
     end
