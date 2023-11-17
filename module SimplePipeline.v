@@ -37,6 +37,18 @@ instr_mem imem (
     .Address(address)
 );
 
+//Preload Instruction Memory
+initial begin
+	fi = $fopen("input_file.txt","r");
+	address = 9'b000000000;
+	while (!$feof(fi)) begin
+		code = $fscanf(fi, "%b", data);
+		imem.Mem[address] = data;
+		address = address + 1;
+	end
+	$fclose(fi);
+end
+
 // Etapa IF (Fetch)
 always @(posedge clk or posedge reset) begin
     if (reset) begin
