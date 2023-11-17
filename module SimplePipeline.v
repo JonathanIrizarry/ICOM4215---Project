@@ -84,10 +84,7 @@ module SimplePipeline(
                 .ID_Enable_HI(ID_Enable_HI),
                 .ID_Enable_LO(ID_Enable_LO)
             );
-
-            // Concatenate control signals into the bus
-            control_bus <= {ID_Shift_Imm, ID_ALU_OP, ID_Load_Instr, ID_RF_Enable, ID_B_Instr, ID_TA_Instr, ID_MEM_Size, ID_MEM_RW, ID_MEM_SE, ID_Enable_HI, ID_Enable_LO};
-            
+       
           
         end
     end
@@ -175,6 +172,13 @@ module PPU_Control_Unit (
     assign ID_MEM_SE     = (instruction[31:26] == LBU_Op) ? 1'b1 : 1'b0; // Assuming sign-extension for LBU_Op
     assign ID_Enable_HI  = (instruction[31:26] == R_TYPE) ? 1'b1 : 1'b0;
     assign ID_Enable_LO  = (instruction[31:26] == R_TYPE) ? 1'b1 : 1'b0;
+
+
+     // Concatenate control signals based on the mux input
+    always @* begin
+        control_output = (S) ? {ID_Shift_Imm, ID_ALU_OP, ID_Load_Instr, ID_RF_Enable, ID_B_Instr, ID_TA_Instr, ID_MEM_Size, ID_MEM_RW, ID_MEM_SE, ID_Enable_HI, ID_Enable_LO} : 12'b0;
+    end
+
 endmodule
 
 ``
