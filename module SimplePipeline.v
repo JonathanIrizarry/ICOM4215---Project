@@ -39,7 +39,7 @@ instr_mem imem (
 
 //Preload Instruction Memory
 initial begin
-	fi = $fopen("input_file.txt","r");
+	fi = $fopen("input.txt","r");
 	address = 9'b000000000;
 	while (!$feof(fi)) begin
 		code = $fscanf(fi, "%b", data);
