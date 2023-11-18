@@ -24,6 +24,16 @@ module SimplePipeline(
     reg [31:0] mem_result;
     reg [31:0] result_reg;
     reg [8:0] address;
+	reg [0] load_instr_reg;
+	reg [0] rf_enable_reg;
+	reg [0] branch_reg;
+	reg [0] ta_instr_reg;
+	reg [0] mem_enable_reg;
+	reg [0] mem_se_reg;
+	reg [0] mem_rw_reg;
+	reg [1:0] mem_size_reg;
+	reg [0] hi_enable_reg;
+	reg [0] lo_enable_reg;
 
     // Load enable for PC and nPC
     reg le_pc, le_npc, le_alu, le_mem, le_wb;
@@ -81,7 +91,8 @@ module SimplePipeline(
                 .ID_MEM_RW(ID_MEM_RW),
                 .ID_MEM_SE(ID_MEM_SE),
                 .ID_Enable_HI(ID_Enable_HI),
-                .ID_Enable_LO(ID_Enable_LO)
+                .ID_Enable_LO(ID_Enable_LO),
+				.ID_MEM_Enable(ID_MEM_Enable)
             );
 			
 			ta_instr_reg = control_output[7];
@@ -169,7 +180,8 @@ module PPU_Control_Unit (
     output wire ID_MEM_RW,
     output wire ID_MEM_SE,
     output wire ID_Enable_HI,
-    output wire ID_Enable_LO
+    output wire ID_Enable_LO,
+	output wire ID_MEM_Enable
 );
 
     // Opcode values
@@ -226,7 +238,7 @@ module SimplePipeline_TB;
   SimplePipeline_DUT dut (
     .clk(clk),
     .reset(reset),
-    .instruction_in(test_instruction),
+    .instruction_reg(test_instruction),
     .result_out(test_result),
     .pc_reg(pc_reg),
     .npc_reg(npc_reg)
@@ -234,7 +246,7 @@ module SimplePipeline_TB;
 
   // Clock generation
   always begin
-    #2 clk = ~clk; // Invert the clock every 1 time unit
+    #2 clk = ~clk; // Invert the clock every 2 time unit
   end
 
   // Initial block for setup
