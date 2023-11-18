@@ -48,15 +48,16 @@ module SimplePipeline(
     always @(posedge clk or posedge reset) begin
         if (reset) begin
             pc_reg <= 32'h0;
-            npc_reg <= 32'h4;
+            npc_reg <= 32'b00000000000000000000000000000100;
             instruction_reg <= 32'h0;
             le_pc <= 1'b0;
             le_npc <= 1'b0;
         end else begin
             if (le_pc) pc_reg <= npc_reg;
             address <= pc_reg;
-            if (le_npc) npc_reg <= npc_reg + 4;
             instruction_reg <= instruction_in;
+            if (le_npc) npc_reg <= npc_reg + 4;
+            
         end
     end
 
@@ -215,36 +216,42 @@ endmodule
 module SimplePipeline_TB;
 
   // Define parameters
-  reg clk, reset, S;
+  reg clk, reset, S, le_npc,le_pc;
   reg [31:0] test_instruction;
   wire [31:0] test_result;
+  wire [31:0] pc_reg;
+  wire [31:0] npc_reg;
   
   // Instantiate your SimplePipeline module
   SimplePipeline_DUT dut (
     .clk(clk),
     .reset(reset),
     .instruction_in(test_instruction),
-    .result_out(test_result)
+    .result_out(test_result),
+    .pc_reg(pc_reg),
+    .npc_reg(npc_reg)
   );
 
   // Clock generation
   always begin
-    #1 clk = ~clk; // Invert the clock every 1 time unit
+    #2 clk = ~clk; // Invert the clock every 1 time unit
   end
 
   // Initial block for setup
   initial begin
     // Initialize signals
-    clk = 0;
-    reset = 1;
-    S = 0;
-    test_instruction = 32'h00100100000001010000000000000000; // Example: ADDIU instruction
+    clk = 1'b0;
+    reset = 1'b1;
+    S = 1'b0;
+    le_npc = 1;
+    le_pc = 1;
+    test_instruction = 32'b00100100000001010000000000000000; // Example: ADDIU instruction
     
     // Apply reset
-    #2 reset = 0;
+    #2 reset = 1'b0;
 
     // Apply S signal
-    #40 S = 1;
+    #40 S = 1'b1;
 
     // Simulate until time 48
     #48 $finish;
@@ -253,7 +260,7 @@ module SimplePipeline_TB;
   // Display information at each clock cycle
   always @(posedge clk) begin
     // Print keyword, PC, nPC, and control signals
-    $display("%s PC=%0d nPC=%0d Control Signals=%b", dut.PPU_Control_Unit.ID_Load_Instr ? "ADDIU" : "Unknown", dut.pc_reg, dut.npc_reg, dut.control_bus);
+    $display("%s PC=%0d nPC=%0d Control Signals=%b", dut.PPU_Control_Unit.ID_Load_Instr ? "ADDIU" : "Unknown", dut.pc_reg, dut.npc_reg, dut.control_output);
 
     // Print control signals of EX, MEM, and WB stages
     $display("EX: %b MEM: %b WB: %b", dut.alu_op_reg, dut.mem_enable_reg, dut.rf_enable_reg);
