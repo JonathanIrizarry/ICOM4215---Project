@@ -208,4 +208,57 @@ module PPU_Control_Unit (
 
 endmodule
 
-``
+
+
+`timescale 1ns/1ps
+
+module SimplePipeline_TB;
+
+  // Define parameters
+  reg clk, reset, S;
+  reg [31:0] test_instruction;
+  wire [31:0] test_result;
+  
+  // Instantiate your SimplePipeline module
+  SimplePipeline_DUT dut (
+    .clk(clk),
+    .reset(reset),
+    .instruction_in(test_instruction),
+    .result_out(test_result)
+  );
+
+  // Clock generation
+  always begin
+    #1 clk = ~clk; // Invert the clock every 1 time unit
+  end
+
+  // Initial block for setup
+  initial begin
+    // Initialize signals
+    clk = 0;
+    reset = 1;
+    S = 0;
+    test_instruction = 32'h00100100000001010000000000000000; // Example: ADDIU instruction
+    
+    // Apply reset
+    #2 reset = 0;
+
+    // Apply S signal
+    #40 S = 1;
+
+    // Simulate until time 48
+    #48 $finish;
+  end
+
+  // Display information at each clock cycle
+  always @(posedge clk) begin
+    // Print keyword, PC, nPC, and control signals
+    $display("%s PC=%0d nPC=%0d Control Signals=%b", dut.PPU_Control_Unit.ID_Load_Instr ? "ADDIU" : "Unknown", dut.pc_reg, dut.npc_reg, dut.control_bus);
+
+    // Print control signals of EX, MEM, and WB stages
+    $display("EX: %b MEM: %b WB: %b", dut.alu_op_reg, dut.mem_enable_reg, dut.rf_enable_reg);
+  end
+
+endmodule
+
+
