@@ -1,15 +1,19 @@
 `include "ControlUnit.v"
 `include "InstructionMemory.v"
 module SimplePipeline(
-    input wire clk,
-    input wire reset,
-    input wire [31:0] instruction_in,
-    output wire [31:0] result_out
+    input clk,
+    input reset,
+    output reg [31:0] instruction_reg,
+    output wire [31:0] result_out,
+	output reg [31:0] pc_reg,
+	output reg [31:0] npc_reg,
+	input  S,
+	output wire [14:0] control_output  // Add this line for S input  // Add this line
 );
 
-    reg [31:0] pc_reg;
-    reg [31:0] npc_reg;
-    reg [31:0] instruction_reg;
+    // reg [31:0] pc_reg;
+    // reg [31:0] npc_reg;
+    wire [31:0] instruction_wir;
     reg [2:0] alu_op_reg;
     reg [31:0] mem_result;
     reg [31:0] result_reg;
@@ -24,16 +28,21 @@ module SimplePipeline(
 	reg [1:0] mem_size_reg;
 	reg hi_enable_reg;
 	reg lo_enable_reg;
-	wire [14:0] control_output;
+	
 	reg [8:0] address; 
 	wire [31:0] DataOut;
 	integer fi, fo, code, i; 
 	reg [7:0] data;
 	
+
+
+
+ //assign instruction_in = instruction_reg;  // Connect to the new wir
 	// Instantiate Control Unit
 	PPU_Control_Unit control_unit(
     .instruction(instruction_reg),
-    .control_output(control_output)
+    .control_output(control_output),
+	.S(S)
   );
  
 
@@ -80,8 +89,8 @@ module SimplePipeline(
 			npc_reg <= npc_reg + 4;
             address <= pc_reg;
             instruction_reg <= DataOut;
-			$display("=========================================================================",
-			"\nInstruction = %b, PC = %d, nPC = %d, Control Unit = %b, Clk = %b, Reset = %b",instruction_reg, pc_reg, npc_reg, control_output, clk, reset);
+			// $display("=========================================================================",
+			// "\nInstruction = %b, PC = %d, nPC = %d, Control Unit = %b, Clk = %b, Reset = %b",instruction_reg, pc_reg, npc_reg, control_output, clk, reset);
 			//$display("Etapa EX: \nShift Imm = %b", shift_imm_reg);
         end
     end

@@ -202,8 +202,8 @@ SimplePipeline inst(
     .reset(reset),
     .instruction_in(instruction),
     .result_out(instruction),
-    .pc_reg(pc_reg),
-    .npc_reg(npc_reg)
+    .pc_reg(SimplePipeline_TB.pc_wire),
+    .npc_reg(SimplePipeline_TB.npc_wire)
 );
 
     // Opcode values
@@ -312,7 +312,7 @@ module SimplePipeline_TB;
   // Display information at each clock cycle
   always @(posedge clk) begin
     // Print keyword, PC, nPC, and control signals
-    $display(" PC=%0d nPC=%0d Control Signals=%b",  pc_reg, npc_reg, PPU_Control_Unit.control_output);
+    $display(" PC=%0d nPC=%0d Control Signals=%b",  pc_wire, npc_wire, PPU_Control_Unit.control_output);
 
     // Print control signals of EX, MEM, and WB stages
     $display("EX: %b MEM: %b WB: %b", dut.alu_op_reg, dut.mem_enable_reg, dut.rf_enable_reg);

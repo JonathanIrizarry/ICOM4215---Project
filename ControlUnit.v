@@ -1,9 +1,29 @@
+
 module PPU_Control_Unit (
-    input  [31:0] instruction,
-    output reg [14:0] control_output
+    input   [31:0] instruction,
+    output reg [14:0] control_output,
+    input  S 
 );
 
-	reg S = 1'b1;
+   
+      // Register for instruction
+    // always @(*) begin
+     
+       
+    // instruction <= instruction;  // Update instruction based on the input
+       
+    // end
+
+
+
+    wire pc_wir;
+    wire npcwir;
+    wire clkwir;
+    wire resetwir;
+    wire resultwir;
+    wire instrcwire;
+
+
 	wire ID_Shift_Imm;
     wire [2:0] ID_ALU_OP;
     wire ID_Load_Instr;
@@ -22,7 +42,7 @@ module PPU_Control_Unit (
     parameter ADDIU_Op = 6'b001001;
     parameter SUBU_Funct = 6'b100011;
     parameter LBU_Op = 6'b100100;
-    parameter SUB = 6'b100010;
+    //parameter SUB = 6'b100010;
     parameter SB_OP = 6'b101000;
     parameter BGTZ_OP = 6'b000111; 
     parameter JAL_OP = 6'b000011;
@@ -50,9 +70,14 @@ module PPU_Control_Unit (
 	assign ID_MEM_Enable  = (instruction[31:26] == SB_OP) ? 1'b1 : 1'b0;
 
      // Concatenate control signals based on the mux input
-    always @ (instruction) begin
-		 control_output = (S) ? {ID_Shift_Imm, ID_ALU_OP, ID_Load_Instr, ID_RF_Enable, ID_B_Instr, ID_TA_Instr, ID_MEM_Size, ID_MEM_RW, ID_MEM_SE, ID_Enable_HI, ID_Enable_LO, ID_MEM_Enable} : 15'b0;
+ always @ (instruction or S) begin
+    if (S==0) begin
+        control_output = {ID_Shift_Imm, ID_ALU_OP, ID_Load_Instr, ID_RF_Enable, ID_B_Instr, ID_TA_Instr, ID_MEM_Size, ID_MEM_RW, ID_MEM_SE, ID_Enable_HI, ID_Enable_LO, ID_MEM_Enable};
+    end else begin 
+        control_output = 15'b0;
     end
+end
+
 
 
 endmodule
