@@ -21,7 +21,7 @@ module SimplePipeline(
 	reg mem_enable_reg;
 	reg mem_se_reg;
 	reg mem_rw_reg;
-	reg mem_size_reg;
+	reg [1:0] mem_size_reg;
 	reg hi_enable_reg;
 	reg lo_enable_reg;
 	wire [14:0] control_output;
@@ -74,12 +74,15 @@ module SimplePipeline(
         if (reset) begin
             pc_reg <= 32'b0;
             npc_reg <= 32'b00000000000000000000000000000100;
-            //instruction_reg <= 15'h0;
+            instruction_reg <= 15'h0;
         end else begin
             if (le_pc && le_npc) pc_reg <= npc_reg;
 			npc_reg <= npc_reg + 4;
             address <= pc_reg;
             instruction_reg <= DataOut;
+			$display("=========================================================================",
+			"\nInstruction = %b, PC = %d, nPC = %d, Control Unit = %b, Clk = %b, Reset = %b",instruction_reg, pc_reg, npc_reg, control_output, clk, reset);
+			//$display("Etapa EX: \nShift Imm = %b", shift_imm_reg);
         end
     end
 
@@ -93,9 +96,9 @@ module SimplePipeline(
             // Add your initialization logic here if needed
 			ta_instr_reg = 1'b0;
         end else begin
-         
-			
 			ta_instr_reg = control_unit.control_output[7];
+			
+			if (ta_instr_reg) $display("Etapa ID: \nTA Reg = %b", ta_instr_reg);
         end
     end
 
@@ -110,11 +113,14 @@ module SimplePipeline(
 			shift_imm_reg = 1'b0;
         end else begin
             // Lógica de la etapa EX, como operaciones aritméticas y lógicas
-			alu_op_reg = control_unit.control_output[3:1];
-			branch_reg = control_unit.control_output[6];
-			load_instr_reg = control_unit.control_output[4];
-			rf_enable_reg = control_unit.control_output[5];
+			alu_op_reg = control_unit.control_output[13:11];
+			branch_reg = control_unit.control_output[8];
+			load_instr_reg = control_unit.control_output[10];
+			rf_enable_reg = control_unit.control_output[9];
 			shift_imm_reg = control_unit.control_output[14];
+			
+			if (shift_imm_reg || alu_op_reg || branch_reg || load_instr_reg || rf_enable_reg) $display("Etapa EX: \nShift Imm = %b, ALU Reg = %b, Load Instruction = %b, RF Enable = %b, Branch Reg = %b,", shift_imm_reg, alu_op_reg, load_instr_reg, rf_enable_reg, branch_reg);
+			
             if (le_alu) begin
                 // Perform ALU operation
             end
@@ -133,13 +139,15 @@ module SimplePipeline(
 			rf_enable_reg = 1'b0;			
         end else begin
             // Lógica de la etapa MEM, como acceso a memoria (load o store)
-			mem_size_reg = control_unit.control_output[9:8];
-			mem_se_reg = control_unit.control_output[11];
-			mem_rw_reg = control_unit.control_output[10];
-			mem_enable_reg = control_unit.control_output[14];
-			load_instr_reg = control_unit.control_output[4];
-			rf_enable_reg = control_unit.control_output[5];
-			//mem_mux_enable = ??
+			mem_size_reg = control_unit.control_output[6:5];
+			mem_se_reg = control_unit.control_output[3];
+			mem_rw_reg = control_unit.control_output[4];
+			mem_enable_reg = control_unit.control_output[0];
+			load_instr_reg = control_unit.control_output[10];
+			rf_enable_reg = control_unit.control_output[9];
+			
+			if (mem_size_reg || mem_se_reg || mem_rw_reg || mem_enable_reg || rf_enable_reg || load_instr_reg) $display("Etapa MEM: \nLoad Instruction = %b, RF Enable = %b, Mem Size = %b, Mem RW = %b, Mem SE = %b, Mem Enable = %b", load_instr_reg, rf_enable_reg, mem_size_reg, mem_rw_reg, mem_se_reg, mem_enable_reg);
+			
             if (le_mem) begin
                 // Perform memory operation
             end
@@ -155,27 +163,30 @@ module SimplePipeline(
 			lo_enable_reg = 1'b0;
         end else begin
             result_reg <= mem_result; 
-			rf_enable_reg = control_unit.control_output[5];
-			hi_enable_reg = control_unit.control_output[12];
-			lo_enable_reg = control_unit.control_output[13];
+			rf_enable_reg = control_unit.control_output[9];
+			hi_enable_reg = control_unit.control_output[2];
+			lo_enable_reg = control_unit.control_output[1];
 			// En una implementación real, puedes seleccionar entre alu_result y mem_result según la instrucción
+			
+			if (rf_enable_reg || hi_enable_reg || lo_enable_reg) $display("Etapa WB: \nRF Enable = %b, HI Enable = %b, LO Enable = %b", rf_enable_reg, hi_enable_reg, lo_enable_reg);
+			
         end
     end
 
 	
 	// Print data
-	always @ (posedge clk or posedge reset) begin
-		$display("\nInstruction = %b, PC = %d, nPC = %d, Control Unit = %b",instruction_reg, pc_reg, npc_reg, control_output,
-				"\nEtapa ID:", 
-				"\nTA Reg = %b", ta_instr_reg,
-				"\nEtapa EX:",
-				"\nShift Imm = %b, ALU Reg = %b, Branch Reg = %b, Load Instruction = %b, RF Enable = %b", shift_imm_reg, alu_op_reg, branch_reg, load_instr_reg, rf_enable_reg,
-				"\nEtapa MEM:",
-				"\nMem Size = %b, Mem SE = %b, Mem RW = %b, Mem Enable = %b, Load Instruction = %b, RF Enable = %b", mem_size_reg, mem_se_reg, mem_rw_reg, mem_enable_reg, load_instr_reg, rf_enable_reg,
-				"\nEtapa WB:",
-				"\nRF Enable = %b, HI Enable = %b, LO Enable = %b", rf_enable_reg, hi_enable_reg, lo_enable_reg
-		);
-	end
+	// always @ (posedge clk or posedge reset) begin
+		// $display("\nInstruction = %b, PC = %d, nPC = %d, Control Unit = %b",instruction_reg, pc_reg, npc_reg, control_output,
+				// "\nEtapa ID:", 
+				// "\nTA Reg = %b", ta_instr_reg,
+				// "\nEtapa EX:",
+				// "\nShift Imm = %b, ALU Reg = %b, Branch Reg = %b, Load Instruction = %b, RF Enable = %b", shift_imm_reg, alu_op_reg, branch_reg, load_instr_reg, rf_enable_reg,
+				// "\nEtapa MEM:",
+				// "\nMem Size = %b, Mem SE = %b, Mem RW = %b, Mem Enable = %b, Load Instruction = %b, RF Enable = %b", mem_size_reg, mem_se_reg, mem_rw_reg, mem_enable_reg, load_instr_reg, rf_enable_reg,
+				// "\nEtapa WB:",
+				// "\nRF Enable = %b, HI Enable = %b, LO Enable = %b", rf_enable_reg, hi_enable_reg, lo_enable_reg
+		// );
+	// end
 
     // Assign the result
     assign result_out = result_reg;
