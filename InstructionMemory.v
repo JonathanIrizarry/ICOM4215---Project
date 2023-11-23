@@ -1,6 +1,6 @@
 module instr_mem (
     output reg [31:0] DataOut,
-    input [8:0] Address
+    input  [8:0] Address
 );
 
     reg [7:0] Mem[0:511]; //512 localizaciones de 8 bits
