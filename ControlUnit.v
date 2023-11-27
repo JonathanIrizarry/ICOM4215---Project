@@ -1,5 +1,6 @@
 
 module PPU_Control_Unit (
+	input clk,
     input   [31:0] instruction,
     output reg [16:0] control_signals //arreglar cantidad de bits
 );
@@ -61,8 +62,8 @@ module PPU_Control_Unit (
 	assign ID_MEM_Enable  = (instruction[31:26] == SB_OP) ? 1'b1 : 1'b0; //bit0
 
    
-always @ (instruction) begin
-   control_signals = {ID_SourceOperand_3bits, ID_ALU_OP, ID_Load_Instr, ID_RF_Enable, ID_B_Instr, ID_TA_Instr, ID_MEM_Size, ID_MEM_RW, ID_MEM_SE, ID_Enable_HI, ID_Enable_LO, ID_MEM_Enable};
+always @ (posedge clk, instruction) begin
+   control_signals <= {ID_SourceOperand_3bits, ID_ALU_OP, ID_Load_Instr, ID_RF_Enable, ID_B_Instr, ID_TA_Instr, ID_MEM_Size, ID_MEM_RW, ID_MEM_SE, ID_Enable_HI, ID_Enable_LO, ID_MEM_Enable};
 end
 
 

@@ -82,19 +82,9 @@ instr_mem imem(
 	$fclose(fi);
 	end
 
- // always @(posedge clk or posedge reset) begin
-    // if (reset) begin
-        // // Reset: Set initial address value
-        // address <= 32'b00000000000000000000000000000000;
-    // end else begin
-        // // Assign the value from pc_out to address
-        // address <= pc_wire_out;
-    // end
-// end
-
-
 
 PPU_Control_Unit control_unit(
+	.clk(clk),
     .instruction(instruction_wire_out),
     .control_signals(control_signals_wire)
   );    
@@ -142,7 +132,7 @@ WB_Stage wb_instance(
 
 
 always @ (posedge clk) begin
-	$display("npc = %d, pc = %d, addr = %b, clk = %b, reset = %b, time = %d", npc_wire_out, pc_wire_out, DataOut, clk, reset, $time);
+	$display("npc = %d, pc = %d, DataOut = %b, instruction = %b, control = %b", npc_wire_out, pc_wire_out, DataOut, instruction_wire_out, control_signals_wire);
 end
 
 endmodule

@@ -1,7 +1,17 @@
 //`include "Pipeline.v"
 //`include "ControlUnit.v"
-`include "SistemaControl.v"
+//`include "SistemaControl.v"
 //`include "InstructionMemory.v"
+`include "ControlUnit.v"
+`include "InstructionMemory.v"
+`include "EX_Stage.v"
+`include "ID_Stage.v"
+`include "IFID_Stage.v"
+`include "MEM_Stage.v"
+`include "MUX.v"
+`include "nPC_Reg.v"
+`include "PC_Reg.v"
+`include "WB_Stage.v"
 module Pipeline_TB;
 
   // Define parameters
@@ -23,103 +33,126 @@ module Pipeline_TB;
 
 
   // Instantiate Pipeline
-  SistemaControl dut (
+  // SistemaControl dut (
+    // .clk(clk),
+    // .reset(reset)
+  // );
+
+
+wire [31:0] adder_wire_out;
+reg [8:0] address;
+wire [31:0] DataOut;
+wire [16:0] control_signals_wire;
+wire [16:0] mux_out_wire;
+wire [31:0] instruction_wire_out;
+reg [7:0] data;
+integer fi, fo, code, i; 
+reg [2:0] alu_op_reg;
+reg [31:0] mem_result;
+reg [31:0] result_reg;
+reg load_instr_reg;
+reg [2:0] sourceOperand_3bit_reg;
+reg rf_enable_reg;
+wire ID_branch_instr;
+wire ta_instr_reg;
+reg mem_enable_reg;
+reg mem_se_reg;
+reg mem_rw_reg;
+reg [1:0] mem_size_reg;
+reg hi_enable_reg;
+reg lo_enable_reg;
+
+
+
+NPC_Register npc_instance(
     .clk(clk),
-    .reset(reset)
-  );
+    .reset(reset),
+    .npc_in(adder_wire_out),
+    .npc_out(npc_wire_out)
+);
 
-  // NPC_Register npc_instance(
-    // .clk(clk),
-    // .reset(reset),
-    // .npc_in(npc_wire_in),
-    // .npc_out(npc_wire_out)
-// );
+Adder_4 adder_instance(
+    .adder_in(npc_wire_out),
+    .adder_out(adder_wire_out)
+);
 
-// Adder_4 adder_instance(
-//     .adder_in(npc_wire_out),
-//     .adder_out(adder_wire_out)
-// );
+PC_Register pc_instance(
+    .clk(clk),
+    .reset(reset),
+    .pc_in(npc_wire_out),
+    .pc_out(pc_wire_out) //fix 
+);
 
-// PC_Register pc_instance(
-    // .clk(clk),
-    // .reset(reset),
-    // .pc_in(npc_wire_out),
-    // .pc_out(pc_wire_out)
-// );
-
-// PPU_Control_Unit control_unit(
-    // .instruction(instructionMem_wire_out),
-    // .control_signals(ControlSignal_wire)
-  // );    
+instr_mem imem(
+    .DataOut(DataOut),
+    .Address(pc_wire_out[8:0])
+);
 
 
-// mux mux_instance(
-    // .input_0(mux_wire_in),
-    // .S(S), // por ahora
-    // .mux_control_signals(mux_wire_out)
-// );
+
+	//Preload Instruction Memory
+	initial begin
+		fi = $fopen("input.txt","r");
+		address = 9'b000000000;
+		while (!$feof(fi)) begin
+			code = $fscanf(fi, "%b", data);
+			imem.Mem[address] = data;
+			address = address + 1;
+	end
+	$fclose(fi);
+	end
 
 
-// IF_Stage if_instance(
-    // .clk(clk),
-    // .reset(reset),
-    // .instruction_in(pc_wire_out),
-    // .instruction_out(instructionMem_wire_out)
-// );
+PPU_Control_Unit control_unit(
+	.clk(clk),
+    .instruction(instruction_wire_out),
+    .control_signals(control_signals_wire)
+  );    
+
+
+mux mux_instance(
+    .input_0(control_signals_wire),
+    .S(S), // por ahora
+    .mux_control_signals(mux_out_wire),
+	.ID_branch_instr(ID_branch_instr)
+);
+
+
+IFID_Stage if_instance(
+    .clk(clk),
+    .reset(reset),
+    .instruction_in(DataOut),
+    .instruction_out(instruction_wire_out)
+);
 
 // ID_Stage id_instance(
     // .clk(clk),
     // .reset(reset),
-    // .control_signals(control_wire),
-    // .control_signals_out(control_wire)
+	// .ta_instr_reg(ta_instr_reg),
+    // .control_signals(control_signals_wire),
+    // .control_signals_out(mux_out_wire)
 // );
 
 // EX_Stage ex_instance(
     // .clk(clk),
     // .reset(reset),
-    // .control_signals(control_wire),
-    // .control_signals_out(control_wire)
+    // .control_signals(mux_out_wire),
+    // .control_signals_out(mux_out_wire)
 // );
 // MEM_Stage mem_instance(
     // .clk(clk),
     // .reset(reset),
-    // .control_signals(control_wire),
-    // .control_signals_out(control_wire)
+    // .control_signals(mux_out_wire),
+    // .control_signals_out(mux_out_wire)
 // );
 // WB_Stage wb_instance(
     // .clk(clk),
     // .reset(reset),
-    // .control_signals(control_wire),
-    // .control_signals_out(control_wire)
+    // .control_signals(mux_out_wire),
+    // .control_signals_out(mux_out_wire)
 // );
 
 
-// instr_mem imem(
-	// .DataOut(dataOut),
-	// .Address(addr)
-// );
-
-// integer fi, fo, code, i; reg [7:0] data;
-// reg [8:0] addr; wire [31:0] dataOut;
-	// //Preload Instruction Memory
-	// initial begin
-		// fi = $fopen("input.txt","r");
-		// addr = 9'b000000000;
-		// while (!$feof(fi)) begin
-			// code = $fscanf(fi, "%b", data);
-			// imem.Mem[addr] = data;
-			// addr = addr + 1;
-	// end
-	// $fclose(fi);
-	// end
-	
-	
-  
- always begin
-		#2 clk = ~clk; // Invert the clock every 2 time unit
-     //$display("Time %0t: Toggling clk to %b", $time, clk);
-	 //$display("test = %b", npc_wire_out);
-	end
 
   
   initial begin
@@ -130,15 +163,22 @@ module Pipeline_TB;
     
     #3 reset = 1'b0;
    
-    #42 S = 1'b1;
+    #44 S = 1'b1;
 
     
-    #11 $finish;
+    #13 $finish;
   end
 
+ always begin
+		#2 clk = ~clk; // Invert the clock every 2 time unit
+	end
 
 
-
+always @ (posedge clk) begin
+	$display("npc = %d, pc = %d, ctrl = %b, branch = %b", npc_wire_out, pc_wire_out, control_signals_wire, ID_branch_instr);
+end 
+	
+ 
 
 
   
