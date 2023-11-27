@@ -65,18 +65,11 @@ PC_Register pc_instance(
 
 instr_mem imem(
     .DataOut(DataOut),
-    .Address(address)
+    .Address(pc_wire_out[8:0])
 );
 
- always @(posedge clk ) begin
-    if (reset) begin
-        // Reset: Set initial address value
-        address <= 32'b00000000000000000000000000000000;
-    end else begin
-        // Assign the value from pc_out to address
-        address <= pc_wire_out;
-    end
-end
+
+
 	//Preload Instruction Memory
 	initial begin
 		fi = $fopen("input.txt","r");
@@ -88,6 +81,17 @@ end
 	end
 	$fclose(fi);
 	end
+
+ // always @(posedge clk or posedge reset) begin
+    // if (reset) begin
+        // // Reset: Set initial address value
+        // address <= 32'b00000000000000000000000000000000;
+    // end else begin
+        // // Assign the value from pc_out to address
+        // address <= pc_wire_out;
+    // end
+// end
+
 
 
 PPU_Control_Unit control_unit(
@@ -136,5 +140,9 @@ WB_Stage wb_instance(
     .control_signals_out(mux_out_wire)
 );
 
+
+always @ (posedge clk) begin
+	$display("npc = %d, pc = %d, addr = %b, clk = %b, reset = %b, time = %d", npc_wire_out, pc_wire_out, DataOut, clk, reset, $time);
+end
 
 endmodule

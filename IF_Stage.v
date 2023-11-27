@@ -1,7 +1,7 @@
 module IF_Stage (
     input clk,
     input reset,
-    input  [31:0] instruction_in,
+    input wire [31:0] instruction_in,
     output reg [31:0] instruction_out
 );
 
@@ -11,7 +11,6 @@ module IF_Stage (
     // Fetch stage logic
     always @(posedge clk) begin
        instruction_out <= instruction_in;
-
     end
 
 endmodule
