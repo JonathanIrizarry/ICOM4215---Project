@@ -1,8 +1,14 @@
-module MEM_Stage (
+module EXMEM_Stage (
     input clk,
     input reset,
     input [16:0] control_signals,
-    output [16:0] control_signals_out
+    output reg [16:0] control_signals_out,
+	output reg [1:0] mem_size_reg,
+    output reg mem_se_reg,
+    output reg mem_rw_reg,
+    output reg mem_enable_reg,
+    output reg load_instr_reg,
+    output reg rf_enable_reg
    
 );
     // input [5:0] opcode,
@@ -15,12 +21,12 @@ module MEM_Stage (
     // input [31:0] result_reg,
     // output reg [31:0] mem_result
 
-    reg mem_size_reg;
-    reg mem_se_reg;
-    reg mem_rw_reg;
-    reg mem_enable_reg;
-    reg load_instr_reg;
-    reg rf_enable_reg;
+    // reg mem_size_reg;
+    // reg mem_se_reg;
+    // reg mem_rw_reg;
+    // reg mem_enable_reg;
+    // reg load_instr_reg;
+    // reg rf_enable_reg;
 
    
     // Memory stage logic
@@ -41,7 +47,7 @@ module MEM_Stage (
 			mem_enable_reg = control_signals[0];
 			load_instr_reg = control_signals[10];
 			rf_enable_reg = control_signals[9];
-			
+			control_signals_out <= control_signals;
 			
 			
             // if (le_mem) begin

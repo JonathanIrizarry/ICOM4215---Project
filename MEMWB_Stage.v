@@ -1,8 +1,11 @@
-module WB_Stage (
+module MEMWB_Stage (
     input clk,
     input reset,
     input [16:0] control_signals,
-    output [16:0] control_signals_out
+    output reg [16:0] control_signals_out,
+	output reg rf_enable_reg,
+	output reg hi_enable_reg,
+    output reg lo_enable_reg
   
 );
 //   input [5:0] opcode,
@@ -15,9 +18,9 @@ module WB_Stage (
 //     input [31:0] mem_result,
 //     output reg [31:0] result_out
   
-  reg rf_enable_reg;
-  reg hi_enable_reg;
-  reg lo_enable_reg;
+  // reg rf_enable_reg;
+  // reg hi_enable_reg;
+  // reg lo_enable_reg;
 
     always @(posedge clk) begin
         if (reset) begin
@@ -30,6 +33,7 @@ module WB_Stage (
 			rf_enable_reg = control_signals[9];
 			hi_enable_reg = control_signals[2];
 			lo_enable_reg = control_signals[1];
+			control_signals_out <= control_signals;
 			// En una implementación real, puedes seleccionar entre alu_result y mem_result según la instrucción
 			
 			
