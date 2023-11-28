@@ -186,7 +186,7 @@ MEMWB_Stage wb_instance(
  
   always @(posedge clk) begin
   
-	if(instruction_wire_out == 32'b0 | instruction_wire_out == 32'bx) begin
+	if((instruction_wire_out == 32'b0 | instruction_wire_out == 32'bx) && reset == 1'b0) begin
 		$display("\n Keyword: NOP, PC = %d, nPC = %d", pc_wire_out, npc_wire_out,
 				"\n\n --- ID STAGE ---",
 				"\n ID_SourceOperand_3bits = %b", control_signals_wire[16:14],
@@ -227,7 +227,7 @@ MEMWB_Stage wb_instance(
 				"\n WB_Enable_HI = %b", wb_wire[2],
 				"\n WB_Enable_LO = %b", wb_wire[1]
 		);
-	end else begin
+	end else if(reset == 1'b0) begin
 	
 		case (instruction_wire_out[31:26])
 		
