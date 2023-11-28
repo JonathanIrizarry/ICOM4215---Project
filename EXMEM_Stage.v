@@ -30,23 +30,25 @@ module EXMEM_Stage (
 
    
     // Memory stage logic
-    always @(posedge clk) begin
+    always @(posedge clk or posedge reset) begin
      if (reset) begin
             // Inicializar registros en caso de reset
-			mem_size_reg = 2'b00;
-			mem_se_reg = 1'b0;
-			mem_rw_reg = 1'b0; 
-			mem_enable_reg = 1'b0;
-			load_instr_reg = 1'b0;		
-			rf_enable_reg = 1'b0;			
+			mem_size_reg <= 2'b00;
+			mem_se_reg <= 1'b0;
+			mem_rw_reg <= 1'b0; 
+			mem_enable_reg <= 1'b0;
+			load_instr_reg <= 1'b0;		
+			rf_enable_reg <= 1'b0;
+			control_signals_out <= 17'b0;
+			
         end else begin
             // Lógica de la etapa MEM, como acceso a memoria (load o store)
-			mem_size_reg = control_signals[6:5];
-			mem_se_reg = control_signals[3];
-			mem_rw_reg = control_signals[4];
-			mem_enable_reg = control_signals[0];
-			load_instr_reg = control_signals[10];
-			rf_enable_reg = control_signals[9];
+			mem_size_reg <= control_signals[6:5];
+			mem_se_reg <= control_signals[3];
+			mem_rw_reg <= control_signals[4];
+			mem_enable_reg <= control_signals[0];
+			load_instr_reg <= control_signals[10];
+			rf_enable_reg <= control_signals[9];
 			control_signals_out <= control_signals;
 			
 			
