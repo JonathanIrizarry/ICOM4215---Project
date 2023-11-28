@@ -48,8 +48,7 @@ module PPU_Control_Unit (
 	
     // Control signals                  //bit 14-16
     assign ID_SourceOperand_3bits  = (instruction[31:26] == ADDIU_Op) ? 3'b001 : 3'b000; // source operand 2 handler sign control 3 bits definit cuan senal sale pa cada instruccion
-    assign ID_ALU_OP     = (instruction[31:26] == ADDIU_Op) ? 3'b001
-                       : ((instruction[31:26] == R_TYPE) && (instruction[5:0] == SUBU_Funct)) ? 3'b010 : 3'b000; //bit11-13
+   assign ID_ALU_OP = (instruction[31:26] == ADDIU_Op) ? 3'b000 : ((instruction[31:26] == R_TYPE) && (instruction[5:0] == SUBU_Funct)) ? 3'b001 : 3'b000; //bit11-13
     assign ID_Load_Instr = (instruction[31:26] == LBU_Op) ? 1'b1 : 1'b0; //bit10 
     assign ID_RF_Enable  = (instruction[31:26] == R_TYPE) ? 1'b1 : 1'b0; //bit9 
     assign ID_B_Instr    = (instruction[31:26] == BGTZ_OP) ? 1'b1 : 1'b0; //bit8
@@ -62,8 +61,12 @@ module PPU_Control_Unit (
 	assign ID_MEM_Enable  = (instruction[31:26] == SB_OP) ? 1'b1 : 1'b0; //bit0
 
    
-always @ (posedge clk, instruction) begin
-   control_signals <= {ID_SourceOperand_3bits, ID_ALU_OP, ID_Load_Instr, ID_RF_Enable, ID_B_Instr, ID_TA_Instr, ID_MEM_Size, ID_MEM_RW, ID_MEM_SE, ID_Enable_HI, ID_Enable_LO, ID_MEM_Enable};
+always @ (instruction) begin
+    if(instruction == 32'b0 )begin
+        control_signals <= 32'b0;
+    end else begin
+ control_signals <= {ID_SourceOperand_3bits, ID_ALU_OP, ID_Load_Instr, ID_RF_Enable, ID_B_Instr, ID_TA_Instr, ID_MEM_Size, ID_MEM_RW, ID_MEM_SE, ID_Enable_HI, ID_Enable_LO, ID_MEM_Enable};
+    end
 end
 
 

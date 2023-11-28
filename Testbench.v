@@ -61,6 +61,7 @@ reg mem_rw_reg;
 reg [1:0] mem_size_reg;
 reg hi_enable_reg;
 reg lo_enable_reg;
+wire [16:0] ex_wire;
 
 
 
@@ -85,7 +86,8 @@ PC_Register pc_instance(
 
 instr_mem imem(
     .DataOut(DataOut),
-    .Address(pc_wire_out[8:0])
+    .Address(pc_wire_out[8:0]),
+    .instr(pc_wire_out)
 );
 
 
@@ -98,6 +100,7 @@ instr_mem imem(
 			code = $fscanf(fi, "%b", data);
 			imem.Mem[address] = data;
 			address = address + 1;
+     // $display("instruction memory", imem.Mem[address]);
 	end
 	$fclose(fi);
 	end
@@ -133,12 +136,12 @@ IFID_Stage if_instance(
     // .control_signals_out(mux_out_wire)
 // );
 
-// EX_Stage ex_instance(
-    // .clk(clk),
-    // .reset(reset),
-    // .control_signals(mux_out_wire),
-    // .control_signals_out(mux_out_wire)
-// );
+EX_Stage ex_instance(
+    .clk(clk),
+    .reset(reset),
+    .control_signals(mux_out_wire),
+    .control_signals_out(ex_wire)
+);
 // MEM_Stage mem_instance(
     // .clk(clk),
     // .reset(reset),
@@ -163,10 +166,10 @@ IFID_Stage if_instance(
     
     #3 reset = 1'b0;
    
-    #44 S = 1'b1;
+    #37 S = 1'b1;
 
     
-    #13 $finish;
+    #8 $finish;
   end
 
  always begin
@@ -174,71 +177,83 @@ IFID_Stage if_instance(
 	end
 
 
-always @ (posedge clk) begin
-	$display("npc = %d, pc = %d, ctrl = %b, branch = %b", npc_wire_out, pc_wire_out, control_signals_wire, ID_branch_instr);
-end 
+// always @ (posedge clk) begin
+// #1;
+// 	$display("npc = %d, pc = %d, Instruction = %b, ctrl signals = %b, branch = %b \n", npc_wire_out, pc_wire_out, instruction_wire_out, control_signals_wire, ID_branch_instr);
+
+//   $display(" Ex Stage,  control signlas = %b \n", ex_wire );
+
+//   // $display("npc = %d, pc = %d, Instruction = %b, ctrl signals = %b, branch = %b \n", npc_wire_out, pc_wire_out, instruction_wire_out, control_signals_wire, ID_branch_instr);
+
+//   // $display("npc = %d, pc = %d, Instruction = %b, ctrl signals = %b, branch = %b \n", npc_wire_out, pc_wire_out, instruction_wire_out, control_signals_wire, ID_branch_instr);
+
+//   // $display("npc = %d, pc = %d, Instruction = %b, ctrl signals = %b, branch = %b \n", npc_wire_out, pc_wire_out, instruction_wire_out, control_signals_wire, ID_branch_instr);
+
+
+
+
+
+
+// end 
 	
  
 
 
   
-  // always @(posedge clk) begin
-      // // $display("=========================================================================",
-            // // "\n  KeyWord: ADDIU  ,Instruction = %b, PC = %d, nPC = %d, Control Signals = %b, Clk = %b, Reset = %b, S = %b",  instructionMem_wire_out, pc_wire_out, npc_wire_out, mux_wire_out, clk, reset, S);
-
-
-   
-    // if (instructionMem_wire_out[31:26] == 6'b001001) begin
-        // $display("=========================================================================",
+  always @(posedge clk) begin
+      // $display("=========================================================================",
             // "\n  KeyWord: ADDIU  ,Instruction = %b, PC = %d, nPC = %d, Control Signals = %b, Clk = %b, Reset = %b, S = %b",  instructionMem_wire_out, pc_wire_out, npc_wire_out, mux_wire_out, clk, reset, S);
-    
-        // //str = "ADDIU";
-    // end else if (instructionMem_wire_out[31:26] == 6'b100100) begin
-        // //str = "LBU";
-        // $display("=========================================================================",
-            // "\n  KeyWord: LBU  ,Instruction = %b, PC = %d, nPC = %d, Control Signals = %b, Clk = %b, Reset = %b, S = %b",  instructionMem_wire_out, pc_wire_out, npc_wire_out, mux_wire_out, clk, reset, S);
-    
 
-    // end else if (instructionMem_wire_out[31:26] == 6'b000111) begin
-       // // str = "BGTZ";
-        // $display("=========================================================================",
-            // "\n  KeyWord: BGTZ  ,Instruction = %b, PC = %d, nPC = %d, Control Signals = %b, Clk = %b, Reset = %b, S = %b", instructionMem_wire_out, pc_wire_out, npc_wire_out, mux_wire_out, clk, reset, S);
+  #1;
+   
+    if (instruction_wire_out[31:26] == 6'b001001) begin
+        $display(" KeyWord: ADDIU, Instruction = %b, PC = %d, nPC = %d, Control Signals = %b \n",  instruction_wire_out, pc_wire_out, npc_wire_out, control_signals_wire);
+        $display(" Ex Stage,  control signlas = %b \n", ex_wire );
     
+        //str = "ADDIU";
+    end else if (instruction_wire_out[31:26] == 6'b100100) begin
+        //str = "LBU";
+        $display(" KeyWord: LBU, Instruction = %b, PC = %d, nPC = %d, Control Signals = %b \n",  instruction_wire_out, pc_wire_out, npc_wire_out, control_signals_wire);
+        $display(" Ex Stage,  control signlas = %b \n", ex_wire );
 
-    // end else if (instructionMem_wire_out[31:26] == 6'b101000) begin
-       // // str = "SB";
+    end else if (instruction_wire_out[31:26] == 6'b000111) begin
+       // str = "BGTZ";
+        $display("KeyWord: BGTZ, Instruction = %b, PC = %d, nPC = %d, Control Signals = %b \n", instruction_wire_out, pc_wire_out, npc_wire_out, control_signals_wire);
+        $display(" Ex Stage,  control signlas = %b \n", ex_wire );
+
+    end else if (instruction_wire_out[31:26] == 6'b101000) begin
+       // str = "SB";
+        $display(" KeyWord: SB, Instruction = %b, PC = %d, nPC = %d, Control Signals = %b \n", instruction_wire_out, pc_wire_out, npc_wire_out, control_signals_wire);
+        $display(" Ex Stage,  control signlas = %b \n", ex_wire );
+
+    end else if (instruction_wire_out[31:26] == 6'b000011) begin
+        //str = "JAL";
+        $display("  KeyWord: JAL, Instruction = %b, PC = %d, nPC = %d, Control Signals = %b \n", instruction_wire_out, pc_wire_out, npc_wire_out, control_signals_wire);
+        $display(" Ex Stage,  control signlas = %b \n", ex_wire );
+
+    end else if (instruction_wire_out[31:26] == 6'b001111) begin
+        //str = "LUI";
+        $display("  KeyWord: LUI, Instruction = %b, PC = %d, nPC = %d, Control Signals = %b \n", instruction_wire_out, pc_wire_out, npc_wire_out, control_signals_wire);
+        $display(" Ex Stage,  control signlas = %b \n", ex_wire );
+
+    end else if (instruction_wire_out[31:26] == 6'b000000) begin
+        //str = "R";
         // $display("=========================================================================",
-            // "\n  KeyWord: SB  ,Instruction = %b, PC = %d, nPC = %d, Control Signals = %b, Clk = %b, Reset = %b, S = %b", instructionMem_wire_out, pc_wire_out, npc_wire_out, mux_wire_out, clk, reset, S);
-    
-
-    // end else if (instructionMem_wire_out[31:26] == 6'b000011) begin
-        // //str = "JAL";
-        // $display("=========================================================================",
-            // "\n  KeyWord: JAL  ,Instruction = %b, PC = %d, nPC = %d, Control Signals = %b, Clk = %b, Reset = %b, S = %b", instructionMem_wire_out, pc_wire_out, npc_wire_out, mux_wire_out, clk, reset, S);
-    
-
-    // end else if (instructionMem_wire_out[31:26] == 6'b001111) begin
-        // //str = "LUI";
-        // $display("=========================================================================",
-            // "\n  KeyWord: LUI  ,Instruction = %b, PC = %d, nPC = %d, Control Signals = %b, Clk = %b, Reset = %b, S = %b", instructionMem_wire_out, pc_wire_out, npc_wire_out, mux_wire_out, clk, reset, S);
-    
-
-    // end else if (instructionMem_wire_out[31:26] == 6'b000000) begin
-        // //str = "R";
-        // // $display("=========================================================================",
-        // //     "\n  KeyWord = %s  ,Instruction = %b, PC = %d, nPC = %d, Control Signals = %b, Clk = %b, Reset = %b, S = %b", test_instruction, pc_wire, npc_wire, control_wire, clk, reset, S);
+        //     "\n  KeyWord = %s  ,Instruction = %b, PC = %d, nPC = %d, Control Signals = %b, Clk = %b, Reset = %b, S = %b", test_instruction, pc_wire, npc_wire, control_wire, clk, reset, S);
     
 
         
-        // if (instructionMem_wire_out[5:0] == 6'b100011) begin
-            // //str = "SUBU";
-            // $display("=========================================================================",
-            // "\n  KeyWord: SUBU  ,Instruction = %b, PC = %d, nPC = %d, Control Signals = %b, Clk = %b, Reset = %b, S = %b",  instructionMem_wire_out, pc_wire_out, npc_wire_out, mux_wire_out, clk, reset, S);
-    
+        if (instruction_wire_out[5:0] == 6'b100011) begin
+           //str = "SUBU";
+            $display(" KeyWord: SUBU, Instruction = %b, PC = %d, nPC = %d, Control Signals = %b \n",  instruction_wire_out, pc_wire_out, npc_wire_out, control_signals_wire);
+            $display(" ,  control signlas = %b \n", );
 
-        // end
+        end
        
-    // end
+    end else if (instruction_wire_out == 32'b0) begin
+         $display("KeyWord: NOP, Instruction = %b, PC = %d, nPC = %d \n", instruction_wire_out, pc_wire_out, npc_wire_out );
+
+    end
 
 
 
@@ -249,6 +264,6 @@ end
     
     // Print control signals of EX, MEM, and WB stages
     // $display("EX: %b MEM: %b WB: %b", dut.alu_op_reg, dut.mem_enable_reg, dut.rf_enable_reg);
-//end
+end
 
 endmodule

@@ -2,7 +2,7 @@ module EX_Stage (
     input clk,
     input reset,
     input [16:0] control_signals,
-    output [16:0] control_signals_out
+    output reg [16:0] control_signals_out
 );
 
     // input [5:0] opcode,
@@ -34,6 +34,7 @@ module EX_Stage (
 			load_instr_reg = control_signals[10];
 			rf_enable_reg = control_signals[9];
 			SourceOperand_3bits = control_signals[16:14];
+            control_signals_out <= control_signals;
 			
 			
 			

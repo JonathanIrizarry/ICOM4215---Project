@@ -1,13 +1,14 @@
 `include "ControlUnit.v"
 `include "InstructionMemory.v"
 `include "EX_Stage.v"
-`include "ID_Stage.v"
-`include "IF_Stage.v"
+`include "IFID_Stage.v"
+//`include "IF_Stage.v"
 `include "MEM_Stage.v"
 `include "MUX.v"
 `include "nPC_Reg.v"
 `include "PC_Reg.v"
 `include "WB_Stage.v"
+`include "ID_Stage.v"
 module SistemaControl (
     input clk,
     input reset
@@ -65,22 +66,28 @@ PC_Register pc_instance(
 
 instr_mem imem(
     .DataOut(DataOut),
-    .Address(pc_wire_out[8:0])
+    .Address(pc_wire_out[8:0]),
+    .instr(pc_wire_out)
 );
 
 
+//  always @ (posedge clk) begin
+// // 	$display("npc = %d, pc = %d, DataOut = %b, instruction = %b, control = %b", npc_wire_out, pc_wire_out, DataOut, instruction_wire_out, control_signals_wire);
+// $display("instr = %b" ,pc_wire_out );
+//  end
 
-	//Preload Instruction Memory
-	initial begin
-		fi = $fopen("input.txt","r");
-		address = 9'b000000000;
-		while (!$feof(fi)) begin
-			code = $fscanf(fi, "%b", data);
-			imem.Mem[address] = data;
-			address = address + 1;
-	end
-	$fclose(fi);
-	end
+
+	// //Preload Instruction Memory
+	// initial begin
+	// 	fi = $fopen("input.txt","r");
+	// 	address = 9'b000000000;
+	// 	while (!$feof(fi)) begin
+	// 		code = $fscanf(fi, "%b", data);
+	// 		imem.Mem[address] = data;
+	// 		address = address + 1;
+	// end
+	// $fclose(fi);
+	// end
 
 
 PPU_Control_Unit control_unit(
@@ -97,7 +104,7 @@ mux mux_instance(
 );
 
 
-IF_Stage if_instance(
+IFID_Stage if_instance(
     .clk(clk),
     .reset(reset),
     .instruction_in(DataOut),
@@ -131,8 +138,8 @@ WB_Stage wb_instance(
 );
 
 
-always @ (posedge clk) begin
-	$display("npc = %d, pc = %d, DataOut = %b, instruction = %b, control = %b", npc_wire_out, pc_wire_out, DataOut, instruction_wire_out, control_signals_wire);
-end
+// always @ (posedge clk) begin
+// 	$display("npc = %d, pc = %d, DataOut = %b, instruction = %b, control = %b", npc_wire_out, pc_wire_out, DataOut, instruction_wire_out, control_signals_wire);
+// end
 
 endmodule
