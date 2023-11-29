@@ -160,7 +160,7 @@ MEMWB_Stage wb_instance(
 );
 
 
-
+// 
   
   initial begin
    
@@ -176,58 +176,62 @@ MEMWB_Stage wb_instance(
     #8 $finish;
   end
 
- always begin
-		#2 clk = ~clk; // Invert the clock every 2 time unit
+ initial repeat(200) begin
+	#2;
+	clk = ~clk;
 	end
+
+ 
 
 
 
  // Printing Data from each phase
  
-  always @(posedge clk) begin
+ always @(posedge clk) begin
   
-	if((instruction_wire_out == 32'b0 | instruction_wire_out == 32'bx) && reset == 1'b0) begin
-		$display("\n Keyword: NOP, PC = %d, nPC = %d", pc_wire_out, npc_wire_out,
-				"\n\n --- ID STAGE ---",
-				"\n ID_SourceOperand_3bits = %b", control_signals_wire[16:14],
-				"\n ID_ALU_OP = %b", control_signals_wire[13:11],
-				"\n ID_Load_Instr = %b", control_signals_wire[10],
-				"\n ID_RF_Enable = %b", control_signals_wire[9],
-				"\n ID_B_Instr = %b", control_signals_wire[8],
-				"\n ID_TA_Instr = %b", control_signals_wire[7],
-				"\n ID_MEM_Size = %b", control_signals_wire[6:5],
-				"\n ID_MEM_RW = %b", control_signals_wire[4],
-				"\n ID_MEM_SE = %b", control_signals_wire[3],
-				"\n ID_Enable_HI = %b", control_signals_wire[2],
-				"\n ID_Enable_LO = %b", control_signals_wire[1],
-				"\n ID_MEM_Enable = %b", control_signals_wire[0],
-				"\n\n --- EX STAGE ---",
-				"\n EX_SourceOperand_3bits = %b", ex_wire[16:14],
-				"\n EX_ALU_OP = %b", ex_wire[13:11],
-				"\n EX_Load_Instr = %b", ex_wire[10],
-				"\n EX_RF_Enable = %b", ex_wire[9],
-				"\n EX_B_Instr = %b", ex_wire[8],
-				"\n EX_MEM_Size = %b", ex_wire[6:5],
-				"\n EX_MEM_RW = %b", ex_wire[4],
-				"\n EX_MEM_SE = %b", ex_wire[3],
-				"\n EX_Enable_HI = %b", ex_wire[2],
-				"\n EX_Enable_LO = %b", ex_wire[1],
-				"\n EX_MEM_Enable = %b", ex_wire[0],
-				"\n\n --- MEM STAGE ---",
-				"\n MEM_Load_Instr = %b", mem_wire[10],
-				"\n MEM_RF_Enable = %b", mem_wire[9],
-				"\n MEM_MEM_Size = %b", mem_wire[6:5],
-				"\n MEM_MEM_RW = %b", mem_wire[4],
-				"\n MEM_MEM_SE = %b", mem_wire[3],
-				"\n MEM_Enable_HI = %b", mem_wire[2],
-				"\n MEM_Enable_LO = %b", mem_wire[1],
-				"\n MEM_MEM_Enable = %b", mem_wire[0],
-				"\n\n --- WB STAGE ---",
-				"\n WB_RF_Enable = %b", wb_wire[9],
-				"\n WB_Enable_HI = %b", wb_wire[2],
-				"\n WB_Enable_LO = %b", wb_wire[1]
-		);
-	end else if(reset == 1'b0) begin
+  
+	// if((instruction_wire_out == 32'b0 | instruction_wire_out == 32'bx) && reset == 1'b0) begin
+		// $display("\n Keyword: NOP, PC = %d, nPC = %d", pc_wire_out, npc_wire_out,
+				// "\n\n --- ID STAGE ---",
+				// "\n ID_SourceOperand_3bits = %b", control_signals_wire[16:14],
+				// "\n ID_ALU_OP = %b", control_signals_wire[13:11],
+				// "\n ID_Load_Instr = %b", control_signals_wire[10],
+				// "\n ID_RF_Enable = %b", control_signals_wire[9],
+				// "\n ID_B_Instr = %b", control_signals_wire[8],
+				// "\n ID_TA_Instr = %b", control_signals_wire[7],
+				// "\n ID_MEM_Size = %b", control_signals_wire[6:5],
+				// "\n ID_MEM_RW = %b", control_signals_wire[4],
+				// "\n ID_MEM_SE = %b", control_signals_wire[3],
+				// "\n ID_Enable_HI = %b", control_signals_wire[2],
+				// "\n ID_Enable_LO = %b", control_signals_wire[1],
+				// "\n ID_MEM_Enable = %b", control_signals_wire[0],
+				// "\n\n --- EX STAGE ---",
+				// "\n EX_SourceOperand_3bits = %b", ex_wire[16:14],
+				// "\n EX_ALU_OP = %b", ex_wire[13:11],
+				// "\n EX_Load_Instr = %b", ex_wire[10],
+				// "\n EX_RF_Enable = %b", ex_wire[9],
+				// "\n EX_B_Instr = %b", ex_wire[8],
+				// "\n EX_MEM_Size = %b", ex_wire[6:5],
+				// "\n EX_MEM_RW = %b", ex_wire[4],
+				// "\n EX_MEM_SE = %b", ex_wire[3],
+				// "\n EX_Enable_HI = %b", ex_wire[2],
+				// "\n EX_Enable_LO = %b", ex_wire[1],
+				// "\n EX_MEM_Enable = %b", ex_wire[0],
+				// "\n\n --- MEM STAGE ---",
+				// "\n MEM_Load_Instr = %b", mem_wire[10],
+				// "\n MEM_RF_Enable = %b", mem_wire[9],
+				// "\n MEM_MEM_Size = %b", mem_wire[6:5],
+				// "\n MEM_MEM_RW = %b", mem_wire[4],
+				// "\n MEM_MEM_SE = %b", mem_wire[3],
+				// "\n MEM_Enable_HI = %b", mem_wire[2],
+				// "\n MEM_Enable_LO = %b", mem_wire[1],
+				// "\n MEM_MEM_Enable = %b", mem_wire[0],
+				// "\n\n --- WB STAGE ---",
+				// "\n WB_RF_Enable = %b", wb_wire[9],
+				// "\n WB_Enable_HI = %b", wb_wire[2],
+				// "\n WB_Enable_LO = %b", wb_wire[1]
+		// );
+	// end else if(reset == 1'b0) begin
 	
 		case (instruction_wire_out[31:26])
 		
@@ -312,7 +316,7 @@ MEMWB_Stage wb_instance(
 				"\n WB_Enable_HI = %b", wb_wire[2],
 				"\n WB_Enable_LO = %b", wb_wire[1]
 		);
-	end
+	
 end
 
 endmodule
