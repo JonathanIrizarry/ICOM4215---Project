@@ -158,7 +158,7 @@ MEMWB_Stage wb_instance(
 );
 
 
-
+// 
   
   initial begin
    
@@ -174,17 +174,15 @@ MEMWB_Stage wb_instance(
     #8 $finish;
   end
 
-//  always begin
-// 		#2 clk = ~clk; // Invert the clock every 2 time unit
-// 	end
-initial repeat(200) begin
-    #2 clk = ~clk;
-end
+ always begin
+		#2 clk = ~clk; // Invert the clock every 2 time unit
+	end
+
 
 
  // Printing Data from each phase
  
-  always @(posedge clk) begin
+ always @(posedge clk) begin
   
 	if((instruction_wire_out == 32'b0 | instruction_wire_out == 32'bx) && reset == 1'b0) begin
 		$display("\n Keyword: NOP, PC = %d, nPC = %d", pc_wire_out, npc_wire_out,
@@ -312,7 +310,7 @@ end
 				"\n WB_Enable_HI = %b", wb_wire[2],
 				"\n WB_Enable_LO = %b", wb_wire[1]
 		);
-	end
+  end
 end
 
 endmodule
