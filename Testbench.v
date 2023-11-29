@@ -57,6 +57,18 @@ module Pipeline_TB;
 	wire EX_load_instr_reg;
 	wire EX_rf_enable_reg;
 	wire MEM_rf_enable_reg;
+  wire conditional_inconditional; //bit 21
+  wire r31; //bit 20
+  wire unconditional_Jump; //bit 19
+  wire destination; //bit 18
+
+wire [25:0] address_26_out; // bit 25:0 de instruction 
+wire [8:0] PC_out; //bit8:0
+wire [25:21] rs_out; //bit 25:21
+wire [20:16] rt_out; //bit 20:16
+wire [15:0] imm16_out; //bit 15:0
+wire [31:26] opcode_out; //bit 31:26
+wire [15:11] rd_out;
 
 
 
@@ -118,7 +130,14 @@ IFID_Stage if_instance(
     .clk(clk),
     .reset(reset),
     .instruction_in(DataOut),
-    .instruction_out(instruction_wire_out)
+    .instruction_out(instruction_wire_out),
+    .address_26(address_26_out),
+    .PC(PC_out),
+    .rs(rs_out),
+    .rt(rt_out),
+    .imm16(imm16_out),
+    .opcode(opcode_out),
+    .rd(rd_out)
 );
 
 
@@ -187,6 +206,10 @@ MEMWB_Stage wb_instance(
 	if((instruction_wire_out == 32'b0 | instruction_wire_out == 32'bx) && reset == 1'b0) begin
 		$display("\n Keyword: NOP, PC = %d, nPC = %d", pc_wire_out, npc_wire_out,
 				"\n\n --- ID STAGE ---",
+        "\n ID_conditional_unconditional = %b", control_signals_wire[21],
+        "\n ID_r31 = %b", control_signals_wire[20],
+        "\n ID_unconditional_jump = %b", control_signals_wire[19],
+        "\n ID_destination = %b", control_signals_wire[18],
 				"\n ID_SourceOperand_3bits = %b", control_signals_wire[17:15],
 				"\n ID_ALU_OP = %b", control_signals_wire[14:11],
 				"\n ID_Load_Instr = %b", control_signals_wire[10],
@@ -272,6 +295,10 @@ MEMWB_Stage wb_instance(
 			end
 		endcase
 		$display("\n\n --- ID STAGE ---",
+        "\n ID_conditional_unconditional = %b", control_signals_wire[21],
+        "\n ID_r31 = %b", control_signals_wire[20],
+        "\n ID_unconditional_jump = %b", control_signals_wire[19],
+        "\n ID_destination = %b", control_signals_wire[18],
 				"\n ID_SourceOperand_3bits = %b", control_signals_wire[17:15],
 				"\n ID_ALU_OP = %b", control_signals_wire[14:11],
 				"\n ID_Load_Instr = %b", control_signals_wire[10],
