@@ -1,7 +1,7 @@
 module mux(
-    input [16:0] input_0,
+    input [21:0] input_0,
     input S,
-    output reg [16:0] mux_control_signals,
+    output reg [21:0] mux_control_signals,
 	output reg ID_branch_instr
 );
 
@@ -11,7 +11,7 @@ always @ (S, input_0) begin
 		//$display("mux = %b", mux_control_signals);
 		//$display("test = %b", input_0);
     end else begin 
-        mux_control_signals <= 17'b0;
+        mux_control_signals <= 22'b0;
 		//$display("mux = %b", mux_control_signals);
     end
 end

@@ -1,8 +1,8 @@
 module MEMWB_Stage (
     input clk,
     input reset,
-    input [16:0] control_signals,
-    output reg [16:0] control_signals_out,
+    input [21:0] control_signals,
+    output reg [21:0] control_signals_out,
 	output reg rf_enable_reg,
 	output reg hi_enable_reg,
     output reg lo_enable_reg
@@ -28,7 +28,7 @@ module MEMWB_Stage (
 			rf_enable_reg <= 1'b0;
 			hi_enable_reg <= 1'b0;
 			lo_enable_reg <= 1'b0;
-			control_signals_out <= 17'b0;
+			control_signals_out <= 22'b0;
         end else begin
             // result_reg <= mem_result; 
 			rf_enable_reg <= control_signals[9];

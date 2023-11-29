@@ -1,8 +1,8 @@
 module EXMEM_Stage (
     input clk,
     input reset,
-    input [16:0] control_signals,
-    output reg [16:0] control_signals_out,
+    input [21:0] control_signals,
+    output reg [21:0] control_signals_out,
 	output reg [1:0] mem_size_reg,
     output reg mem_se_reg,
     output reg mem_rw_reg,
@@ -39,7 +39,7 @@ module EXMEM_Stage (
 			mem_enable_reg <= 1'b0;
 			load_instr_reg <= 1'b0;		
 			rf_enable_reg <= 1'b0;
-			control_signals_out <= 17'b0;
+			control_signals_out <= 22'b0;
 			
         end else begin
             // Lógica de la etapa MEM, como acceso a memoria (load o store)

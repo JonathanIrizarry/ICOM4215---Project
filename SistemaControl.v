@@ -1,13 +1,13 @@
 `include "ControlUnit.v"
 `include "InstructionMemory.v"
-`include "EX_Stage.v"
+//`include "EX_Stage.v"
 `include "IFID_Stage.v"
 //`include "IF_Stage.v"
-`include "MEM_Stage.v"
+//`include "MEM_Stage.v"
 `include "MUX.v"
 `include "nPC_Reg.v"
 `include "PC_Reg.v"
-`include "WB_Stage.v"
+//`include "WB_Stage.v"
 `include "ID_Stage.v"
 module SistemaControl (
     input clk,
@@ -23,12 +23,12 @@ wire [31:0] pc_wire_out;
 wire [31:0] adder_wire_out;
 reg [8:0] address;
 wire [31:0] DataOut;
-wire [16:0] control_signals_wire;
-wire [16:0] mux_out_wire;
+wire [21:0] control_signals_wire;
+wire [21:0] mux_out_wire;
 wire [31:0] instruction_wire_out;
 reg [7:0] data;
 integer fi, fo, code, i; 
-reg [2:0] alu_op_reg;
+reg [3:0] alu_op_reg;
 reg [31:0] mem_result;
 reg [31:0] result_reg;
 reg load_instr_reg;
@@ -91,7 +91,6 @@ instr_mem imem(
 
 
 PPU_Control_Unit control_unit(
-	.clk(clk),
     .instruction(instruction_wire_out),
     .control_signals(control_signals_wire)
   );    
@@ -118,24 +117,24 @@ ID_Stage id_instance(
     .control_signals_out(mux_out_wire)
 );
 
-EX_Stage ex_instance(
-    .clk(clk),
-    .reset(reset),
-    .control_signals(mux_out_wire),
-    .control_signals_out(mux_out_wire)
-);
-MEM_Stage mem_instance(
-    .clk(clk),
-    .reset(reset),
-    .control_signals(mux_out_wire),
-    .control_signals_out(mux_out_wire)
-);
-WB_Stage wb_instance(
-    .clk(clk),
-    .reset(reset),
-    .control_signals(mux_out_wire),
-    .control_signals_out(mux_out_wire)
-);
+// EX_Stage ex_instance(
+//     .clk(clk),
+//     .reset(reset),
+//     .control_signals(mux_out_wire),
+//     .control_signals_out(mux_out_wire)
+// );
+// MEM_Stage mem_instance(
+//     .clk(clk),
+//     .reset(reset),
+//     .control_signals(mux_out_wire),
+//     .control_signals_out(mux_out_wire)
+// );
+// WB_Stage wb_instance(
+//     .clk(clk),
+//     .reset(reset),
+//     .control_signals(mux_out_wire),
+//     .control_signals_out(mux_out_wire)
+// );
 
 
 // always @ (posedge clk) begin

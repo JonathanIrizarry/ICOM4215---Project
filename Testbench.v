@@ -21,21 +21,21 @@ module Pipeline_TB;
 	wire [31:0] pc_wire_in;
 	wire [31:0] npc_wire_in;
 	wire [31:0] npc_wire_out;
-	wire [16:0] control_wire;
+	wire [21:0] control_wire;
 	wire [31:0] instructionMem_wire_in;
 	wire [31:0] instructionMem_wire_out;
-	wire [16:0] ControlSignal_wire;
-	wire [16:0] mux_wire_in;
-	wire [16:0] mux_wire_out;
+	wire [21:0] ControlSignal_wire;
+	wire [21:0] mux_wire_in;
+	wire [21:0] mux_wire_out;
 	wire [31:0] adder_wire_out;
 	reg [8:0] address;
 	wire [31:0] DataOut;
-	wire [16:0] control_signals_wire;
-	wire [16:0] mux_out_wire;
+	wire [21:0] control_signals_wire;
+	wire [21:0] mux_out_wire;
 	wire [31:0] instruction_wire_out;
 	reg [7:0] data;
 	integer fi, fo, code, i; 
-	wire [2:0] alu_op_reg;
+	wire [3:0] alu_op_reg;
 	reg [31:0] mem_result;
 	reg [31:0] result_reg;
 	reg [2:0] sourceOperand_3bit_reg;
@@ -51,9 +51,9 @@ module Pipeline_TB;
 	wire [1:0] mem_size_reg;
 	wire hi_enable_reg;
 	wire lo_enable_reg;
-	wire [16:0] ex_wire;
-	wire [16:0] mem_wire;
-	wire [16:0] wb_wire;
+	wire [21:0] ex_wire;
+	wire [21:0] mem_wire;
+	wire [21:0] wb_wire;
 	wire EX_load_instr_reg;
 	wire EX_rf_enable_reg;
 	wire MEM_rf_enable_reg;
@@ -102,8 +102,6 @@ instr_mem imem(
 
 
 PPU_Control_Unit control_unit(
-	.clk(clk),
-	.reset(reset),
     .instruction(instruction_wire_out),
     .control_signals(control_signals_wire)
   );    
@@ -176,10 +174,12 @@ MEMWB_Stage wb_instance(
     #8 $finish;
   end
 
- always begin
-		#2 clk = ~clk; // Invert the clock every 2 time unit
-	end
-
+//  always begin
+// 		#2 clk = ~clk; // Invert the clock every 2 time unit
+// 	end
+initial repeat(200) begin
+    #2 clk = ~clk;
+end
 
 
  // Printing Data from each phase
@@ -189,8 +189,8 @@ MEMWB_Stage wb_instance(
 	if((instruction_wire_out == 32'b0 | instruction_wire_out == 32'bx) && reset == 1'b0) begin
 		$display("\n Keyword: NOP, PC = %d, nPC = %d", pc_wire_out, npc_wire_out,
 				"\n\n --- ID STAGE ---",
-				"\n ID_SourceOperand_3bits = %b", control_signals_wire[16:14],
-				"\n ID_ALU_OP = %b", control_signals_wire[13:11],
+				"\n ID_SourceOperand_3bits = %b", control_signals_wire[17:15],
+				"\n ID_ALU_OP = %b", control_signals_wire[14:11],
 				"\n ID_Load_Instr = %b", control_signals_wire[10],
 				"\n ID_RF_Enable = %b", control_signals_wire[9],
 				"\n ID_B_Instr = %b", control_signals_wire[8],
@@ -202,8 +202,8 @@ MEMWB_Stage wb_instance(
 				"\n ID_Enable_LO = %b", control_signals_wire[1],
 				"\n ID_MEM_Enable = %b", control_signals_wire[0],
 				"\n\n --- EX STAGE ---",
-				"\n EX_SourceOperand_3bits = %b", ex_wire[16:14],
-				"\n EX_ALU_OP = %b", ex_wire[13:11],
+				"\n EX_SourceOperand_3bits = %b", ex_wire[17:15],
+				"\n EX_ALU_OP = %b", ex_wire[14:11],
 				"\n EX_Load_Instr = %b", ex_wire[10],
 				"\n EX_RF_Enable = %b", ex_wire[9],
 				"\n EX_B_Instr = %b", ex_wire[8],
@@ -274,8 +274,8 @@ MEMWB_Stage wb_instance(
 			end
 		endcase
 		$display("\n\n --- ID STAGE ---",
-				"\n ID_SourceOperand_3bits = %b", control_signals_wire[16:14],
-				"\n ID_ALU_OP = %b", control_signals_wire[13:11],
+				"\n ID_SourceOperand_3bits = %b", control_signals_wire[17:15],
+				"\n ID_ALU_OP = %b", control_signals_wire[14:11],
 				"\n ID_Load_Instr = %b", control_signals_wire[10],
 				"\n ID_RF_Enable = %b", control_signals_wire[9],
 				"\n ID_B_Instr = %b", control_signals_wire[8],
@@ -287,8 +287,8 @@ MEMWB_Stage wb_instance(
 				"\n ID_Enable_LO = %b", control_signals_wire[1],
 				"\n ID_MEM_Enable = %b", control_signals_wire[0],
 				"\n\n --- EX STAGE ---",
-				"\n EX_SourceOperand_3bits = %b", ex_wire[16:14],
-				"\n EX_ALU_OP = %b", ex_wire[13:11],
+				"\n EX_SourceOperand_3bits = %b", ex_wire[17:15],
+				"\n EX_ALU_OP = %b", ex_wire[14:11],
 				"\n EX_Load_Instr = %b", ex_wire[10],
 				"\n EX_RF_Enable = %b", ex_wire[9],
 				"\n EX_B_Instr = %b", ex_wire[8],
