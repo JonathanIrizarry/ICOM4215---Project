@@ -50,11 +50,11 @@ module PPU_Control_Unit (
     if (instruction[31:26] == ADDIU_Op) begin
         ID_SourceOperand_3bits = 3'b100;
         ID_ALU_OP = 4'b0000;
-        ID_Load_Instr = 1'b1;
+        ID_Load_Instr = 1'b0;
         ID_RF_Enable = 1'b1;
         ID_B_Instr = 1'b0;
         ID_TA_Instr = 1'b0;
-        ID_MEM_Size = 2'b01;
+        ID_MEM_Size = 2'b00;
         ID_MEM_RW = 1'b0; // creo que es uno 
         ID_MEM_SE = 1'b0;
         ID_Enable_HI = 1'b0;
@@ -83,15 +83,15 @@ module PPU_Control_Unit (
         destination = 1'b0; //bit 18
     end else if (instruction[31:26] == LBU_Op) begin
         // Handle LBU_Op case
-        ID_SourceOperand_3bits = 3'b000;
-        ID_ALU_OP = 4'b0001;
+        ID_SourceOperand_3bits = 3'b100;
+        ID_ALU_OP = 4'b0000;
         ID_Load_Instr = 1'b1;
         ID_RF_Enable = 1'b1;
         ID_B_Instr = 1'b0;
         ID_TA_Instr = 1'b0;
         ID_MEM_Size = 2'b00;
-        ID_MEM_RW = 1'b1;
-        ID_MEM_SE = 1'b1;
+        ID_MEM_RW = 1'b0;
+        ID_MEM_SE = 1'b0;
         ID_Enable_HI = 1'b0;
         ID_Enable_LO = 1'b0;
         ID_MEM_Enable = 1'b1;
@@ -104,7 +104,7 @@ module PPU_Control_Unit (
         ID_SourceOperand_3bits = 3'b000;
         ID_ALU_OP = 4'b1010;
         ID_Load_Instr = 1'b0;
-        ID_RF_Enable = 1'b1;
+        ID_RF_Enable = 1'b0;
         ID_B_Instr = 1'b1;
         ID_TA_Instr = 1'b1;
         ID_MEM_Size = 2'b00;
@@ -139,7 +139,7 @@ module PPU_Control_Unit (
         
         ID_SourceOperand_3bits = 3'b101;
         ID_ALU_OP = 4'b1011; //puede ser 1100
-        ID_Load_Instr = 1'b1;  //no se
+        ID_Load_Instr = 1'b0;  //no se
         ID_RF_Enable = 1'b1;
         ID_B_Instr = 1'b0;
         ID_TA_Instr = 1'b0;
@@ -174,7 +174,7 @@ module PPU_Control_Unit (
         
     end else if (instruction[31:26] == SB_OP) begin
         // Handle SB_OP case
-        ID_SourceOperand_3bits = 3'b000;
+        ID_SourceOperand_3bits = 3'b100;
         ID_ALU_OP = 4'b0000;
         ID_Load_Instr = 1'b0;
         ID_RF_Enable = 1'b0;
@@ -230,18 +230,12 @@ module PPU_Control_Unit (
     end
 
 
-
-
     if(instruction == 32'b0  | instruction == 32'bx)begin
         control_signals <= 22'b0;
 	
     end else begin
 		control_signals <= { conditional_inconditional, r31, unconditional_Jump, destination ,ID_SourceOperand_3bits, ID_ALU_OP, ID_Load_Instr, ID_RF_Enable, ID_B_Instr, ID_TA_Instr, ID_MEM_Size, ID_MEM_RW, ID_MEM_SE, ID_Enable_HI, ID_Enable_LO, ID_MEM_Enable};
     end
-
-
-
-
 
 end
 
