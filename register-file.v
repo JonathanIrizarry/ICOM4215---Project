@@ -1,6 +1,7 @@
 //Register File de 32 registros de 32 bits y 2 puertos de salida.
-//the line directly below may need to be commented out
 `include "src/decoders.v"
+//the line directly below may need to be commented out
+`include "src/muxes.v"
 
 module register_file (output [31:0] PA, PB, input [31:0] PW,  input [4:0] RW, RA, RB, input LE, clk);
     //Outputs: Puertos A, B 
