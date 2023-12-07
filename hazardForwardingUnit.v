@@ -1,21 +1,22 @@
 module HazardForwardingUnit(
-	input reg [4:0] rs,
-	input reg [4:0] rt,
+	input [4:0] rs,
+	input [4:0] rt,
 	input EX_load_instr,
 	input EX_RF_Enable,
 	input MEM_RF_Enable,
 	input WB_RF_Enable,
-	input reg [4:0] rd_ex,
-	input reg [4:0] rd_mem,
-	input reg [4:0] rd_wb,
-	output [1:0] mux1_select,
-	output [1:0] mux2_select,
-	output [1:0] control_select
-	output IFID_LE,
-	output PC_LE
-)
+	input [4:0] rd_ex,
+	input [4:0] rd_mem,
+	input [4:0] rd_wb,
+	output reg [1:0] mux1_select,
+	output reg [1:0] mux2_select,
+	output reg [1:0] control_select,
+	output reg IFID_LE,
+	output reg PC_LE
+);
 
-always @ (*) begin
+	always @* begin
+
 	//Forwarding RA
 	if(EX_RF_Enable && (rs == rd_ex))
 		mux1_select <= 2'b01;
@@ -48,3 +49,4 @@ always @ (*) begin
 		control_select <= 1'b0;
 	end
 end
+endmodule

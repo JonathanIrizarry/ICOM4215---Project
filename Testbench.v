@@ -13,6 +13,9 @@
 `include "MEMWB_Stage.v"
 `include "ALU.v"
 `include "Operand2Handler.v"
+
+`include "register-file.v"
+
 module Pipeline_TB;
 
   // Define parameters
@@ -88,7 +91,28 @@ module Pipeline_TB;
 
 
 
+wire [4:0] WB_rd_out;
+//unclear amount of bits
+wire WB_rdrtr31mux_out;
+//unclear amount of bits
+wire WB_RF_enable_out;
+//unclear amount of bits, what is this even called?
+wire WB_out_MemMux_out;
 
+//RF outputs
+wire [31:0] pa;
+wire [31:0] pb;
+
+register_file register_file_instance(
+.RA(rs_out),
+.RB(rt_out),
+.RW(WB_rd_out),
+.RW(WB_rdrtr31mux_out),
+.LE(WB_RF_enable_out),
+.PW(WB_out_MemMux_out)
+.PA(pa),
+.PB(pb),
+);
 
 NPC_Register npc_instance(
     .clk(clk),
