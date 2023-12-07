@@ -11,6 +11,8 @@
 `include "nPC_Reg.v"
 `include "PC_Reg.v"
 `include "MEMWB_Stage.v"
+`include "ALU.v"
+`include "Operand2Handler.v"
 module Pipeline_TB;
 
   // Define parameters
@@ -61,14 +63,30 @@ module Pipeline_TB;
   wire r31; //bit 20
   wire unconditional_Jump; //bit 19
   wire destination; //bit 18
+  wire [25:0] address_26_out; // bit 25:0 de instruction 
+  wire [8:0] PC_out; //bit8:0
+  wire [25:21] rs_out; //bit 25:21
+  wire [20:16] rt_out; //bit 20:16
+  wire [15:0] imm16_out; //bit 15:0
+  wire [31:26] opcode_out; //bit 31:26
+  wire [15:11] rd_out;
 
-wire [25:0] address_26_out; // bit 25:0 de instruction 
-wire [8:0] PC_out; //bit8:0
-wire [25:21] rs_out; //bit 25:21
-wire [20:16] rt_out; //bit 20:16
-wire [15:0] imm16_out; //bit 15:0
-wire [31:26] opcode_out; //bit 31:26
-wire [15:11] rd_out;
+  wire [31:0] Target_Address_outEX;
+  wire HI_out_EX;
+  wire Lo_out_EX;
+  wire [31:0] PA_out_Ex;
+  wire [31:0] PB_out_Ex;
+  wire [8:0] PC_out_Ex;
+  wire [15:0] imm16_out_Ex;
+  wire [20:16] rt_out_Ex;
+  wire [31:26] opcode_out_Ex;
+  wire [15:11] rd_out_Ex;
+  wire [31:0] pc_plus8_outEX;
+  wire r31_mux_outEx;
+  wire [31:0] N_ALU;
+  wire Condition_handler_out;
+
+
 
 
 
@@ -96,6 +114,46 @@ instr_mem imem(
     .Address(pc_wire_out[8:0]),
     .instr(pc_wire_out)
 );
+
+Operand2Handler operand(
+  .PB(PB_out_Ex),
+  .HI(HI_out_EX),
+  .LO(Lo_out_EX),
+  .PC(PC_out_Ex),
+  .imm16(imm16_out_Ex),
+  .Si(ex_wire[17:15]),
+  .N(N_ALU)// output going to B of ALU 
+);
+
+ALU alu_inst(
+  .Op(alu_op_reg),
+  .A(PA_out_Ex),
+  .B(N_ALU),
+  .Out(), 
+  .Z(), // zero 
+  .N() //negative
+);
+
+Condition_Handler condition_Instance(
+  .B_instr(ex_wire[8]),
+  .opcode(opcode_out_Ex),
+  .flag(), //input 
+  .rt(rt_out_Ex),
+  .handler_Out(Condition_handler_out)
+);
+
+LogicBox logicBox_inst(
+  .Handler_B_instr(Condition_handler_out),
+  .unconditional_jump_signal(mux_out_wire[21]),
+  .logicbox_out()
+);
+
+
+
+
+
+
+
 
 
 
@@ -142,15 +200,39 @@ IFID_Stage if_instance(
 
 
 IDEX_Stage ex_instance(
-    .clk(clk),
-    .reset(reset),
-    .control_signals(mux_out_wire),
-    .control_signals_out(ex_wire),
+  .clk(clk),
+  .reset(reset),
+  .control_signals(mux_out_wire),
+  .Target_Address_in(),
+  .HI_in(),
+  .LO_in(),
+  .PA_in(),
+  .PB_in(),
+  .PC_in(PC_out),
+  .imm16_in(imm16_out),
+  .rt_in(rt_out),
+  .opcode_in(opcode_out),
+  .rd_in(rd_out),
+  .pc_plus8_in(),
+  .r31_mux_in(),
+  .control_signals_out(ex_wire),
 	.alu_op_reg(alu_op_reg),
 	.branch_instr(EX_branch_instr),
 	.load_instr_reg(ID_load_instr_reg),
 	.rf_enable_reg(ID_rf_enable_reg),
-	.SourceOperand_3bits(SourceOperand_3bits)
+	.SourceOperand_3bits(SourceOperand_3bits),
+  .Target_Address(Target_Address_outEX),  
+  .HI(HI_out_EX),
+  .LO(Lo_out_EX),
+  .PA(PA_out_Ex),
+  .PB(PB_out_Ex),
+  .PC(PC_out_Ex),
+  .imm16(imm16_out_Ex),
+  .rt(rt_out_Ex),
+  .opcode(opcode_out_Ex),
+  .rd(rd_out_Ex),
+  .pc_plus8(pc_plus8_outEX),
+  .r31_mux(r31_mux_outEx)
 );
 
 EXMEM_Stage mem_instance(

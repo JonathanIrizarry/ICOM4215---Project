@@ -17,13 +17,13 @@ module IFID_Stage (
     always @(posedge clk or posedge reset) begin
 		if (reset) begin
 				instruction_out <= 32'b0;
-                address_26 <= 0;
-                PC <= 0;
-                rs <= 0;
-                rt <= 0;
-                imm16 <= 0;
-                opcode <= 0;
-                rd <= 0;
+                address_26 <= 26'b0;
+                PC <= 9'b0;
+                rs <= 6'b0;
+                rt <= 6'b0;
+                imm16 <= 16'b0;
+                opcode <= 6'b0;
+                rd <= 6'b0;
 
 			end else begin
 				instruction_out <= instruction_in; 
@@ -33,7 +33,7 @@ module IFID_Stage (
                     rd <= instruction_in[15:11];
                     rs <= instruction_in[25:21];
                     rt <= instruction_in[20:16];
-                    
+
                 end else if(instruction_in[31:26] == 6'b000011) begin
                     address_26 <= instruction_in[25:0];
                     opcode <= instruction_in[31:26];

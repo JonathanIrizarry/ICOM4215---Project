@@ -1,7 +1,7 @@
 module Condition_Handler(
     input B_instr;
     input [31:26] opcode;
-    input flag;  
+    input flag;   // Z and N los dos juntos?
     input rt; //bits 20:16 de instruction
     output reg  handler_Out;
 );
@@ -67,18 +67,26 @@ endmodule
 
 module IF_Mux(
     input [31:0] EX_TA;
-    input [31:0] ID_TA;   //concatenau 30 bits y multiplicau 32?? 
-    input [5:0] rs; //chequear que manda
+    input [31:0] ID_TA;   
+    input [5:0] rs; 
     input TA_instruction; 
+    input conditional_inconditional; // se anade esta senal pa determinar cual pasa entre ambas 
     output reg [31:0]mux_out;  
 );
 
 always @* begin  
-    if(TA_instruction == 1'b1)begin
-        mux_out <= ID_TA;   // cheuqear differencia entre id y EX TA
+    if(TA_instruction == 1'b1 && conditional_inconditional == 1'b1)begin
+        mux_out <= EX_TA;   // cheuqear differencia entre id y EX TA
+
+
+    end else if(TA_instruction == 1'b1 && conditional_inconditional == 1'b0) begin
+      mux_out <= ID_TA;
+
     end else begin
         mux_out = {26'b0 , rs};
     end
+
+
 end
 
 
