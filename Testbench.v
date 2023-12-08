@@ -13,7 +13,7 @@
 `include "MEMWB_Stage.v"
 `include "ALU.v"
 `include "Operand2Handler.v"
-
+`include "muxes.v"
 `include "register-file.v"
 
 module Pipeline_TB;
@@ -73,6 +73,13 @@ module Pipeline_TB;
   wire [15:0] imm16_out; //bit 15:0
   wire [31:26] opcode_out; //bit 31:26
   wire [15:11] rd_out;
+  
+  //IDEX STAGE
+  wire targetAddress_in;
+  wire targetAddress_out;
+  wire ID_hi;
+  wire ID_lo;
+  wire [4:0] EX_opcode;
 
   wire [31:0] Target_Address_outEX;
   wire HI_out_EX;
@@ -88,6 +95,12 @@ module Pipeline_TB;
   wire r31_mux_outEx;
   wire [31:0] N_ALU;
   wire Condition_handler_out;
+  
+  wire [1:0] hazardUnit_mux1;
+  wire [1:0] hazardUnit_mux2;
+  wire hazardUnit_control_mux;
+  wire IFID_LE;
+  wire PC_LE;
 
 
 
@@ -118,6 +131,7 @@ NPC_Register npc_instance(
     .clk(clk),
     .reset(reset),
     .npc_in(adder_wire_out),
+	.le_npc(PC_LE),
     .npc_out(npc_wire_out)
 );
 
@@ -130,6 +144,7 @@ PC_Register pc_instance(
     .clk(clk),
     .reset(reset),
     .pc_in(npc_wire_out),
+	.le_pc(PC_LE),
     .pc_out(pc_wire_out)  
 );
 
@@ -203,14 +218,52 @@ PPU_Control_Unit control_unit(
 
 mux mux_instance(
     .input_0(control_signals_wire),
-    .S(S), 
+    .S(hazardUnit_control_mux), 
     .mux_control_signals(mux_out_wire)
+);
+
+
+HazardForwardingUnit hazardUnit(
+	.rs(rs_out),
+	.rt(rt_out),
+	.EX_load_instr(ID_load_instr_reg),
+	.EX_RF_Enable(ID_rf_enable_reg),
+	.MEM_RF_Enable(EX_rf_enable_reg),
+	.WB_RF_Enable(MEM_rf_enable_reg),
+	.rd_ex(rd_out_Ex),
+	.rd_mem(),
+	.rd_wb(),
+	.mux1_select(hazardUnit_mux1),
+	.mux2_select(hazardUnit_mux2),
+	.control_select(hazardUnit_control_mux),
+	.IFID_LE(IFID_LE),
+	.PC_LE(PC_LE)
+);
+
+mux_4x1 mux_PA(
+	.S(hazardUnit_mux1), //select
+	.I0(),
+	.I1(),
+	.I2(),
+	.I3(),
+	.Y() //output
+);
+
+mux_4x1 mux_PB(
+	.S(hazardUnit_mux2), //select
+	.I0(),
+	.I1(),
+	.I2(),
+	.I3(),
+	.Y() //output
 );
 
 
 IFID_Stage if_instance(
     .clk(clk),
     .reset(reset),
+	.le(IFID_LE),
+	.logicbox(), // Falta output de Logicbox aqui
     .instruction_in(DataOut),
     .instruction_out(instruction_wire_out),
     .address_26(address_26_out),
@@ -224,40 +277,42 @@ IFID_Stage if_instance(
 
 
 IDEX_Stage ex_instance(
-  .clk(clk),
-  .reset(reset),
-  .control_signals(mux_out_wire),
-  .Target_Address_in(),
-  .HI_in(),
-  .LO_in(),
-  .PA_in(),
-  .PB_in(),
-  .PC_in(PC_out),
-  .imm16_in(imm16_out),
-  .rt_in(rt_out),
-  .opcode_in(opcode_out),
-  .rd_in(rd_out),
-  .pc_plus8_in(),
-  .r31_mux_in(),
-  .control_signals_out(ex_wire),
+    .clk(clk),
+    .reset(reset),
+	.targetAddress_in(targetAddress_in),
+    .control_signals(mux_wire_out),
+	.ID_hi(ID_hi),
+	.ID_lo(ID_lo),
+	.ID_mux1(), // Falta Mux de salida PA
+	.ID_mux2(), // Falta Mux de salida PB
+	.ID_PB(pb),
+	.ID_imm16(imm16_out),
+	.ID_opcode(opcode_out),
+	.ID_PC(PC_out),
+	.ID_rd(rd_out),
+	.ID_rt(rt_out),
+	.ID_R31(), // Falta Mux de R31
+	.ID_PC8(), // Falta Adder+8 para PC
+    .control_signals_out(ex_wire),
 	.alu_op_reg(alu_op_reg),
-	.branch_instr(EX_branch_instr),
-	.load_instr_reg(ID_load_instr_reg),
-	.rf_enable_reg(ID_rf_enable_reg),
-	.SourceOperand_3bits(SourceOperand_3bits),
-  .Target_Address(Target_Address_outEX),  
-  .HI(HI_out_EX),
-  .LO(Lo_out_EX),
-  .PA(PA_out_Ex),
-  .PB(PB_out_Ex),
-  .PC(PC_out_Ex),
-  .imm16(imm16_out_Ex),
-  .rt(rt_out_Ex),
-  .opcode(opcode_out_Ex),
-  .rd(rd_out_Ex),
-  .pc_plus8(pc_plus8_outEX),
-  .r31_mux(r31_mux_outEx)
+	.conditionHandler_opcode(opcode_out_Ex),
+    .EX_branch_instrEX_branch_instr),
+    .load_instr_reg(ID_load_instr_reg),
+    .rf_enable_reg(ID_rf_enable_reg),
+    .SourceOperand_3bits(SourceOperand_3bits),
+	.SourceOperand_Hi(HI_out_EX),
+	.SourceOperand_Lo(Lo_out_EX),
+	.SourceOperand_PB(PB_out_Ex),
+	.alu_A(PA_out_Ex), 
+	.EX_PC(PC_out_Ex),
+	.EX_imm16(imm16_out_Ex),
+	.EX_rd(rd_out_Ex),
+	.EX_PC8(pc_plus8_outEX),
+	.EX_rt(rt_out_Ex),
+	.EX_R31(r31_mux_outEx),
+	.targetAddress_out(targetAddress_out)
 );
+
 
 EXMEM_Stage mem_instance(
     .clk(clk),

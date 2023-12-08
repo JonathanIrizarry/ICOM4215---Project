@@ -2,10 +2,10 @@ module PC_Register (
     input clk,
     input reset,
     input [31:0] pc_in,
+	input le_pc,
     output reg [31:0] pc_out
 );
-    reg le_pc = 1'b1;
-	reg le_npc = 1'b1;
+
     // PC register logic
     always @(posedge clk or posedge reset) begin
         if (reset) begin
