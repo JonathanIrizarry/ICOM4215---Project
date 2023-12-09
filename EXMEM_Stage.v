@@ -2,32 +2,29 @@ module EXMEM_Stage (
     input clk,
     input reset,
     input [21:0] control_signals,
+    input [31:0] EX_PA,
+    input [31:0] EX_ALU,
+    input flag,
+    input [15:11] EX_rd,
+    input [31:0] EX_PC8,
+    input EX_R31,
     output reg [21:0] control_signals_out,
 	output reg [1:0] mem_size_reg,
     output reg mem_se_reg,
     output reg mem_rw_reg,
     output reg mem_enable_reg,
     output reg load_instr_reg,
-    output reg rf_enable_reg
+    output reg rf_enable_reg,
+    output reg [31:0] MEM_PA_out,
+    output reg [31:0] MEM_ALU_out,
+    output reg [15:11] MEM_rd_out,
+    output reg [31:0] MEM_PC8_out,
+    output reg MEM_R31_out,
+
+
    
 );
-    // input [5:0] opcode,
-    // input [4:0] rs,
-    // input [4:0] rt,
-    // input [4:0] rd,
-    // input [15:0] immediate,
-    // input [5:0] funct,
-    // input [2:0] alu_op_reg,
-    // input [31:0] result_reg,
-    // output reg [31:0] mem_result
-
-    // reg mem_size_reg;
-    // reg mem_se_reg;
-    // reg mem_rw_reg;
-    // reg mem_enable_reg;
-    // reg load_instr_reg;
-    // reg rf_enable_reg;
-
+  
    
     // Memory stage logic
     always @(posedge clk or posedge reset) begin
@@ -40,6 +37,13 @@ module EXMEM_Stage (
 			load_instr_reg <= 1'b0;		
 			rf_enable_reg <= 1'b0;
 			control_signals_out <= 22'b0;
+            MEM_PA_out <= 32'b0;
+             MEM_ALU_out <= 32'b0;
+             MEM_rd_out <= 5'b0;
+             MEM_PC8_out <= 32'b0;
+             MEM_R31_out <= 32'b0;
+
+
 			
         end else begin
             // Lógica de la etapa MEM, como acceso a memoria (load o store)
@@ -50,11 +54,14 @@ module EXMEM_Stage (
 			load_instr_reg <= control_signals[10];
 			rf_enable_reg <= control_signals[9];
 			control_signals_out <= control_signals;
+			 MEM_PA_out <= EX_PA;
+             MEM_ALU_out <= EX_ALU;
+             MEM_rd_out <= EX_rd;
+             MEM_PC8_out <= EX_PC8;
+             MEM_R31_out <= EX_R31;
+
 			
-			
-            // if (le_mem) begin
-            //     // Perform memory operation
-            // end
+          
         end
 
     end

@@ -102,6 +102,9 @@ module Pipeline_TB;
   wire IFID_LE;
   wire PC_LE;
 
+  wire if_mux_out;
+  wire logicBox_mux_out;
+
 
 
 //wire [4:0] WB_rd_out; this wire likely is not needed
@@ -131,20 +134,20 @@ NPC_Register npc_instance(
     .clk(clk),
     .reset(reset),
     .npc_in(adder_wire_out),
-	.le_npc(PC_LE),
+	  .le_npc(PC_LE),
     .npc_out(npc_wire_out)
 );
 
 Adder_4 adder_instance(
-    .adder_in(npc_wire_out),
+    .adder_in(pc_wire_in),
     .adder_out(adder_wire_out)
 );
 
 PC_Register pc_instance(
     .clk(clk),
     .reset(reset),
-    .pc_in(npc_wire_out),
-	.le_pc(PC_LE),
+    .pc_in(pc_wire_in),
+	  .le_pc(PC_LE),
     .pc_out(pc_wire_out)  
 );
 
@@ -181,14 +184,30 @@ Condition_Handler condition_Instance(
   .handler_Out(Condition_handler_out)
 );
 
+
+IF_Mux if_mux_inst(
+  .EX_TA(targetAddress_out),
+  .ID_TA(), 
+  .rs(), //muxA output
+  .TA_instruction(mux_out_wire[7]),
+  .conditional_inconditional(mux_out_wire[21]),
+  .mux_out(if_mux_out)
+);
+
 LogicBox logicBox_inst(
   .Handler_B_instr(Condition_handler_out),
   .unconditional_jump_signal(mux_out_wire[21]),
-  .logicbox_out()
+  .logicbox_out(logicBox_mux_out)
 );
 
 
+LogicBox_mux logicBox_muxInst(
+   .logicbox_out(logicBox_mux_out),
+   .IF_mux(if_mux_out),
+   .nPC_input(npc_wire_out),
+   .Logic_mux_output(pc_wire_in) 
 
+); 
 
 
 
@@ -277,14 +296,14 @@ IFID_Stage if_instance(
 
 
 IDEX_Stage ex_instance(
-    .clk(clk),
-    .reset(reset),
+  .clk(clk),
+  .reset(reset),
+  .control_signals(mux_wire_out),
 	.targetAddress_in(targetAddress_in),
-    .control_signals(mux_wire_out),
 	.ID_hi(ID_hi),
 	.ID_lo(ID_lo),
-	.ID_mux1(), // Falta Mux de salida PA
-	.ID_mux2(), // Falta Mux de salida PB
+	.ID_muxA(), // Falta Mux de salida PA
+	.ID_muxB(), // Falta Mux de salida PB
 	.ID_PB(pb),
 	.ID_imm16(imm16_out),
 	.ID_opcode(opcode_out),
@@ -293,13 +312,13 @@ IDEX_Stage ex_instance(
 	.ID_rt(rt_out),
 	.ID_R31(), // Falta Mux de R31
 	.ID_PC8(), // Falta Adder+8 para PC
-    .control_signals_out(ex_wire),
+  .control_signals_out(ex_wire),
 	.alu_op_reg(alu_op_reg),
 	.conditionHandler_opcode(opcode_out_Ex),
-    .EX_branch_instrEX_branch_instr),
-    .load_instr_reg(ID_load_instr_reg),
-    .rf_enable_reg(ID_rf_enable_reg),
-    .SourceOperand_3bits(SourceOperand_3bits),
+  .EX_branch_instr(EX_branch_instr),
+  .load_instr_reg(ID_load_instr_reg),
+  .rf_enable_reg(ID_rf_enable_reg),
+  .SourceOperand_3bits(SourceOperand_3bits),
 	.SourceOperand_Hi(HI_out_EX),
 	.SourceOperand_Lo(Lo_out_EX),
 	.SourceOperand_PB(PB_out_Ex),
