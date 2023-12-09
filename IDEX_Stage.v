@@ -13,7 +13,7 @@ module IDEX_Stage (
     input [8:0] ID_PC,
     input [15:11] ID_rd,
     input [20:16] ID_rt,
-    input ID_r31, //check ccuantos bits
+    input ID_r31, //check cuantos bits
     input [31:0] ID_PC8,
     output reg [21:0] control_signals_out,
 	output reg [3:0] alu_op_reg,
@@ -56,25 +56,17 @@ module IDEX_Stage (
 			SourceOperand_3bits <= control_signals[17:15];
             control_signals_out <= control_signals;
             conditionHandler_opcode <= ID_opcode;
-            SourceOperand_Hi <= ID_hi;
-            SourceOperand_Lo <= ID_lo;
+            SourceOperand_Hi <= control_signals[2];
+            SourceOperand_Lo <= control_signals[1];
             SourceOperand_PB <= ID_PB;
             alu_A <= ID_muxA;
             EX_PC <= ID_PC;
             EX_imm16 <= ID_imm16;
             EX_rd <= ID_rd;
             EX_PC8 <= ID_PC8;
-            Ex_rt <= ID_rt;
+            EX_rt <= ID_rt;
             EX_R31 <= ID_r31;
             targetAddress_out <= targetAddress_in;
-
-
-          
-			
-			
-			
-           
-
 
 
         end

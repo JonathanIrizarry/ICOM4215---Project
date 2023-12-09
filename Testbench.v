@@ -73,6 +73,11 @@ module Pipeline_TB;
   wire [15:0] imm16_out; //bit 15:0
   wire [31:26] opcode_out; //bit 31:26
   wire [15:11] rd_out;
+  wire [8:0] mem_alu_out;
+  wire [31:0] mem_pa_out;
+  wire mem_load_instr_reg;
+  wire mem_rf_enable_reg;
+  wire [31:0] mem_pc8_out;
   
   //IDEX STAGE
   wire targetAddress_in;
@@ -101,10 +106,26 @@ module Pipeline_TB;
   wire hazardUnit_control_mux;
   wire IFID_LE;
   wire PC_LE;
+  
+  wire [31:0] mux_PA_out;
+  wire [31:0] mux_PB_out;
 
   wire if_mux_out;
   wire logicBox_mux_out;
-
+  
+  //ALU 
+  wire signed [31:0] alu_out,  // Result 32-bit
+  wire reg alu_Z,  // Zero flag
+  wire reg alu_N  // Negative flag
+  
+  
+  //EXMEM Stage
+  wire [31:0] dataMem_Out;
+  wire [31:0] mux_Mem_Out;
+  
+  
+  //MEMWB Stage
+  wire [31:0] mux_WB_out;
 
 
 //wire [4:0] WB_rd_out; this wire likely is not needed
@@ -171,9 +192,9 @@ ALU alu_inst(
   .Op(alu_op_reg),
   .A(PA_out_Ex),
   .B(N_ALU),
-  .Out(), 
-  .Z(), // zero 
-  .N() //negative
+  .Out(alu_out), 
+  .Z(alu_Z), // zero 
+  .N(alu_N) //negative
 );
 
 Condition_Handler condition_Instance(
@@ -261,20 +282,20 @@ HazardForwardingUnit hazardUnit(
 
 mux_4x1 mux_PA(
 	.S(hazardUnit_mux1), //select
-	.I0(),
-	.I1(),
-	.I2(),
-	.I3(),
-	.Y() //output
+	.I0(mux_WB_out),
+	.I1(mux_Mem_Out),
+	.I2(alu_out),
+	.I3(pa),
+	.Y(mux_PA_out) //output
 );
 
 mux_4x1 mux_PB(
 	.S(hazardUnit_mux2), //select
-	.I0(),
-	.I1(),
-	.I2(),
-	.I3(),
-	.Y() //output
+	.I0(mux_WB_out),
+	.I1(mux_Mem_Out),
+	.I2(alu_out),
+	.I3(pb),
+	.Y(mux_PB_out) //output
 );
 
 
@@ -342,8 +363,30 @@ EXMEM_Stage mem_instance(
 	.mem_se_reg(mem_se_reg),
 	.mem_rw_reg(mem_rw_reg),
 	.mem_enable_reg(mem_enable_reg),
-	.load_instr_reg(EX_load_instr_reg),
-	.rf_enable_reg(EX_rf_enable_reg)
+	.load_instr_reg(mem_load_instr_reg),
+	.rf_enable_reg(mem_rf_enable_reg),
+	.MEM_ALU_out(mem_alu_out),
+	.MEM_PA_out(mem_pa_out),
+	.MEM_PC8_out(mem_pc8_out)
+);
+
+DataMemory dataMem(
+	.DataOut(dataMem_Out),
+	.Enable(mem_enable_reg),
+	.ReadWrite(mem_rw_reg),
+	.SE(mem_se_reg),
+	.Size(mem_size_reg),
+	.Address(mem_alu_out),
+	.DataIn(mem_pa_out)
+);
+
+mux_4x1 mux_Mem(
+    .S(mem_load_instr_reg), 
+    .I0(mem_alu_out), 
+	.I1(mem_pc8_out),
+	.I2(dataMem_Out),
+	.I3(),
+	.Y(mux_Mem_Out)
 );
 
 MEMWB_Stage wb_instance(
@@ -351,6 +394,8 @@ MEMWB_Stage wb_instance(
     .reset(reset),
     .control_signals(mem_wire),
     .control_signals_out(wb_wire),
+	.mux_mem_in(mux_Mem_Out),
+	.mux_wb_out(mux_WB_out),
 	.rf_enable_reg(MEM_rf_enable_reg),
 	.hi_enable_reg(hi_enable_reg),
 	.lo_enable_reg(lo_enable_reg)

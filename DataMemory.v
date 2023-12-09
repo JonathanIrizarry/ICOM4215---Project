@@ -1,6 +1,10 @@
-module DataMemory (output reg [31:0] DataOut, input
-Enable, ReadWrite, SE, input [2:0] Size, input [8:0] Address, input [31:0]
-DataIn);
+module DataMemory (
+output reg [31:0] DataOut, 
+input Enable, ReadWrite, SE, 
+input [2:0] Size, 
+input [8:0] Address, 
+input [31:0] DataIn
+);
 reg [7:0] Mem[0:511]; //512 localizaciones de 32 bits
 always @ (*)
 	if (Enable)
