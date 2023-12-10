@@ -12,7 +12,8 @@ module MEMWB_Stage (
 	output reg [31:0] mux_wb_out,
 	output reg rf_enable_reg,
 	output reg hi_enable_reg,
-    output reg lo_enable_reg
+    output reg lo_enable_reg,
+	output reg [15:11] wb_rd_out
   
 );
 //   input [5:0] opcode,

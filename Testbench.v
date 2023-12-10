@@ -273,8 +273,8 @@ HazardForwardingUnit hazardUnit(
 	.MEM_RF_Enable(EX_rf_enable_reg),
 	.WB_RF_Enable(MEM_rf_enable_reg),
 	.rd_ex(rd_out_Ex),
-	.rd_mem(),
-	.rd_wb(),
+	.rd_mem(rd_out_Mem),
+	.rd_wb(rd_out_Wb),
 	.mux1_select(hazardUnit_mux1),
 	.mux2_select(hazardUnit_mux2),
 	.control_select(hazardUnit_control_mux),
@@ -369,7 +369,8 @@ EXMEM_Stage mem_instance(
 	.rf_enable_reg(mem_rf_enable_reg),
 	.MEM_ALU_out(mem_alu_out),
 	.MEM_PA_out(mem_pa_out),
-	.MEM_PC8_out(mem_pc8_out)
+	.MEM_PC8_out(mem_pc8_out),
+	.MEM_rd_out(rd_out_Mem)
 );
 
 DataMemory dataMem(
@@ -400,7 +401,8 @@ MEMWB_Stage wb_instance(
 	.mux_wb_out(mux_WB_out),
 	.rf_enable_reg(MEM_rf_enable_reg),
 	.hi_enable_reg(hi_enable_reg),
-	.lo_enable_reg(lo_enable_reg)
+	.lo_enable_reg(lo_enable_reg),
+	.wb_rd_out(rd_out_Wb)
 );
 
 
