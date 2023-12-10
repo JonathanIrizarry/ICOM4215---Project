@@ -21,7 +21,7 @@ module IDEX_Stage (
     output reg EX_branch_instr,
     output reg load_instr_reg,
     output reg rf_enable_reg,
-    output reg [3:0] SourceOperand_3bits,
+    output reg [2:0] SourceOperand_3bits,
     output reg SourceOperand_Hi,
     output reg SourceOperand_Lo,
     output reg [31:0] SourceOperand_PB,
@@ -40,7 +40,7 @@ module IDEX_Stage (
         if (reset) begin
         // Inicializar registros en caso de reset'
 			alu_op_reg <= 4'b0000;
-			branch_instr <= 1'b0;
+			EX_branch_instr <= 1'b0;
 			load_instr_reg <= 1'b0;
 			rf_enable_reg <= 1'b0;
 			SourceOperand_3bits <= 3'b000;

@@ -1,7 +1,7 @@
 module DataMemory (
 output reg [31:0] DataOut, 
 input Enable, ReadWrite, SE, 
-input [2:0] Size, 
+input [1:0] Size, 
 input [8:0] Address, 
 input [31:0] DataIn
 );

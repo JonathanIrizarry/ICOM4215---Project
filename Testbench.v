@@ -13,8 +13,10 @@
 `include "MEMWB_Stage.v"
 `include "ALU.v"
 `include "Operand2Handler.v"
-`include "muxes.v"
 `include "register-file.v"
+`include "ConditionHandler.v"
+`include "hazardForwardingUnit.v"
+`include "DataMemory.v"
 
 module Pipeline_TB;
 
@@ -49,7 +51,7 @@ module Pipeline_TB;
 	wire EX_branch_instr;
 	wire ID_load_instr_reg;
 	wire ID_rf_enable_reg;
-	wire SourceOperand_3bits;
+	wire [2:0] SourceOperand_3bits;
 	wire mem_enable_reg;
 	wire mem_se_reg;
 	wire mem_rw_reg;
@@ -80,8 +82,8 @@ module Pipeline_TB;
   wire [31:0] mem_pc8_out;
   
   //IDEX STAGE
-  wire targetAddress_in;
-  wire targetAddress_out;
+  wire [31:0] targetAddress_in;
+  wire [31:0] targetAddress_out;
   wire ID_hi;
   wire ID_lo;
   wire [4:0] EX_opcode;
@@ -112,13 +114,13 @@ module Pipeline_TB;
   wire [31:0] mux_PA_out;
   wire [31:0] mux_PB_out;
 
-  wire if_mux_out;
+  wire [31:0] if_mux_out;
   wire logicBox_mux_out;
   
   //ALU 
-  wire signed [31:0] alu_out,  // Result 32-bit
-  wire reg alu_Z,  // Zero flag
-  wire reg alu_N  // Negative flag
+  wire [31:0] alu_out;  // Result 32-bit
+  wire alu_Z;  // Zero flag
+  wire alu_N; // Negative flag
   
   
   //EXMEM Stage
@@ -132,11 +134,11 @@ module Pipeline_TB;
 
 //wire [4:0] WB_rd_out; this wire likely is not needed
 //unclear amount of bits
-wire WB_rdrtr31mux_out;
+wire [4:0] WB_rdrtr31mux_out;
 //unclear amount of bits
 wire WB_RF_enable_out;
 //unclear amount of bits, what is this even called?
-wire WB_out_MemMux_out;
+wire [31:0] WB_out_MemMux_out;
 
 //RF outputs
 wire [31:0] pa;
@@ -148,9 +150,9 @@ register_file register_file_instance(
 //.RW(WB_rd_out),
 .RW(WB_rdrtr31mux_out),
 .LE(WB_RF_enable_out),
-.PW(WB_out_MemMux_out)
+.PW(WB_out_MemMux_out),
 .PA(pa),
-.PB(pb),
+.PB(pb)
 );
 
 NPC_Register npc_instance(
@@ -333,7 +335,7 @@ IDEX_Stage ex_instance(
 	.ID_PC(PC_out),
 	.ID_rd(rd_out),
 	.ID_rt(rt_out),
-	.ID_R31(), // Falta Mux de R31
+	.ID_r31(), // Falta Mux de R31
 	.ID_PC8(), // Falta Adder+8 para PC
   .control_signals_out(ex_wire),
 	.alu_op_reg(alu_op_reg),

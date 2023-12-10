@@ -1,9 +1,9 @@
 module Condition_Handler(
-    input B_instr;
-    input [31:26] opcode;
-    input flag;   // Z and N los dos juntos?
-    input rt; //bits 20:16 de instruction
-    output reg  handler_Out;
+    input B_instr,
+    input [31:26] opcode,
+    input flag,   // Z and N los dos juntos?
+    input [4:0] rt, //bits 20:16 de instruction
+    output reg  handler_Out
 );
 
 
@@ -20,13 +20,13 @@ endmodule
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 module LogicBox(
-    input Handler_B_instr;
-    input unconditional_jump_signal;
-    output reg logicbox_out;
+    input Handler_B_instr,
+    input unconditional_jump_signal,
+    output reg logicbox_out
 );
 
     always @* begin
-        if(B_instr == 1'b1 || unconditional_jump_signal == 1'b1)begin
+        if(Handler_B_instr == 1'b1 || unconditional_jump_signal == 1'b1)begin
                 logicbox_out <= 1'b1;
         end else begin
                 logicbox_out <= 1'b0;
@@ -41,10 +41,10 @@ endmodule
 
 
 module LogicBox_mux(
-    input logicbox_out; // 1 bit
-    input [31:0] IF_mux;  
-    input [31:0] nPC_input;  
-    output reg [31:0] Logic_mux_output;  
+    input logicbox_out, // 1 bit
+    input [31:0] IF_mux,
+    input [31:0] nPC_input,  
+    output reg [31:0] Logic_mux_output
 );
     always @* begin
         if(logicbox_out == 1'b1) begin
@@ -66,12 +66,12 @@ endmodule
 
 
 module IF_Mux(
-    input [31:0] EX_TA;
-    input [31:0] ID_TA;   
-    input [5:0] rs; 
-    input TA_instruction; 
-    input conditional_inconditional; // se anade esta senal pa determinar cual pasa entre ambas 
-    output reg [31:0]mux_out;  
+    input [31:0] EX_TA,
+    input [31:0] ID_TA,   
+    input [5:0] rs,
+    input TA_instruction, 
+    input conditional_inconditional, // se anade esta senal pa determinar cual pasa entre ambas 
+    output reg [31:0]mux_out
 );
 
 always @* begin  

@@ -19,10 +19,7 @@ module EXMEM_Stage (
     output reg [31:0] MEM_ALU_out,
     output reg [15:11] MEM_rd_out,
     output reg [31:0] MEM_PC8_out,
-    output reg MEM_R31_out,
-
-
-   
+    output reg MEM_R31_out
 );
   
    

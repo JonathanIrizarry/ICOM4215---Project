@@ -14,7 +14,6 @@ module MEMWB_Stage (
 	output reg hi_enable_reg,
     output reg lo_enable_reg,
 	output reg [15:11] wb_rd_out
-  
 );
 //   input [5:0] opcode,
 //     input [4:0] rs,
@@ -37,14 +36,14 @@ module MEMWB_Stage (
 			hi_enable_reg <= 1'b0;
 			lo_enable_reg <= 1'b0;
 			control_signals_out <= 22'b0;
-			mux_mem_in <= 32'b0;
+			mux_wb_out <= 32'b0;
         end else begin
             // result_reg <= mem_result; 
 			rf_enable_reg <= control_signals[9];
 			hi_enable_reg <= control_signals[2];
 			lo_enable_reg <= control_signals[1];
 			control_signals_out <= control_signals;
-			mux_mem_out <= mux_mem_in;
+			mux_wb_out <= mux_mem_in;
 			// En una implementación real, puedes seleccionar entre alu_result y mem_result según la instrucción
 			
 			
