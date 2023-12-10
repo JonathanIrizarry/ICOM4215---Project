@@ -96,6 +96,8 @@ module Pipeline_TB;
   wire [20:16] rt_out_Ex;
   wire [31:26] opcode_out_Ex;
   wire [15:11] rd_out_Ex;
+  wire [15:11] rd_out_Mem;
+  wire [15:11] rd_out_Wb;
   wire [31:0] pc_plus8_outEX;
   wire r31_mux_outEx;
   wire [31:0] N_ALU;
@@ -323,8 +325,8 @@ IDEX_Stage ex_instance(
 	.targetAddress_in(targetAddress_in),
 	.ID_hi(ID_hi),
 	.ID_lo(ID_lo),
-	.ID_muxA(), // Falta Mux de salida PA
-	.ID_muxB(), // Falta Mux de salida PB
+	.ID_muxA(mux_PA_out),
+	.ID_muxB(mux_PB_out), 
 	.ID_PB(pb),
 	.ID_imm16(imm16_out),
 	.ID_opcode(opcode_out),
