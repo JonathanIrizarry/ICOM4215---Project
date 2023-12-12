@@ -85,7 +85,7 @@ module Pipeline_TB;
   wire [31:0] mem_pa_out;
   wire mem_load_instr_reg;
   wire mem_rf_enable_reg;
-  wire [31:0] mem_pc8_out;
+  wire [8:0] mem_pc8_out; //changed from 31:0 to 8:0
   
   //IDEX STAGE
   wire [31:0] targetAddress_in;
@@ -106,7 +106,7 @@ module Pipeline_TB;
   wire [15:11] rd_out_Ex;
   wire [15:11] rd_out_Mem;
   wire [15:11] rd_out_Wb;
-  wire [31:0] pc_plus8_outEX;
+  wire [8:0] pc_plus8_outEX; //changed from 31:0 to 8:0
   wire r31_mux_outEx;
   wire [31:0] N_ALU;
   wire Condition_handler_out;
@@ -438,6 +438,7 @@ EXMEM_Stage mem_instance(
 	.mem_enable_reg(mem_enable_reg),
 	.load_instr_reg(mem_load_instr_reg),
 	.rf_enable_reg(mem_rf_enable_reg),
+	.EX_PC8(pc_plus8_outEX),
 	.MEM_ALU_out(mem_alu_out),
 	.MEM_PA_out(mem_pa_out),
 	.MEM_PC8_out(mem_pc8_out),
@@ -457,7 +458,8 @@ DataMemory dataMem(
 mux_4x1 mux_Mem(
     .S(mem_load_instr_reg), 
     .I0(mem_alu_out), 
-	.I1(mem_pc8_out),
+	//.I1(mem_pc8_out), replacing with input PC8
+	.PC8(mem_pc8_out),
 	.I2(dataMem_Out),
 	.I3(),
 	.Y(mux_Mem_Out)

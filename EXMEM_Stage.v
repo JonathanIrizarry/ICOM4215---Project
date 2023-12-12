@@ -6,7 +6,7 @@ module EXMEM_Stage (
     input [31:0] EX_ALU,
     input flag,
     input [15:11] EX_rd,
-    input [31:0] EX_PC8,
+    input [8:0] EX_PC8, //changed from 31:0 to 8:0
     input EX_R31,
     output reg [21:0] control_signals_out,
 	output reg [1:0] mem_size_reg,
@@ -18,7 +18,7 @@ module EXMEM_Stage (
     output reg [31:0] MEM_PA_out,
     output reg [31:0] MEM_ALU_out,
     output reg [15:11] MEM_rd_out,
-    output reg [31:0] MEM_PC8_out,
+    output reg [8:0] MEM_PC8_out, //changed from 31:0 to 8:0
     output reg MEM_R31_out
 );
   

@@ -14,7 +14,7 @@ module IDEX_Stage (
     input [15:11] ID_rd,
     input [20:16] ID_rt,
     input ID_r31, //check cuantos bits
-    input [31:0] ID_PC8,
+    input [8:0] ID_PC8, //changed from 31:0 to 8:0
     output reg [21:0] control_signals_out,
 	output reg [3:0] alu_op_reg,
     output reg [5:0] conditionHandler_opcode,
@@ -29,7 +29,7 @@ module IDEX_Stage (
     output reg [8:0] EX_PC,
     output reg [15:0] EX_imm16,
     output reg [15:11] EX_rd,
-    output reg [31:0] EX_PC8,
+    output reg [8:0] EX_PC8, //changed from 31:0 to 8:0
     output reg [20:16] EX_rt,
     //output reg [31:26] opcode,
     output reg EX_R31,
