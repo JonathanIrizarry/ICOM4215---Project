@@ -22,6 +22,7 @@
 `include "signExtenderTimes4imm16.v"
 `include "plus4AdderForPCSignal.v"
 `include "adderForTASignal.v"
+`include "adderPCAndEight.v"
 
 module Pipeline_TB;
 
@@ -159,6 +160,10 @@ wire[31:0] fourTimesimmSixteen;
 wire[8:0] pcPlusFour;
 wire[31:0] addedPCFourAndFourTimesimmSixteen;
 
+//adderPCAndEight wires
+wire[8:0] sumBetweenPCandEight;
+//wire[8:0] PC_out; already added
+
 //signExtenderTimes4imm16 wires
 //wire [15:0] imm16_out; already declared
 
@@ -170,6 +175,11 @@ wire[31:0] addedPCFourAndFourTimesimmSixteen;
 
 //plus4AdderForPCSignalBottom wires
 //wire [8:0] PC_out; already declared
+
+adderPCAndEight adderPCAndEight(
+.sum(sumBetweenPCandEight),
+.PC(PC_out)
+);
 
 concatenator concatenator(
 .high_bits(fourTimesAddressTwentySix),
@@ -395,7 +405,7 @@ IDEX_Stage ex_instance(
 	.ID_rd(rd_out),
 	.ID_rt(rt_out),
 	.ID_r31(), // Falta Mux de R31
-	.ID_PC8(), // Falta Adder+8 para PC
+	.ID_PC8(sumBetweenPCandEight), // Falta Adder+8 para PC
   .control_signals_out(ex_wire),
 	.alu_op_reg(alu_op_reg),
 	.conditionHandler_opcode(opcode_out_Ex),
