@@ -17,11 +17,6 @@
 `include "ConditionHandler.v"
 `include "hazardForwardingUnit.v"
 `include "DataMemory.v"
-`include "concatenator.v"
-`include "signExtenderTimes4address26.v"
-`include "signExtenderTimes4imm16.v"
-`include "plus4AdderForPCSignal.v"
-`include "adderForTASignal.v"
 
 module Pipeline_TB;
 
@@ -149,60 +144,6 @@ wire [31:0] WB_out_MemMux_out;
 wire [31:0] pa;
 wire [31:0] pb;
 
-//concatenator wires
-wire[8:0] pcPlusFourLastBits;
-wire[31:0] fourTimesAddressTwentySix;
-wire[31:0] concatenated_result_out;
-
-//adderForTASignal wires
-wire[31:0] fourTimesimmSixteen;
-wire[8:0] pcPlusFour;
-wire[31:0] addedPCFourAndFourTimesimmSixteen;
-
-//signExtenderTimes4imm16 wires
-//wire [15:0] imm16_out; already declared
-
-//signExtenderTimes4address26 wires
-// wire [25:0] address_26_out; already declared
-
-//plus4AdderForPCSignalTop wires
-//wire [8:0] PC_out; already declared
-
-//plus4AdderForPCSignalBottom wires
-//wire [8:0] PC_out; already declared
-
-concatenator concatenator(
-.high_bits(fourTimesAddressTwentySix),
-.low_bits(pcPlusFourLastBits),
-.concatenated_result(concatenated_result_out)
-);
-
-adderForTASignal adderForTASignal(
-.sum(addedPCFourAndFourTimesimmSixteen),
-.operandBig(fourTimesimmSixteen),
-.operandSmall(pcPlusFour)
-);
-
-signExtenderTimes4imm16 signExtenderTimes4imm16(
-.extended(fourTimesimmSixteen),
-.extend(imm16_out)
-);
-
-signExtenderTimes4address26 signExtenderTimes4address26(
-.extended(fourTimesAddressTwentySix),
-.extend(address_26_out)
-);
-
-plus4AdderForPCSignal plus4AdderForPCSignalTop(
-.result(pcPlusFour),
-.input_value(PC_out)
-);
-
-plus4AdderForPCSignal plus4AdderForPCSignalBottom(
-.result(pcPlusFourLastBits),
-.input_value(PC_out)
-);
-
 register_file register_file_instance(
 .RA(rs_out),
 .RB(rt_out),
@@ -271,8 +212,8 @@ Condition_Handler condition_Instance(
 
 IF_Mux if_mux_inst(
   .EX_TA(targetAddress_out),
-  .ID_TA(), 
-  .rs(), //muxA output
+  .ID_TA(targetAddress_in), 
+  .rs(mux_PA_out), //muxA output
   .TA_instruction(mux_out_wire[7]),
   .conditional_inconditional(mux_out_wire[21]),
   .mux_out(if_mux_out)
@@ -293,7 +234,12 @@ LogicBox_mux logicBox_muxInst(
 
 ); 
 
-
+TargetAddressMux addressMux(
+  .concatenation(),
+  .PC4*imm16(),
+  .conditional/inconditional(),
+  .address(targetAddress_in)
+);
 
 
 

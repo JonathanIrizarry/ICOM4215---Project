@@ -82,7 +82,7 @@ always @* begin
     end else if(TA_instruction == 1'b1 && conditional_inconditional == 1'b0) begin
       mux_out <= ID_TA;
 
-    end else begin
+    end else if(TA_instruction == 1'b0 && conditional_inconditional == 1'b1) begin
         mux_out = {26'b0 , rs};
     end
 
@@ -92,3 +92,23 @@ end
 
 endmodule
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+module TargetAddressMux(
+    input [31:0] concatenation;
+    input [31:0] PC4*imm16;
+    input conditional/inconditional;
+    output [31:0] address;
+);
+
+    always @* begin
+        if(conditional/inconditional == 1'b1)begin
+            address <= concatenation;
+        end else begin
+                address <= PC4*imm16;
+        end
+
+    end
+
+
+endmodule
