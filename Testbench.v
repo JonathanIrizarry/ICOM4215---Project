@@ -17,6 +17,12 @@
 `include "ConditionHandler.v"
 `include "hazardForwardingUnit.v"
 `include "DataMemory.v"
+`include "concatenator.v"
+`include "signExtenderTimes4address26.v"
+`include "signExtenderTimes4imm16.v"
+`include "plus4AdderForPCSignal.v"
+`include "adderForTASignal.v"
+`include "adderPCAndEight.v"
 
 module Pipeline_TB;
 
@@ -79,7 +85,7 @@ module Pipeline_TB;
   wire [31:0] mem_pa_out;
   wire mem_load_instr_reg;
   wire mem_rf_enable_reg;
-  wire [31:0] mem_pc8_out;
+  wire [8:0] mem_pc8_out; //changed from 31:0 to 8:0
   
   //IDEX STAGE
   wire [31:0] targetAddress_in;
@@ -100,7 +106,7 @@ module Pipeline_TB;
   wire [15:11] rd_out_Ex;
   wire [15:11] rd_out_Mem;
   wire [15:11] rd_out_Wb;
-  wire [31:0] pc_plus8_outEX;
+  wire [8:0] pc_plus8_outEX; //changed from 31:0 to 8:0
   wire r31_mux_outEx;
   wire [31:0] N_ALU;
   wire Condition_handler_out;
@@ -143,6 +149,69 @@ wire [31:0] WB_out_MemMux_out;
 //RF outputs
 wire [31:0] pa;
 wire [31:0] pb;
+
+//concatenator wires
+wire[8:0] pcPlusFourLastBits;
+wire[31:0] fourTimesAddressTwentySix;
+wire[31:0] concatenated_result_out;
+
+//adderForTASignal wires
+wire[31:0] fourTimesimmSixteen;
+wire[8:0] pcPlusFour;
+wire[31:0] addedPCFourAndFourTimesimmSixteen;
+
+//adderPCAndEight wires
+wire[8:0] sumBetweenPCandEight;
+//wire[8:0] PC_out; already added
+
+//signExtenderTimes4imm16 wires
+//wire [15:0] imm16_out; already declared
+
+//signExtenderTimes4address26 wires
+// wire [25:0] address_26_out; already declared
+
+//plus4AdderForPCSignalTop wires
+//wire [8:0] PC_out; already declared
+
+//plus4AdderForPCSignalBottom wires
+//wire [8:0] PC_out; already declared
+
+adderPCAndEight adderPCAndEight(
+.sum(sumBetweenPCandEight),
+.PC(PC_out)
+);
+
+concatenator concatenator(
+.high_bits(fourTimesAddressTwentySix),
+.low_bits(pcPlusFourLastBits),
+.concatenated_result(concatenated_result_out)
+);
+
+adderForTASignal adderForTASignal(
+.sum(addedPCFourAndFourTimesimmSixteen),
+.operandBig(fourTimesimmSixteen),
+.operandSmall(pcPlusFour)
+);
+
+signExtenderTimes4imm16 signExtenderTimes4imm16(
+.extended(fourTimesimmSixteen),
+.extend(imm16_out)
+);
+
+signExtenderTimes4address26 signExtenderTimes4address26(
+.extended(fourTimesAddressTwentySix),
+.extend(address_26_out)
+);
+
+plus4AdderForPCSignal plus4AdderForPCSignalTop(
+.result(pcPlusFour),
+.input_value(PC_out)
+);
+
+plus4AdderForPCSignal plus4AdderForPCSignalBottom(
+.result(pcPlusFourLastBits),
+.input_value(PC_out)
+);
 
 register_file register_file_instance(
 .RA(rs_out),
@@ -235,9 +304,9 @@ LogicBox_mux logicBox_muxInst(
 ); 
 
 TargetAddressMux addressMux(
-  .concatenation(),
-  .PC4*imm16(),
-  .conditional/inconditional(),
+  .concatenation(concatenated_result_out),
+  .PC4*imm16(addedPCFourAndFourTimesimmSixteen),
+  .conditional/inconditional(mux_out_wire[21]),
   .address(targetAddress_in)
 );
 
@@ -341,7 +410,7 @@ IDEX_Stage ex_instance(
 	.ID_rd(rd_out),
 	.ID_rt(rt_out),
 	.ID_r31(), // Falta Mux de R31
-	.ID_PC8(), // Falta Adder+8 para PC
+	.ID_PC8(sumBetweenPCandEight), // Falta Adder+8 para PC
   .control_signals_out(ex_wire),
 	.alu_op_reg(alu_op_reg),
 	.conditionHandler_opcode(opcode_out_Ex),
@@ -374,6 +443,7 @@ EXMEM_Stage mem_instance(
 	.mem_enable_reg(mem_enable_reg),
 	.load_instr_reg(mem_load_instr_reg),
 	.rf_enable_reg(mem_rf_enable_reg),
+	.EX_PC8(pc_plus8_outEX),
 	.MEM_ALU_out(mem_alu_out),
 	.MEM_PA_out(mem_pa_out),
 	.MEM_PC8_out(mem_pc8_out),
@@ -393,7 +463,8 @@ DataMemory dataMem(
 mux_4x1 mux_Mem(
     .S(mem_load_instr_reg), 
     .I0(mem_alu_out), 
-	.I1(mem_pc8_out),
+	//.I1(mem_pc8_out), replacing with input PC8
+	.PC8(mem_pc8_out),
 	.I2(dataMem_Out),
 	.I3(),
 	.Y(mux_Mem_Out)

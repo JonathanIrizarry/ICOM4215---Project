@@ -1,7 +1,8 @@
 module mux_4x1  (
     output reg [31:0] Y,
     input [1:0] S, 
-    input [31:0] I0, I1, I2, I3
+    input [31:0] I0, I1, I2, I3,
+    input [8:0] PC8 //added to accomodate 8:0 signal
 );
 
 always @ (S, I0, I1, I2, I3)
