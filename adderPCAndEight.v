@@ -1,6 +1,6 @@
 module adderPCAndEight(
     output reg [8:0] sum,
-    input reg [8:0] PC,
+    input [8:0] PC
 );
 
 always @* begin

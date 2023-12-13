@@ -95,17 +95,17 @@ endmodule
 
 
 module TargetAddressMux(
-    input [31:0] concatenation;
-    input [31:0] PC4*imm16;
-    input conditional/inconditional;
-    output [31:0] address;
+    input [31:0] concatenation,
+    input [31:0] PC4_imm16,
+    input conditional_inconditional,
+    output reg [31:0] address
 );
 
     always @* begin
-        if(conditional/inconditional == 1'b1)begin
+        if(conditional_inconditional == 1'b1)begin
             address <= concatenation;
         end else begin
-                address <= PC4*imm16;
+                address <= PC4_imm16;
         end
 
     end

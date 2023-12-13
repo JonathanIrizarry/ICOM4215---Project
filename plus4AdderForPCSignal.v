@@ -1,6 +1,6 @@
 module plus4AdderForPCSignal( 
     output reg [8:0] result,
-    input reg [8:0] input_value
+    input [8:0] input_value
 );
 
 always @* begin

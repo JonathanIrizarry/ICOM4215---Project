@@ -13,7 +13,7 @@ module IDEX_Stage (
     input [8:0] ID_PC,
     input [15:11] ID_rd,
     input [20:16] ID_rt,
-    input ID_r31, //check cuantos bits
+    input [4:0] ID_r31, //check cuantos bits
     input [8:0] ID_PC8, //changed from 31:0 to 8:0
     output reg [21:0] control_signals_out,
 	output reg [3:0] alu_op_reg,
@@ -32,7 +32,7 @@ module IDEX_Stage (
     output reg [8:0] EX_PC8, //changed from 31:0 to 8:0
     output reg [20:16] EX_rt,
     //output reg [31:26] opcode,
-    output reg EX_R31,
+    output reg [4:0] EX_R31,
     output reg [31:0] targetAddress_out
 );
     // Execute stage logic
@@ -46,7 +46,18 @@ module IDEX_Stage (
 			SourceOperand_3bits <= 3'b000;
 			control_signals_out <= 22'b0;
             conditionHandler_opcode <= 6'b0;
-            
+			SourceOperand_Hi <= 1'b0;
+			SourceOperand_Lo <= 1'b0;
+			SourceOperand_PB <= 32'b0;
+			alu_A <= 32'b0;
+			EX_PC <= 9'b0;
+			EX_imm16 <= 16'b0;
+			EX_rd <= 5'b0;
+			EX_PC8 <= 9'b0;
+			EX_rt <= 5'b0;
+			EX_R31 <= 5'b0;
+            targetAddress_out <= 32'b0;
+			
         end else begin
             // Lógica de la etapa EX, como operaciones aritméticas y lógicas
 			alu_op_reg <= control_signals[14:11];

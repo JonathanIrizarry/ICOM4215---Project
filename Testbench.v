@@ -19,7 +19,7 @@
 `include "DataMemory.v"
 `include "concatenator.v"
 `include "signExtenderTimes4address26.v"
-`include "signExtenderTimes4imm16.v"
+//`include "signExtenderTimes4imm16.v"
 `include "plus4AdderForPCSignal.v"
 `include "adderForTASignal.v"
 `include "adderPCAndEight.v"
@@ -107,9 +107,10 @@ module Pipeline_TB;
   wire [15:11] rd_out_Mem;
   wire [15:11] rd_out_Wb;
   wire [8:0] pc_plus8_outEX; //changed from 31:0 to 8:0
-  wire r31_mux_outEx;
+  wire [4:0] r31_mux_outEx;
   wire [31:0] N_ALU;
   wire Condition_handler_out;
+  wire [4:0] mux_out_ID_r31;
   
   wire [1:0] hazardUnit_mux1;
   wire [1:0] hazardUnit_mux2;
@@ -132,10 +133,12 @@ module Pipeline_TB;
   //EXMEM Stage
   wire [31:0] dataMem_Out;
   wire [31:0] mux_Mem_Out;
+  wire [4:0] r31_mux_outMem;
   
   
   //MEMWB Stage
   wire [31:0] mux_WB_out;
+  wire [4:0] r31_mux_outWb;
 
 
 //wire [4:0] WB_rd_out; this wire likely is not needed
@@ -198,7 +201,7 @@ signExtenderTimes4imm16 signExtenderTimes4imm16(
 .extend(imm16_out)
 );
 
-signExtenderTimes4address26 signExtenderTimes4address26(
+signExtenderTimes4imm16 signExtenderTimes4address26(
 .extended(fourTimesAddressTwentySix),
 .extend(address_26_out)
 );
@@ -305,8 +308,8 @@ LogicBox_mux logicBox_muxInst(
 
 TargetAddressMux addressMux(
   .concatenation(concatenated_result_out),
-  .PC4*imm16(addedPCFourAndFourTimesimmSixteen),
-  .conditional/inconditional(mux_out_wire[21]),
+  .PC4_imm16(addedPCFourAndFourTimesimmSixteen),
+  .conditional_inconditional(mux_out_wire[21]),
   .address(targetAddress_in)
 );
 
@@ -357,6 +360,16 @@ HazardForwardingUnit hazardUnit(
 	.IFID_LE(IFID_LE),
 	.PC_LE(PC_LE)
 );
+
+mux_4x1 mux_r31(
+	.S({mux_out_wire[20], mux_out_wire[18]}), //select
+	.I0(rt_out),
+	.I1(rd_out),
+	.I2(),
+	.I3(5'b11111),
+	.Y(mux_out_ID_r31) //output
+);
+
 
 mux_4x1 mux_PA(
 	.S(hazardUnit_mux1), //select
@@ -409,7 +422,7 @@ IDEX_Stage ex_instance(
 	.ID_PC(PC_out),
 	.ID_rd(rd_out),
 	.ID_rt(rt_out),
-	.ID_r31(), // Falta Mux de R31
+	.ID_r31(mux_out_ID_r31), // Falta Mux de R31
 	.ID_PC8(sumBetweenPCandEight), // Falta Adder+8 para PC
   .control_signals_out(ex_wire),
 	.alu_op_reg(alu_op_reg),
@@ -435,6 +448,7 @@ IDEX_Stage ex_instance(
 EXMEM_Stage mem_instance(
     .clk(clk),
     .reset(reset),
+	.EX_R31(r31_mux_outEx),
     .control_signals(ex_wire),
     .control_signals_out(mem_wire),
 	.mem_size_reg(mem_size_reg),
@@ -447,7 +461,8 @@ EXMEM_Stage mem_instance(
 	.MEM_ALU_out(mem_alu_out),
 	.MEM_PA_out(mem_pa_out),
 	.MEM_PC8_out(mem_pc8_out),
-	.MEM_rd_out(rd_out_Mem)
+	.MEM_rd_out(rd_out_Mem),
+	.MEM_R31_out(r31_mux_outMem)
 );
 
 DataMemory dataMem(
@@ -463,8 +478,8 @@ DataMemory dataMem(
 mux_4x1 mux_Mem(
     .S(mem_load_instr_reg), 
     .I0(mem_alu_out), 
-	//.I1(mem_pc8_out), replacing with input PC8
-	.PC8(mem_pc8_out),
+	.I1(mem_pc8_out), //replacing with input PC8
+	//.PC8(mem_pc8_out),
 	.I2(dataMem_Out),
 	.I3(),
 	.Y(mux_Mem_Out)
@@ -475,12 +490,14 @@ MEMWB_Stage wb_instance(
     .reset(reset),
     .control_signals(mem_wire),
     .control_signals_out(wb_wire),
+	.mem_r31_in(r31_mux_outMem),
 	.mux_mem_in(mux_Mem_Out),
 	.mux_wb_out(mux_WB_out),
 	.rf_enable_reg(MEM_rf_enable_reg),
 	.hi_enable_reg(hi_enable_reg),
 	.lo_enable_reg(lo_enable_reg),
-	.wb_rd_out(rd_out_Wb)
+	.wb_rd_out(rd_out_Wb),
+	.wb_r31_out(r31_mux_outWb)
 );
 
 
@@ -510,53 +527,6 @@ MEMWB_Stage wb_instance(
  
  always @(posedge clk) begin
   
-	if((instruction_wire_out == 32'b0 | instruction_wire_out == 32'bx) && reset == 1'b0) begin
-		$display("\n Keyword: NOP, PC = %d, nPC = %d", pc_wire_out, npc_wire_out,
-				"\n\n --- ID STAGE ---",
-        "\n ID_conditional_unconditional = %b", control_signals_wire[21],
-        "\n ID_r31 = %b", control_signals_wire[20],
-        "\n ID_unconditional_jump = %b", control_signals_wire[19],
-        "\n ID_destination = %b", control_signals_wire[18],
-				"\n ID_SourceOperand_3bits = %b", control_signals_wire[17:15],
-				"\n ID_ALU_OP = %b", control_signals_wire[14:11],
-				"\n ID_Load_Instr = %b", control_signals_wire[10],
-				"\n ID_RF_Enable = %b", control_signals_wire[9],
-				"\n ID_B_Instr = %b", control_signals_wire[8],
-				"\n ID_TA_Instr = %b", control_signals_wire[7],
-				"\n ID_MEM_Size = %b", control_signals_wire[6:5],
-				"\n ID_MEM_RW = %b", control_signals_wire[4],
-				"\n ID_MEM_SE = %b", control_signals_wire[3],
-				"\n ID_Enable_HI = %b", control_signals_wire[2],
-				"\n ID_Enable_LO = %b", control_signals_wire[1],
-				"\n ID_MEM_Enable = %b", control_signals_wire[0],
-				"\n\n --- EX STAGE ---",
-				"\n EX_SourceOperand_3bits = %b", ex_wire[17:15],
-				"\n EX_ALU_OP = %b", ex_wire[14:11],
-				"\n EX_Load_Instr = %b", ex_wire[10],
-				"\n EX_RF_Enable = %b", ex_wire[9],
-				"\n EX_B_Instr = %b", ex_wire[8],
-				"\n EX_MEM_Size = %b", ex_wire[6:5],
-				"\n EX_MEM_RW = %b", ex_wire[4],
-				"\n EX_MEM_SE = %b", ex_wire[3],
-				"\n EX_Enable_HI = %b", ex_wire[2],
-				"\n EX_Enable_LO = %b", ex_wire[1],
-				"\n EX_MEM_Enable = %b", ex_wire[0],
-				"\n\n --- MEM STAGE ---",
-				"\n MEM_Load_Instr = %b", mem_wire[10],
-				"\n MEM_RF_Enable = %b", mem_wire[9],
-				"\n MEM_MEM_Size = %b", mem_wire[6:5],
-				"\n MEM_MEM_RW = %b", mem_wire[4],
-				"\n MEM_MEM_SE = %b", mem_wire[3],
-				"\n MEM_Enable_HI = %b", mem_wire[2],
-				"\n MEM_Enable_LO = %b", mem_wire[1],
-				"\n MEM_MEM_Enable = %b", mem_wire[0],
-				"\n\n --- WB STAGE ---",
-				"\n WB_RF_Enable = %b", wb_wire[9],
-				"\n WB_Enable_HI = %b", wb_wire[2],
-				"\n WB_Enable_LO = %b", wb_wire[1]
-		);
-	end else if(reset == 1'b0) begin
-	
 		case (instruction_wire_out[31:26])
 		
 		// ADDIU
@@ -571,7 +541,7 @@ MEMWB_Stage wb_instance(
 			
 		// BGTZ
 		6'b000111: begin
-			$display("\n Keyword: LBGTZ, PC = %d, nPC = %d", pc_wire_out, npc_wire_out);
+			$display("\n Keyword: BGTZ, PC = %d, nPC = %d", pc_wire_out, npc_wire_out);
 			end
 			
 		// SB
@@ -644,7 +614,7 @@ MEMWB_Stage wb_instance(
 				"\n WB_Enable_HI = %b", wb_wire[2],
 				"\n WB_Enable_LO = %b", wb_wire[1]
 		);
-  end
 end
+
 
 endmodule

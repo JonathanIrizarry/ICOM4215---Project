@@ -7,13 +7,14 @@ module MEMWB_Stage (
 	input [15:11] mem_rd_in,
 	input mem_enable_reg,
 	input [31:0] mux_mem_in,
-	input [31:0] mem_r31_in, //Verificar # de bits
+	input [4:0] mem_r31_in, //Verificar # de bits
     output reg [21:0] control_signals_out,
 	output reg [31:0] mux_wb_out,
 	output reg rf_enable_reg,
 	output reg hi_enable_reg,
     output reg lo_enable_reg,
-	output reg [15:11] wb_rd_out
+	output reg [15:11] wb_rd_out,
+	output reg [4:0] wb_r31_out
 );
 //   input [5:0] opcode,
 //     input [4:0] rs,
@@ -37,6 +38,9 @@ module MEMWB_Stage (
 			lo_enable_reg <= 1'b0;
 			control_signals_out <= 22'b0;
 			mux_wb_out <= 32'b0;
+			wb_rd_out <= 5'b0;
+			wb_r31_out <= 5'b0;
+			
         end else begin
             // result_reg <= mem_result; 
 			rf_enable_reg <= control_signals[9];
