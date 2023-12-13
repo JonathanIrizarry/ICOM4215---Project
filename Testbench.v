@@ -179,6 +179,8 @@ wire[8:0] sumBetweenPCandEight;
 //plus4AdderForPCSignalBottom wires
 //wire [8:0] PC_out; already declared
 
+// -------------------------------------------------------------------------
+
 adderPCAndEight adderPCAndEight(
 .sum(sumBetweenPCandEight),
 .PC(PC_out)
@@ -217,15 +219,15 @@ plus4AdderForPCSignal plus4AdderForPCSignalBottom(
 );
 
 register_file register_file_instance(
+.PA(pa),
+.PB(pb),
+.PW(WB_out_MemMux_out),
+.RW(rd_out_Wb),
 .RA(rs_out),
 .RB(rt_out),
-//.RW(WB_rd_out),
-.RW(WB_rdrtr31mux_out),
-.LE(WB_RF_enable_out),
-.PW(WB_out_MemMux_out),
-.PA(pa),
-.PB(pb)
+.LE(WB_RF_enable_out)
 );
+
 
 NPC_Register npc_instance(
     .clk(clk),
@@ -329,6 +331,7 @@ TargetAddressMux addressMux(
 	end
 	$fclose(fi);
 	end
+	
 
 
 PPU_Control_Unit control_unit(
@@ -339,7 +342,7 @@ PPU_Control_Unit control_unit(
 
 mux mux_instance(
     .input_0(control_signals_wire),
-    .S(hazardUnit_control_mux), 
+    .S(/*hazardUnit_control_mux*/ 1'b0), 
     .mux_control_signals(mux_out_wire)
 );
 
@@ -410,7 +413,7 @@ IFID_Stage if_instance(
 IDEX_Stage ex_instance(
   .clk(clk),
   .reset(reset),
-  .control_signals(mux_wire_out),
+  .control_signals(mux_out_wire),
 	.targetAddress_in(targetAddress_in),
 	.ID_hi(ID_hi),
 	.ID_lo(ID_lo),
@@ -475,6 +478,18 @@ DataMemory dataMem(
 	.DataIn(mem_pa_out)
 );
 
+
+	//Preload Data Memory
+	initial begin
+		fi = $fopen("input.txt","r");
+		address = 9'b000000000;
+		while (!$feof(fi)) begin
+			code = $fscanf(fi, "%b", data);
+			address = address + 1;
+	end
+	$fclose(fi);
+	end
+
 mux_4x1 mux_Mem(
     .S(mem_load_instr_reg), 
     .I0(mem_alu_out), 
@@ -521,100 +536,133 @@ MEMWB_Stage wb_instance(
 		#2 clk = ~clk; // Invert the clock every 2 time unit
 	end
 
+	initial begin
+		$monitor("\n\n\nPC: %d\n---------------------------------\
+			\nAddress: %b\n--------------------------------------\
+			\nR5: %d | R6: %d\
+			\nR16: %d | R17: %d\
+			\nR18: %d\
+			\n--------------------------------------------------",
+			pc_wire_out,
+			rt_out,
+			register_file_instance.Q5, register_file_instance.Q6, register_file_instance.Q16, register_file_instance.Q17, register_file_instance.Q18);
+	end
 
 
  // Printing Data from each phase
  
- always @(posedge clk) begin
+ // always @(posedge clk) begin
+
+	
   
-		case (instruction_wire_out[31:26])
+		// case (instruction_wire_out[31:26])
 		
-		// ADDIU
-		6'b001001: begin
-			$display("\n Keyword: ADDIU, PC = %d, nPC = %d", pc_wire_out, npc_wire_out);
-			end
+		// // ADDIU
+		// 6'b001001: begin
+			// $display("\n Keyword: ADDIU, PC = %d, nPC = %d", pc_wire_out, npc_wire_out);
+			// end
   
-		// LBU
-		6'b100100: begin
-			$display("\n Keyword: LBU, PC = %d, nPC = %d", pc_wire_out, npc_wire_out);
-			end
+		// // LBU
+		// 6'b100100: begin
+			// $display("\n Keyword: LBU, PC = %d, nPC = %d", pc_wire_out, npc_wire_out);
+			// end
 			
-		// BGTZ
-		6'b000111: begin
-			$display("\n Keyword: BGTZ, PC = %d, nPC = %d", pc_wire_out, npc_wire_out);
-			end
+		// // BGTZ
+		// 6'b000111: begin
+			// $display("\n Keyword: BGTZ, PC = %d, nPC = %d", pc_wire_out, npc_wire_out);
+			// end
 			
-		// SB
-		6'b101000: begin
-			$display("\n Keyword: SB, PC = %d, nPC = %d", pc_wire_out, npc_wire_out);
-			end
+		// // SB
+		// 6'b101000: begin
+			// $display("\n Keyword: SB, PC = %d, nPC = %d", pc_wire_out, npc_wire_out);
+			// end
 			
-		// JAL
-		6'b000011: begin
-			$display("\n Keyword: JAL, PC = %d, nPC = %d", pc_wire_out, npc_wire_out);
-			end
+		// // JAL
+		// 6'b000011: begin
+			// $display("\n Keyword: JAL, PC = %d, nPC = %d", pc_wire_out, npc_wire_out);
+			// end
 			
-		// LUI
-		6'b001111: begin
-			$display("\n Keyword: LUI, PC = %d, nPC = %d", pc_wire_out, npc_wire_out);
-			end
+		// // LUI
+		// 6'b001111: begin
+			// $display("\n Keyword: LUI, PC = %d, nPC = %d", pc_wire_out, npc_wire_out);
+			// end
 			
-		// R
-		6'b000000: begin
-			// JR
-			if(instruction_wire_out[5:0] == 6'b001000) begin
-				$display("\n Keyword: JR, PC = %d, nPC = %d", pc_wire_out, npc_wire_out);
-			
-			// SUBU
-			end else if(instruction_wire_out[5:0] == 6'b100011) begin
-				$display("\n Keyword: SUBU, PC = %d, nPC = %d", pc_wire_out, npc_wire_out);
-			end
-			end
-		endcase
-		$display("\n\n --- ID STAGE ---",
-        "\n ID_conditional_unconditional = %b", control_signals_wire[21],
-        "\n ID_r31 = %b", control_signals_wire[20],
-        "\n ID_unconditional_jump = %b", control_signals_wire[19],
-        "\n ID_destination = %b", control_signals_wire[18],
-				"\n ID_SourceOperand_3bits = %b", control_signals_wire[17:15],
-				"\n ID_ALU_OP = %b", control_signals_wire[14:11],
-				"\n ID_Load_Instr = %b", control_signals_wire[10],
-				"\n ID_RF_Enable = %b", control_signals_wire[9],
-				"\n ID_B_Instr = %b", control_signals_wire[8],
-				"\n ID_TA_Instr = %b", control_signals_wire[7],
-				"\n ID_MEM_Size = %b", control_signals_wire[6:5],
-				"\n ID_MEM_RW = %b", control_signals_wire[4],
-				"\n ID_MEM_SE = %b", control_signals_wire[3],
-				"\n ID_Enable_HI = %b", control_signals_wire[2],
-				"\n ID_Enable_LO = %b", control_signals_wire[1],
-				"\n ID_MEM_Enable = %b", control_signals_wire[0],
-				"\n\n --- EX STAGE ---",
-				"\n EX_SourceOperand_3bits = %b", ex_wire[17:15],
-				"\n EX_ALU_OP = %b", ex_wire[14:11],
-				"\n EX_Load_Instr = %b", ex_wire[10],
-				"\n EX_RF_Enable = %b", ex_wire[9],
-				"\n EX_B_Instr = %b", ex_wire[8],
-				"\n EX_MEM_Size = %b", ex_wire[6:5],
-				"\n EX_MEM_RW = %b", ex_wire[4],
-				"\n EX_MEM_SE = %b", ex_wire[3],
-				"\n EX_Enable_HI = %b", ex_wire[2],
-				"\n EX_Enable_LO = %b", ex_wire[1],
-				"\n EX_MEM_Enable = %b", ex_wire[0],
-				"\n\n --- MEM STAGE ---",
-				"\n MEM_Load_Instr = %b", mem_wire[10],
-				"\n MEM_RF_Enable = %b", mem_wire[9],
-				"\n MEM_MEM_Size = %b", mem_wire[6:5],
-				"\n MEM_MEM_RW = %b", mem_wire[4],
-				"\n MEM_MEM_SE = %b", mem_wire[3],
-				"\n MEM_Enable_HI = %b", mem_wire[2],
-				"\n MEM_Enable_LO = %b", mem_wire[1],
-				"\n MEM_MEM_Enable = %b", mem_wire[0],
-				"\n\n --- WB STAGE ---",
-				"\n WB_RF_Enable = %b", wb_wire[9],
-				"\n WB_Enable_HI = %b", wb_wire[2],
-				"\n WB_Enable_LO = %b", wb_wire[1]
-		);
-end
+		// // B
+		// 6'b000100: begin
+			// $display("\n Keyword: B, PC = %d, nPC = %d", pc_wire_out, npc_wire_out);
+			// end
+
+		// // I
+		// 6'b000001: begin
+			// // BGEZ
+			// if(instruction_wire_out[20:16] == 5'b00001) begin
+				// $display("\n Keyword: BGEZ, PC = %d, nPC = %d", pc_wire_out, npc_wire_out);
+			// end
+			// end
+		
+		// // R
+		// 6'b000000: begin
+			// // JR
+			// if(instruction_wire_out[5:0] == 6'b001000) begin
+				// $display("\n Keyword: JR, PC = %d, nPC = %d", pc_wire_out, npc_wire_out);	
+			// // SUBU
+			// end else if(instruction_wire_out[5:0] == 6'b100011) begin
+				// $display("\n Keyword: SUBU, PC = %d, nPC = %d", pc_wire_out, npc_wire_out);
+			// // ADDU
+			// end else if(instruction_wire_out[5:0] == 6'b100001) begin
+				// $display("\n Keyword: ADDU, PC = %d, nPC = %d", pc_wire_out, npc_wire_out);
+			// // NOP
+			// end else if(instruction_wire_out[25:0] == 26'b0) begin
+				// $display("\n Keyword: NOP, PC = %d, nPC = %d", pc_wire_out, npc_wire_out);
+			// end
+			// end
+		// default: 
+			// $display("\n Keyword: Unknown, PC = %d, nPC = %d", pc_wire_out, npc_wire_out);
+		// endcase
+		// $display("\n\n --- ID STAGE ---",
+        // "\n ID_conditional_unconditional = %b", control_signals_wire[21],
+        // "\n ID_r31 = %b", control_signals_wire[20],
+        // "\n ID_unconditional_jump = %b", control_signals_wire[19],
+        // "\n ID_destination = %b", control_signals_wire[18],
+				// "\n ID_SourceOperand_3bits = %b", control_signals_wire[17:15],
+				// "\n ID_ALU_OP = %b", control_signals_wire[14:11],
+				// "\n ID_Load_Instr = %b", control_signals_wire[10],
+				// "\n ID_RF_Enable = %b", control_signals_wire[9],
+				// "\n ID_B_Instr = %b", control_signals_wire[8],
+				// "\n ID_TA_Instr = %b", control_signals_wire[7],
+				// "\n ID_MEM_Size = %b", control_signals_wire[6:5],
+				// "\n ID_MEM_RW = %b", control_signals_wire[4],
+				// "\n ID_MEM_SE = %b", control_signals_wire[3],
+				// "\n ID_Enable_HI = %b", control_signals_wire[2],
+				// "\n ID_Enable_LO = %b", control_signals_wire[1],
+				// "\n ID_MEM_Enable = %b", control_signals_wire[0],
+				// "\n\n --- EX STAGE ---",
+				// "\n EX_SourceOperand_3bits = %b", ex_wire[17:15],
+				// "\n EX_ALU_OP = %b", ex_wire[14:11],
+				// "\n EX_Load_Instr = %b", ex_wire[10],
+				// "\n EX_RF_Enable = %b", ex_wire[9],
+				// "\n EX_B_Instr = %b", ex_wire[8],
+				// "\n EX_MEM_Size = %b", ex_wire[6:5],
+				// "\n EX_MEM_RW = %b", ex_wire[4],
+				// "\n EX_MEM_SE = %b", ex_wire[3],
+				// "\n EX_Enable_HI = %b", ex_wire[2],
+				// "\n EX_Enable_LO = %b", ex_wire[1],
+				// "\n EX_MEM_Enable = %b", ex_wire[0],
+				// "\n\n --- MEM STAGE ---",
+				// "\n MEM_Load_Instr = %b", mem_wire[10],
+				// "\n MEM_RF_Enable = %b", mem_wire[9],
+				// "\n MEM_MEM_Size = %b", mem_wire[6:5],
+				// "\n MEM_MEM_RW = %b", mem_wire[4],
+				// "\n MEM_MEM_SE = %b", mem_wire[3],
+				// "\n MEM_Enable_HI = %b", mem_wire[2],
+				// "\n MEM_Enable_LO = %b", mem_wire[1],
+				// "\n MEM_MEM_Enable = %b", mem_wire[0],
+				// "\n\n --- WB STAGE ---",
+				// "\n WB_RF_Enable = %b", wb_wire[9],
+				// "\n WB_Enable_HI = %b", wb_wire[2],
+				// "\n WB_Enable_LO = %b", wb_wire[1]
+		// );
+// end
 
 
 endmodule
