@@ -2,7 +2,7 @@ module Operand2Handler(
     input [31:0] PB, // 32-bit input
     input [31:0] HI, // 32-bit input
     input [31:0] LO, // 32-bit input
-    input [31:0] PC, // 32-bit input
+    input [8:0] PC, // 32-bit input
     input [15:0] imm16, // 16-bit input
     input [2:0] Si, // 3-bit input
     output reg [31:0] N // 32-bit output

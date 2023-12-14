@@ -23,6 +23,7 @@
 `include "plus4AdderForPCSignal.v"
 `include "adderForTASignal.v"
 `include "adderPCAndEight.v"
+`include "decoders.v"
 
 module Pipeline_TB;
 
@@ -147,7 +148,7 @@ wire [4:0] WB_rdrtr31mux_out;
 //unclear amount of bits
 wire WB_RF_enable_out;
 //unclear amount of bits, what is this even called?
-wire [31:0] WB_out_MemMux_out;
+//wire [31:0] mux_WB_out;
 
 //RF outputs
 wire [31:0] pa;
@@ -178,6 +179,13 @@ wire[8:0] sumBetweenPCandEight;
 
 //plus4AdderForPCSignalBottom wires
 //wire [8:0] PC_out; already declared
+
+ wire [31:0] E;
+  wire [31:0] Q0, Q1, Q2, Q3, Q4, Q5, Q6, Q7, Q8, Q9, Q10, Q11, Q12, Q13, Q14, Q15, 
+  Q16, Q17, Q18, Q19, Q20, Q21, Q22, Q23, Q24, Q25, Q26, Q27, Q28, Q29, Q30, Q31;
+
+
+
 
 // -------------------------------------------------------------------------
 
@@ -218,15 +226,145 @@ plus4AdderForPCSignal plus4AdderForPCSignalBottom(
 .input_value(PC_out)
 );
 
-register_file register_file_instance(
-.PA(pa),
-.PB(pb),
-.PW(WB_out_MemMux_out),
-.RW(rd_out_Wb),
-.RA(rs_out),
-.RB(rt_out),
-.LE(WB_RF_enable_out)
+// register_file register_file_instance(
+// .PA(pa), //out
+// .PB(pb), //out 
+// .PW(mux_WB_out), //in
+// .RW(rd_out_Wb), //in 
+// .RA(rs_out), //in
+// .RB(rt_out), //in 
+// .LE(WB_RF_enable_out) ///in
+// );
+
+
+ 
+ 
+  // Binary Decoder instantiation
+binaryDecoder bdecoder (
+  .E(E), //out
+  .C(r31_mux_outWb), //in
+  .RF(MEM_rf_enable_reg) //in
 );
+
+
+// Register instances instantiation
+register_32bit R0 (.Q(Q0), .D(mux_WB_out), .clk(clk), .Ld(E[0]));
+register_32bit R1 (.Q(Q1), .D(mux_WB_out), .clk(clk), .Ld(E[1]));
+register_32bit R2 (.Q(Q2), .D(mux_WB_out), .clk(clk), .Ld(E[2]));
+register_32bit R3 (.Q(Q3), .D(mux_WB_out), .clk(clk), .Ld(E[3]));
+register_32bit R4 (.Q(Q4), .D(mux_WB_out), .clk(clk), .Ld(E[4]));
+register_32bit R5 (.Q(Q5), .D(mux_WB_out), .clk(clk), .Ld(E[5]));
+register_32bit R6 (.Q(Q6), .D(mux_WB_out), .clk(clk), .Ld(E[6]));
+register_32bit R7 (.Q(Q7), .D(mux_WB_out), .clk(clk), .Ld(E[7]));
+register_32bit R8 (.Q(Q8), .D(mux_WB_out), .clk(clk), .Ld(E[8]));
+register_32bit R9 (.Q(Q9), .D(mux_WB_out), .clk(clk), .Ld(E[9]));
+register_32bit R10 (.Q(Q10), .D(mux_WB_out), .clk(clk), .Ld(E[10]));
+register_32bit R11 (.Q(Q11), .D(mux_WB_out), .clk(clk), .Ld(E[11]));
+register_32bit R12 (.Q(Q12), .D(mux_WB_out), .clk(clk), .Ld(E[12]));
+register_32bit R13 (.Q(Q13), .D(mux_WB_out), .clk(clk), .Ld(E[13]));
+register_32bit R14 (.Q(Q14), .D(mux_WB_out), .clk(clk), .Ld(E[14]));
+register_32bit R15 (.Q(Q15), .D(mux_WB_out), .clk(clk), .Ld(E[15]));
+register_32bit R16 (.Q(Q16), .D(mux_WB_out), .clk(clk), .Ld(E[16]));
+register_32bit R17 (.Q(Q17), .D(mux_WB_out), .clk(clk), .Ld(E[17]));
+register_32bit R18 (.Q(Q18), .D(mux_WB_out), .clk(clk), .Ld(E[18]));
+register_32bit R19 (.Q(Q19), .D(mux_WB_out), .clk(clk), .Ld(E[19]));
+register_32bit R20 (.Q(Q20), .D(mux_WB_out), .clk(clk), .Ld(E[20]));
+register_32bit R21 (.Q(Q21), .D(mux_WB_out), .clk(clk), .Ld(E[21]));
+register_32bit R22 (.Q(Q22), .D(mux_WB_out), .clk(clk), .Ld(E[22]));
+register_32bit R23 (.Q(Q23), .D(mux_WB_out), .clk(clk), .Ld(E[23]));
+register_32bit R24 (.Q(Q24), .D(mux_WB_out), .clk(clk), .Ld(E[24]));
+register_32bit R25 (.Q(Q25), .D(mux_WB_out), .clk(clk), .Ld(E[25]));
+register_32bit R26 (.Q(Q26), .D(mux_WB_out), .clk(clk), .Ld(E[26]));
+register_32bit R27 (.Q(Q27), .D(mux_WB_out), .clk(clk), .Ld(E[27]));
+register_32bit R28 (.Q(Q28), .D(mux_WB_out), .clk(clk), .Ld(E[28]));
+register_32bit R29 (.Q(Q29), .D(mux_WB_out), .clk(clk), .Ld(E[29]));
+register_32bit R30 (.Q(Q30), .D(mux_WB_out), .clk(clk), .Ld(E[30]));
+register_32bit R31 (.Q(Q31), .D(mux_WB_out), .clk(clk), .Ld(E[31]));
+
+
+
+
+
+
+// Multiplexer for PA register instantiation
+mux_32bit mux_32x1A (
+  .Y(pa), //out
+  .S(rs_out), // input
+  .R0(32'b0), //32'b0 
+  .R1(Q1),
+  .R2(Q2),
+  .R3(Q3),
+  .R4(Q4),
+  .R5(Q5),
+  .R6(Q6),
+  .R7(Q7),
+  .R8(Q8),
+  .R9(Q9),
+  .R10(Q10),
+  .R11(Q11),
+  .R12(Q12),
+  .R13(Q13),
+  .R14(Q14),
+  .R15(Q15),
+  .R16(Q16),
+  .R17(Q17),
+  .R18(Q18),
+  .R19(Q19),
+  .R20(Q20),
+  .R21(Q21),
+  .R22(Q22),
+  .R23(Q23),
+  .R24(Q24),
+  .R25(Q25),
+  .R26(Q26),
+  .R27(Q27),
+  .R28(Q28),
+  .R29(Q29),
+  .R30(Q30),
+  .R31(Q31)
+);
+
+// Multiplexer for PB register instantiation
+mux_32bit mux_32x1B (
+  .Y(pb),
+  .S(rt_out),
+  .R0(32'b0),
+  .R1(Q1),
+  .R2(Q2),
+  .R3(Q3),
+  .R4(Q4),
+  .R5(Q5),
+  .R6(Q6),
+  .R7(Q7),
+  .R8(Q8),
+  .R9(Q9),
+  .R10(Q10),
+  .R11(Q11),
+  .R12(Q12),
+  .R13(Q13),
+  .R14(Q14),
+  .R15(Q15),
+  .R16(Q16),
+  .R17(Q17),
+  .R18(Q18),
+  .R19(Q19),
+  .R20(Q20),
+  .R21(Q21),
+  .R22(Q22),
+  .R23(Q23),
+  .R24(Q24),
+  .R25(Q25),
+  .R26(Q26),
+  .R27(Q27),
+  .R28(Q28),
+  .R29(Q29),
+  .R30(Q30),
+  .R31(Q31)
+);
+
+
+
+
 
 
 NPC_Register npc_instance(
@@ -505,18 +643,19 @@ MEMWB_Stage wb_instance(
     .reset(reset),
     .control_signals(mem_wire),
     .control_signals_out(wb_wire),
-	.mem_r31_in(r31_mux_outMem),
-	.mux_mem_in(mux_Mem_Out),
-	.mux_wb_out(mux_WB_out),
+	.mem_r31_in(r31_mux_outMem),//
+	.mux_mem_in(mux_Mem_Out),//
+	.mux_wb_out(mux_WB_out),//
 	.rf_enable_reg(MEM_rf_enable_reg),
 	.hi_enable_reg(hi_enable_reg),
 	.lo_enable_reg(lo_enable_reg),
-	.wb_rd_out(rd_out_Wb),
-	.wb_r31_out(r31_mux_outWb)
+	.wb_rd_out(rd_out_Wb),//
+	.wb_r31_out(r31_mux_outWb)//
 );
 
 
 // 
+
   
   initial begin
    
@@ -537,15 +676,42 @@ MEMWB_Stage wb_instance(
 	end
 
 	initial begin
-		$monitor("\n\n\nPC: %d\n---------------------------------\
-			\nAddress: %b\n--------------------------------------\
-			\nR5: %d | R6: %d\
-			\nR16: %d | R17: %d\
-			\nR18: %d\
-			\n--------------------------------------------------",
-			pc_wire_out,
-			rt_out,
-			register_file_instance.Q5, register_file_instance.Q6, register_file_instance.Q16, register_file_instance.Q17, register_file_instance.Q18);
+		// $monitor("\n\n\nPC: %d\n---------------------------------\
+		// 	\nAddress: %b\n--------------------------------------\
+		// 	\nR5: %d | R6: %d\
+		// 	\nR16: %d | R17: %d\
+		// 	\nR18: %d\
+		// 	\n--------------------------------------------------",
+		// 	pc_wire_out,
+		// 	rt_out,
+		// 	Q5, Q6, Q16, Q17, Q18);
+
+$monitor("\n\n\nPC: %d\n---------------------------------\
+        \nAddress: %b\n--------------------------------------\
+        \nR0: %d | R1: %d | R2: %d | R3: %d\
+        \nR4: %d | R5: %d | R6: %d | R7: %d\
+        \nR8: %d | R9: %d | R10: %d | R11: %d\
+        \nR12: %d | R13: %d | R14: %d | R15: %d\
+        \nR16: %d | R17: %d | R18: %d | R19: %d\
+        \nR20: %d | R21: %d | R22: %d | R23: %d\
+        \nR24: %d | R25: %d | R26: %d | R27: %d\
+        \nR28: %d | R29: %d | R30: %d | R31: %d\
+        \n Edecoder: %b | PW: %b | C: %b | RF: %b\
+        \n--------------------------------------------------",
+        pc_wire_out,
+        rt_out,
+        Q0, Q1, Q2, Q3, Q4, Q5, Q6, Q7, Q8, Q9,
+        Q10, Q11, Q12, Q13, Q14, Q15, Q16, Q17, Q18, Q19,
+        Q20, Q21, Q22, Q23, Q24, Q25, Q26, Q27, Q28, Q29,
+        Q30, Q31, E, mux_WB_out, r31_mux_outWb , MEM_rf_enable_reg );
+
+
+
+
+
+
+
+
 	end
 
 

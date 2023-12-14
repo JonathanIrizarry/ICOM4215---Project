@@ -1,70 +1,70 @@
 //Register File de 32 registros de 32 bits y 2 puertos de salida.
-`include "decoders.v"
+//`include "decoders.v"
 //the line directly below may need to be commented out
 `include "muxes.v"
 
-module register_file (output [31:0] PA, PB, input [31:0] PW,  input [4:0] RW, RA, RB, input LE, clk);
-    //Outputs: Puertos A, B 
-    //Inputs: Puerto de Entrada (PW), RW (Write Register) y LE (BinaryDecoder Selector y "load"), 
-    //RA, RB   (Selectors de multiplexers a la salida), y clk (Clock)
+// module register_file (output [31:0] PA, PB, input [31:0] PW,  input [4:0] RW, RA, RB, input LE, clk);
+//     //Outputs: Puertos A, B 
+//     //Inputs: Puerto de Entrada (PW), RW (Write Register) y LE (BinaryDecoder Selector y "load"), 
+//     //RA, RB   (Selectors de multiplexers a la salida), y clk (Clock)
 
-    //Wires
-    wire [31:0] E;
-    wire [31:0] Q0, Q1, Q2, Q3, Q4, Q5, Q6, Q7, Q8, Q9, Q10, Q11, Q12, Q13, Q14, Q15, 
-    Q16, Q17, Q18, Q19, Q20, Q21, Q22, Q23, Q24, Q25, Q26, Q27, Q28, Q29, Q30, Q31;
+//     //Wires
+//     wire [31:0] E;
+//     wire [31:0] Q0, Q1, Q2, Q3, Q4, Q5, Q6, Q7, Q8, Q9, Q10, Q11, Q12, Q13, Q14, Q15, 
+//     Q16, Q17, Q18, Q19, Q20, Q21, Q22, Q23, Q24, Q25, Q26, Q27, Q28, Q29, Q30, Q31;
 
-    //Instanciando módulos:
+//     //Instanciando módulos:
 
-    //Binary Decoder for RA,RB
-    binaryDecoder bdecoder (E, RW, LE);
+//     //Binary Decoder for RA,RB
+//     binaryDecoder bdecoder (E, RW, LE);
 
-    //Los multiplexers a continuacion cogen valor almacenado en el registro 
-    //correspondiente y lo envian a las salidas de los registros:
+//     //Los multiplexers a continuacion cogen valor almacenado en el registro 
+//     //correspondiente y lo envian a las salidas de los registros:
 
-    //Multiplexer for PA register
-    mux_32bit mux_32x1A (PA, RA, 32'b0, Q1, Q2, Q3, Q4, Q5, Q6, Q7, Q8, Q9,
-                    Q10, Q11, Q12, Q13, Q14, Q15, Q16, Q17, Q18, Q19, Q20, Q21, Q22, 
-                    Q23, Q24, Q25, Q26, Q27, Q28, Q29, Q30, Q31);
-    //Multiplexer for PB register
-    mux_32bit mux_32x1B (PB, RB, 32'b0, Q1, Q2, Q3, Q4, Q5, Q6, Q7, Q8, Q9,
-                    Q10, Q11, Q12, Q13, Q14, Q15, Q16, Q17, Q18, Q19, Q20, Q21, Q22, 
-                    Q23, Q24, Q25, Q26, Q27, Q28, Q29, Q30, Q31);             
+//     //Multiplexer for PA register
+//     mux_32bit mux_32x1A (PA, RA, 32'b0, Q1, Q2, Q3, Q4, Q5, Q6, Q7, Q8, Q9,
+//                     Q10, Q11, Q12, Q13, Q14, Q15, Q16, Q17, Q18, Q19, Q20, Q21, Q22, 
+//                     Q23, Q24, Q25, Q26, Q27, Q28, Q29, Q30, Q31);
+//     //Multiplexer for PB register
+//     mux_32bit mux_32x1B (PB, RB, 32'b0, Q1, Q2, Q3, Q4, Q5, Q6, Q7, Q8, Q9,
+//                     Q10, Q11, Q12, Q13, Q14, Q15, Q16, Q17, Q18, Q19, Q20, Q21, Q22, 
+//                     Q23, Q24, Q25, Q26, Q27, Q28, Q29, Q30, Q31);             
    
     
-    //Insanciando registros del 0 al 31
-    register_32bit R0 (Q0, PW, clk, E[0]);
-    register_32bit R1 (Q1, PW, clk, E[1]);
-    register_32bit R2 (Q2, PW, clk, E[2]);
-    register_32bit R3 (Q3, PW, clk, E[3]);
-    register_32bit R4 (Q4, PW, clk, E[4]);
-    register_32bit R5 (Q5, PW, clk, E[5]);
-    register_32bit R6 (Q6, PW, clk, E[6]);
-    register_32bit R7 (Q7, PW, clk, E[7]);
-    register_32bit R8 (Q8, PW, clk, E[8]);
-    register_32bit R9 (Q9, PW, clk, E[9]);
-    register_32bit R10 (Q10, PW, clk, E[10]);
-    register_32bit R11 (Q11, PW, clk, E[11]);
-    register_32bit R12 (Q12, PW, clk, E[12]);
-    register_32bit R13 (Q13, PW, clk, E[13]);
-    register_32bit R14 (Q14, PW, clk, E[14]);
-    register_32bit R15 (Q15, PW, clk, E[15]);
-    register_32bit R16 (Q16, PW, clk, E[16]);
-    register_32bit R17 (Q17, PW, clk, E[17]);
-    register_32bit R18 (Q18, PW, clk, E[18]);
-    register_32bit R19 (Q19, PW, clk, E[19]);
-    register_32bit R20 (Q20, PW, clk, E[20]);
-    register_32bit R21 (Q21, PW, clk, E[21]);
-    register_32bit R22 (Q22, PW, clk, E[22]);
-    register_32bit R23 (Q23, PW, clk, E[23]);
-    register_32bit R24 (Q24, PW, clk, E[24]);
-    register_32bit R25 (Q25, PW, clk, E[25]);
-    register_32bit R26 (Q26, PW, clk, E[26]);
-    register_32bit R27 (Q27, PW, clk, E[27]);
-    register_32bit R28 (Q28, PW, clk, E[28]);
-    register_32bit R29 (Q29, PW, clk, E[29]);
-    register_32bit R30 (Q30, PW, clk, E[30]);
-    register_32bit R31 (Q31, PW, clk, E[31]);
-endmodule
+//     //Insanciando registros del 0 al 31
+//     register_32bit R0 (Q0, PW, clk, E[0]);
+//     register_32bit R1 (Q1, PW, clk, E[1]);
+//     register_32bit R2 (Q2, PW, clk, E[2]);
+//     register_32bit R3 (Q3, PW, clk, E[3]);
+//     register_32bit R4 (Q4, PW, clk, E[4]);
+//     register_32bit R5 (Q5, PW, clk, E[5]);
+//     register_32bit R6 (Q6, PW, clk, E[6]);
+//     register_32bit R7 (Q7, PW, clk, E[7]);
+//     register_32bit R8 (Q8, PW, clk, E[8]);
+//     register_32bit R9 (Q9, PW, clk, E[9]);
+//     register_32bit R10 (Q10, PW, clk, E[10]);
+//     register_32bit R11 (Q11, PW, clk, E[11]);
+//     register_32bit R12 (Q12, PW, clk, E[12]);
+//     register_32bit R13 (Q13, PW, clk, E[13]);
+//     register_32bit R14 (Q14, PW, clk, E[14]);
+//     register_32bit R15 (Q15, PW, clk, E[15]);
+//     register_32bit R16 (Q16, PW, clk, E[16]);
+//     register_32bit R17 (Q17, PW, clk, E[17]);
+//     register_32bit R18 (Q18, PW, clk, E[18]);
+//     register_32bit R19 (Q19, PW, clk, E[19]);
+//     register_32bit R20 (Q20, PW, clk, E[20]);
+//     register_32bit R21 (Q21, PW, clk, E[21]);
+//     register_32bit R22 (Q22, PW, clk, E[22]);
+//     register_32bit R23 (Q23, PW, clk, E[23]);
+//     register_32bit R24 (Q24, PW, clk, E[24]);
+//     register_32bit R25 (Q25, PW, clk, E[25]);
+//     register_32bit R26 (Q26, PW, clk, E[26]);
+//     register_32bit R27 (Q27, PW, clk, E[27]);
+//     register_32bit R28 (Q28, PW, clk, E[28]);
+//     register_32bit R29 (Q29, PW, clk, E[29]);
+//     register_32bit R30 (Q30, PW, clk, E[30]);
+//     register_32bit R31 (Q31, PW, clk, E[31]);
+// endmodule
 
 //-----------------Modules that will be instantiated in the file------------------------------//
 
