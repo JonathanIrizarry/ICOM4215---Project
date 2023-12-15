@@ -15,10 +15,11 @@ module EXMEM_Stage (
     output reg mem_enable_reg,
     output reg load_instr_reg,
     output reg rf_enable_reg,
-    output reg [31:0] MEM_PA_out,
+    output reg [8:0] MEM_PC8_out,
     output reg [31:0] MEM_ALU_out,
+    output reg [31:0] MEM_PA_out,
     output reg [15:11] MEM_rd_out,
-    output reg [8:0] MEM_PC8_out, //changed from 31:0 to 8:0
+     //changed from 31:0 to 8:0
     output reg [4:0] MEM_R31_out
 );
   

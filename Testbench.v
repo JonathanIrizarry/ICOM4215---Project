@@ -184,6 +184,8 @@ wire[8:0] sumBetweenPCandEight;
   wire [31:0] Q0, Q1, Q2, Q3, Q4, Q5, Q6, Q7, Q8, Q9, Q10, Q11, Q12, Q13, Q14, Q15, 
   Q16, Q17, Q18, Q19, Q20, Q21, Q22, Q23, Q24, Q25, Q26, Q27, Q28, Q29, Q30, Q31;
 
+ wire [31:0] Z0, Z1, Z2, Z3, Z4, Z5, Z6, Z7, Z8, Z9, Z10, Z11, Z12, Z13, Z14, Z15, 
+  Z16, Z17, Z18, Z19, Z20, Z21, Z22, Z23, Z24, Z25, Z26, Z27, Z28, Z29, Z30, Z31;
 
 
 
@@ -283,84 +285,95 @@ register_32bit R31 (.Q(Q31), .D(mux_WB_out), .clk(clk), .Ld(E[31]));
 
 
 
+mux_32bit mux_32x1A (
+  .PA(pa), .PB(pb), .Y0(Z0), .Y1(Z1), .Y2(Z2), .Y3(Z3), .Y4(Z4), .Y5(Z5), .Y6(Z6), .Y7(Z7),
+  .Y8(Z8), .Y9(Z9), .Y10(Z10), .Y11(Z11), .Y12(Z12), .Y13(Z13), .Y14(Z14), .Y15(Z15),
+  .Y16(Z16), .Y17(Z17), .Y18(Z18), .Y19(Z19), .Y20(Z20), .Y21(Z21), .Y22(Z22), .Y23(Z23),
+  .Y24(Z24), .Y25(Z25), .Y26(Z26), .Y27(Z27), .Y28(Z28), .Y29(Z29), .Y30(Z30), .Y31(Z31),
+  
+  .rs(rs_out), .rt(rt_out), .R0(Q0), .R1(Q1), .R2(Q2), .R3(Q3), .R4(Q4), .R5(Q5), .R6(Q6), .R7(Q7),
+  .R8(Q8), .R9(Q9), .R10(Q10), .R11(Q11), .R12(Q12), .R13(Q13), .R14(Q14), .R15(Q15),
+  .R16(Q16), .R17(Q17), .R18(Q18), .R19(Q19), .R20(Q20), .R21(Q21), .R22(Q22), .R23(Q23),
+  .R24(Q24), .R25(Q25), .R26(Q26), .R27(Q27), .R28(Q28), .R29(Q29), .R30(Q30), .R31(Q31)
+);
 
 
 
 // Multiplexer for PA register instantiation
-mux_32bit mux_32x1A (
-  .Y(pa), //out
-  .S(rs_out), // input
-  .R0(32'b0), //32'b0 
-  .R1(Q1),
-  .R2(Q2),
-  .R3(Q3),
-  .R4(Q4),
-  .R5(Q5),
-  .R6(Q6),
-  .R7(Q7),
-  .R8(Q8),
-  .R9(Q9),
-  .R10(Q10),
-  .R11(Q11),
-  .R12(Q12),
-  .R13(Q13),
-  .R14(Q14),
-  .R15(Q15),
-  .R16(Q16),
-  .R17(Q17),
-  .R18(Q18),
-  .R19(Q19),
-  .R20(Q20),
-  .R21(Q21),
-  .R22(Q22),
-  .R23(Q23),
-  .R24(Q24),
-  .R25(Q25),
-  .R26(Q26),
-  .R27(Q27),
-  .R28(Q28),
-  .R29(Q29),
-  .R30(Q30),
-  .R31(Q31)
-);
+// mux_32bit mux_32x1A (
+//   .Y(pa), //out
+//   .S(rs_out), // input
+//   .R0(32'b0), //32'b0 
+//   .R1(Q1),
+//   .R2(Q2),
+//   .R3(Q3),
+//   .R4(Q4),
+//   .R5(Q5),
+//   .R6(Q6),
+//   .R7(Q7),
+//   .R8(Q8),
+//   .R9(Q9),
+//   .R10(Q10),
+//   .R11(Q11),
+//   .R12(Q12),
+//   .R13(Q13),
+//   .R14(Q14),
+//   .R15(Q15),
+//   .R16(Q16),
+//   .R17(Q17),
+//   .R18(Q18),
+//   .R19(Q19),
+//   .R20(Q20),
+//   .R21(Q21),
+//   .R22(Q22),
+//   .R23(Q23),
+//   .R24(Q24),
+//   .R25(Q25),
+//   .R26(Q26),
+//   .R27(Q27),
+//   .R28(Q28),
+//   .R29(Q29),
+//   .R30(Q30),
+//   .R31(Q31)
+// );
 
 // Multiplexer for PB register instantiation
-mux_32bit mux_32x1B (
-  .Y(pb),
-  .S(rt_out),
-  .R0(32'b0),
-  .R1(Q1),
-  .R2(Q2),
-  .R3(Q3),
-  .R4(Q4),
-  .R5(Q5),
-  .R6(Q6),
-  .R7(Q7),
-  .R8(Q8),
-  .R9(Q9),
-  .R10(Q10),
-  .R11(Q11),
-  .R12(Q12),
-  .R13(Q13),
-  .R14(Q14),
-  .R15(Q15),
-  .R16(Q16),
-  .R17(Q17),
-  .R18(Q18),
-  .R19(Q19),
-  .R20(Q20),
-  .R21(Q21),
-  .R22(Q22),
-  .R23(Q23),
-  .R24(Q24),
-  .R25(Q25),
-  .R26(Q26),
-  .R27(Q27),
-  .R28(Q28),
-  .R29(Q29),
-  .R30(Q30),
-  .R31(Q31)
-);
+// mux_32bit mux_32x1B (
+//   .Y(pb),
+//   .S(rt_out),
+//   .R0(32'b0),
+//   .R1(Q1),
+//   .R2(Q2),
+//   .R3(Q3),
+//   .R4(Q4),
+//   .R5(Q5),
+//   .R6(Q6),
+//   .R7(Q7),
+//   .R8(Q8),
+//   .R9(Q9),
+//   .R10(Q10),
+//   .R11(Q11),
+//   .R12(Q12),
+//   .R13(Q13),
+//   .R14(Q14),
+//   .R15(Q15),
+//   .R16(Q16),
+//   .R17(Q17),
+//   .R18(Q18),
+//   .R19(Q19),
+//   .R20(Q20),
+//   .R21(Q21),
+//   .R22(Q22),
+//   .R23(Q23),
+//   .R24(Q24),
+//   .R25(Q25),
+//   .R26(Q26),
+//   .R27(Q27),
+//   .R28(Q28),
+//   .R29(Q29),
+//   .R30(Q30),
+//   .R31(Q31)
+// );
 
 
 
@@ -456,6 +469,22 @@ TargetAddressMux addressMux(
 
 
 
+
+	//Preload Instruction Memory
+	initial begin
+		fi = $fopen("input.txt","r");
+		address = 9'b000000000;
+		while (!$feof(fi)) begin
+			code = $fscanf(fi, "%b", data);
+			imem.Mem[address] = data;
+			//$display("instruction memory = %b", imem.Mem[address]);
+			address = address + 1;
+	end
+	$fclose(fi);
+	end
+	
+
+
 PPU_Control_Unit control_unit(
     .instruction(instruction_wire_out),
     .control_signals(control_signals_wire)
@@ -488,11 +517,11 @@ HazardForwardingUnit hazardUnit(
 
 mux_4x1 mux_r31(
   .Y(mux_out_ID_r31), 
-	.S({mux_out_wire[20], mux_out_wire[18]}), //select
-	.I0(rt_out),
-	.I1(rd_out),
-	.I2(),
-	.I3(5'b11111)
+	.S({mux_out_wire[18], mux_out_wire[20]}), //select
+	.I0(32'b0),
+	.I1(5'b11111),
+	.I2(rd_out),
+	.I3(rt_out)
 	//output
 );
 
@@ -500,20 +529,20 @@ mux_4x1 mux_r31(
 mux_4x1 mux_PA(
   .Y(mux_PA_out),
 	.S(hazardUnit_mux1), //select
-	.I0(mux_WB_out),
-	.I1(mux_Mem_Out),
-	.I2(alu_out),
-	.I3(pa)
+	.I0(pa),
+	.I1(alu_out), 
+	.I2(mux_Mem_Out),
+	.I3(mux_WB_out)
 	 //output
 );
 
 mux_4x1 mux_PB(
   .Y(mux_PB_out),
 	.S(hazardUnit_mux2), //select
-	.I0(mux_WB_out),
-	.I1(mux_Mem_Out),
-	.I2(alu_out),
-	.I3(pb)
+	.I0(pb),
+	.I1(alu_out),
+	.I2(mux_Mem_Out),
+	.I3(mux_WB_out)
 	 //output
 );
 
@@ -577,16 +606,20 @@ IDEX_Stage ex_instance(
 EXMEM_Stage mem_instance(
     .clk(clk),
     .reset(reset),
-	.EX_R31(r31_mux_outEx),
     .control_signals(ex_wire),
+    .EX_PA(PA_out_Ex),
+    .EX_ALU(alu_out),
+    .flag(),
+    .EX_rd(rd_out_Ex),
+    .EX_PC8(pc_plus8_outEX),
+	.EX_R31(r31_mux_outEx),
     .control_signals_out(mem_wire),
 	.mem_size_reg(mem_size_reg),
 	.mem_se_reg(mem_se_reg),
 	.mem_rw_reg(mem_rw_reg),
 	.mem_enable_reg(mem_enable_reg),
-	.load_instr_reg(mem_load_instr_reg),
+	.load_instr_reg(mem_load_instr_reg), // 1bit
 	.rf_enable_reg(mem_rf_enable_reg),
-	.EX_PC8(pc_plus8_outEX),
 	.MEM_ALU_out(mem_alu_out),
 	.MEM_PA_out(mem_pa_out),
 	.MEM_PC8_out(mem_pc8_out),
@@ -605,29 +638,27 @@ DataMemory dataMem(
 );
 
 
-	//Preload Instruction Memory & Data Memory
+	//Preload Data Memory
 	initial begin
 		fi = $fopen("input.txt","r");
 		address = 9'b000000000;
 		while (!$feof(fi)) begin
 			code = $fscanf(fi, "%b", data);
-			imem.Mem[address] = data;
+      imem.Mem[address] = data;
 			dataMem.Mem[address] = data;
 			address = address + 1;
 	end
 	$fclose(fi);
 	end
 
-
 mux_4x1 mux_Mem(
   .Y(mux_Mem_Out),
-    .S(mem_load_instr_reg), 
-    .I0(mem_alu_out), 
+  .S(mem_wire[2:1]), // 1 bitmem_load_instr_reg
+  .I0(mem_alu_out), 
 	.I1(mem_pc8_out), //replacing with input PC8
-	//.PC8(mem_pc8_out),
-	.I2(dataMem_Out),
-	.I3()
-	
+	.I2(dataMem_Out),  // arreglar esdto
+  .I3()
+	 
 );
 
 MEMWB_Stage wb_instance(
@@ -657,10 +688,10 @@ MEMWB_Stage wb_instance(
     
     #3 reset = 1'b0;
    
-    #37 S = 1'b1;
+    //#37 S = 1'b1;
 
     
-    #20 $finish;
+    #100 $finish;
   end
 
  always begin
@@ -668,15 +699,21 @@ MEMWB_Stage wb_instance(
 	end
 
 	initial begin
-		$monitor("\n\n\nPC: %d\n---------------------------------\
-			\nAddress: %d\n--------------------------------------\
-			\nR5: %d | R6: %d\
-			\nR16: %d | R17: %d\
-			\nR18: %d\ | Instruction: %b\
-			\n--------------------------------------------------",
+		$monitor("\n\n\nPC: %d |Address: %d | R5: %d | R6: %d | R16: %d | R17: %d | R18: %d | Instruction: %b \
+			\n\n PW: %d  | ALU: %d |  PC8: %d | datamem: %d | muxA: %d | muxB: %d | pa: %d | pb: %d | mux1Cntr: %b --------------------------------------\
+		   \n alu_out: %d \                                         ",
 			pc_wire_out,
 			rt_out,
-			Q5, Q6, Q16, Q17, Q18,instruction_wire_out);
+			Z5, Z6, Z16, Z17, Z18,instruction_wire_out , mux_Mem_Out, mem_alu_out, mem_pc8_out, dataMem_Out, mux_PA_out, mux_PB_out, pa, pb, hazardUnit_mux1, alu_out );
+
+      // 		$monitor("\n\n\nPC: %d |Address: %d | R5: %d | R6: %d | R16: %d | R17: %d | R18: %d \                                       ",
+			// pc_wire_out,
+			// rt_out,
+			// Z5, Z6, Z16, Z17, Z18 );
+
+
+
+
 
 // $monitor("\n\n\nPC: %d\n---------------------------------\
 //         \nAddress: %b\n--------------------------------------\

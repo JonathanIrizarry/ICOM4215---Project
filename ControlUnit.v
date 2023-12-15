@@ -61,9 +61,9 @@ module PPU_Control_Unit (
         ID_Enable_LO = 1'b0;
         ID_MEM_Enable = 1'b0;
         conditional_inconditional = 1'b0; //bit 21
-        r31 = 1'b0; // bit 20
+        r31 = 1'b1; // bit 20
         unconditional_Jump = 1'b0; //bit 19
-        destination = 1'b0; //bit 18
+        destination = 1'b1; //bit 18
     end else if ((instruction[31:26] == R_TYPE) && (instruction[5:0] == SUBU_Funct)) begin
         ID_SourceOperand_3bits = 3'b000;
         ID_ALU_OP = 4'b0001;
@@ -74,13 +74,13 @@ module PPU_Control_Unit (
         ID_MEM_Size = 2'b00;
         ID_MEM_RW = 1'b0;  //creo que es uno 
         ID_MEM_SE = 1'b0;
-        ID_Enable_HI = 1'b0;
-        ID_Enable_LO = 1'b0;
+        ID_Enable_HI = 1'b0;  //testing 
+        ID_Enable_LO = 1'b0; 
         ID_MEM_Enable = 1'b0;
         conditional_inconditional = 1'b0; //bit 21
         r31 = 1'b0; // bit 20
         unconditional_Jump = 1'b0; //bit 19
-        destination = 1'b0; //bit 18
+        destination = 1'b1; //bit 18
     end else if (instruction[31:26] == LBU_Op) begin
         // Handle LBU_Op case
         ID_SourceOperand_3bits = 3'b100;
@@ -92,13 +92,13 @@ module PPU_Control_Unit (
         ID_MEM_Size = 2'b00;
         ID_MEM_RW = 1'b0;
         ID_MEM_SE = 1'b0;  //0 
-        ID_Enable_HI = 1'b0;
+        ID_Enable_HI = 1'b1;
         ID_Enable_LO = 1'b0;
         ID_MEM_Enable = 1'b1;
         conditional_inconditional = 1'b0; //bit 21
-        r31 = 1'b0; // bit 20
+        r31 = 1'b1; // bit 20
         unconditional_Jump = 1'b0; //bit 19
-        destination = 1'b0; //bit 18
+        destination = 1'b1; //bit 18
     end else if (instruction[31:26] == BGTZ_OP) begin //anadir condicional/inco // Handle BGTZ_OP case
         
         ID_SourceOperand_3bits = 3'b000;
@@ -110,8 +110,8 @@ module PPU_Control_Unit (
         ID_MEM_Size = 2'b00;
         ID_MEM_RW = 1'b0;
         ID_MEM_SE = 1'b0;
-        ID_Enable_HI = 1'b0;
-        ID_Enable_LO = 1'b0;
+        ID_Enable_HI = 1'b1;
+        ID_Enable_LO = 1'b1; //testing
         ID_MEM_Enable = 1'b0;
         conditional_inconditional = 1'b0; //bit 21
         r31 = 1'b0; // bit 20
@@ -129,12 +129,12 @@ module PPU_Control_Unit (
         ID_MEM_RW = 1'b0;
         ID_MEM_SE = 1'b0;
         ID_Enable_HI = 1'b0;
-        ID_Enable_LO = 1'b0;
+        ID_Enable_LO = 1'b1;
         ID_MEM_Enable = 1'b0;
         conditional_inconditional = 1'b1; //bit 21
         r31 = 1'b1; // bit 20
         unconditional_Jump = 1'b1; //bit 19
-        destination = 1'b1; //bit 18
+        destination = 1'b0; //bit 18
     end else if (instruction[31:26] == LUI_OP) begin// Handle LUI_OP case
         
         ID_SourceOperand_3bits = 3'b101;
@@ -150,9 +150,9 @@ module PPU_Control_Unit (
         ID_Enable_LO = 1'b0;
         ID_MEM_Enable = 1'b0;
         conditional_inconditional = 1'b0; 
-        r31 = 1'b0; 
+        r31 = 1'b1; 
         unconditional_Jump = 1'b0;
-        destination = 1'b0; 
+        destination = 1'b1; 
     end else if ((instruction[31:26] == R_TYPE) && (instruction[5:0] == JR_Funct)) begin
          ID_SourceOperand_3bits = 3'b000;
         ID_ALU_OP = 4'b0000;
@@ -163,8 +163,8 @@ module PPU_Control_Unit (
         ID_MEM_Size = 2'b00;
         ID_MEM_RW = 1'b0;
         ID_MEM_SE = 1'b0;
-        ID_Enable_HI = 1'b0;
-        ID_Enable_LO = 1'b0;
+        ID_Enable_HI = 1'b1;
+        ID_Enable_LO = 1'b1;
         ID_MEM_Enable = 1'b0;
         conditional_inconditional = 1'b1; 
         r31 = 1'b0; 
@@ -183,8 +183,8 @@ module PPU_Control_Unit (
         ID_MEM_Size = 2'b00;
         ID_MEM_RW = 1'b0;
         ID_MEM_SE = 1'b0;
-        ID_Enable_HI = 1'b0;
-        ID_Enable_LO = 1'b0;
+        ID_Enable_HI = 1'b1;
+        ID_Enable_LO = 1'b1;
         ID_MEM_Enable = 1'b1;
         conditional_inconditional = 1'b0; //bit 21
         r31 = 1'b0; // bit 20
@@ -201,8 +201,8 @@ module PPU_Control_Unit (
         ID_MEM_Size = 2'b00;
         ID_MEM_RW = 1'b0;
         ID_MEM_SE = 1'b0;
-        ID_Enable_HI = 1'b0;
-        ID_Enable_LO = 1'b0;
+        ID_Enable_HI = 1'b1;
+        ID_Enable_LO = 1'b1;
         ID_MEM_Enable = 1'b0;
         conditional_inconditional = 1'b0; // 0 cuando es conditional 1 cuando es unconditional
         r31 = 1'b0; 
@@ -218,8 +218,8 @@ module PPU_Control_Unit (
         ID_MEM_Size = 2'b00;
         ID_MEM_RW = 1'b0;
         ID_MEM_SE = 1'b0;
-        ID_Enable_HI = 1'b0;
-        ID_Enable_LO = 1'b0;
+        ID_Enable_HI = 1'b1;
+        ID_Enable_LO = 1'b1;
         ID_MEM_Enable = 1'b0;
         conditional_inconditional = 1'b0; 
         r31 = 1'b0; 
