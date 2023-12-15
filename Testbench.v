@@ -623,6 +623,7 @@ DataMemory dataMem(
 		address = 9'b000000000;
 		while (!$feof(fi)) begin
 			code = $fscanf(fi, "%b", data);
+			dataMem.Mem[address] = data;
 			address = address + 1;
 	end
 	$fclose(fi);
