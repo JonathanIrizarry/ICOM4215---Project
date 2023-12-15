@@ -456,22 +456,6 @@ TargetAddressMux addressMux(
 
 
 
-
-	//Preload Instruction Memory
-	initial begin
-		fi = $fopen("input.txt","r");
-		address = 9'b000000000;
-		while (!$feof(fi)) begin
-			code = $fscanf(fi, "%b", data);
-			imem.Mem[address] = data;
-			//$display("instruction memory = %b", imem.Mem[address]);
-			address = address + 1;
-	end
-	$fclose(fi);
-	end
-	
-
-
 PPU_Control_Unit control_unit(
     .instruction(instruction_wire_out),
     .control_signals(control_signals_wire)
@@ -621,17 +605,19 @@ DataMemory dataMem(
 );
 
 
-	//Preload Data Memory
+	//Preload Instruction Memory & Data Memory
 	initial begin
 		fi = $fopen("input.txt","r");
 		address = 9'b000000000;
 		while (!$feof(fi)) begin
 			code = $fscanf(fi, "%b", data);
+			imem.Mem[address] = data;
 			dataMem.Mem[address] = data;
 			address = address + 1;
 	end
 	$fclose(fi);
 	end
+
 
 mux_4x1 mux_Mem(
   .Y(mux_Mem_Out),
