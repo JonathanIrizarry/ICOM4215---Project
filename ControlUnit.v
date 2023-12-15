@@ -119,12 +119,12 @@ module PPU_Control_Unit (
         destination = 1'b0; //bit 18
     end else if (instruction[31:26] == JAL_OP) begin// Handle JAL_OP case
         
-        ID_SourceOperand_3bits = 3'b011; //poner 0
-        ID_ALU_OP = 4'b1100; //poner 0
+        ID_SourceOperand_3bits = 3'b011; 
+        ID_ALU_OP = 4'b1100; 
         ID_Load_Instr = 1'b0;
         ID_RF_Enable = 1'b1;
         ID_B_Instr = 1'b0;
-        ID_TA_Instr = 1'b0;
+        ID_TA_Instr = 1'b1; //1
         ID_MEM_Size = 2'b00;
         ID_MEM_RW = 1'b0;
         ID_MEM_SE = 1'b0;
@@ -138,8 +138,8 @@ module PPU_Control_Unit (
     end else if (instruction[31:26] == LUI_OP) begin// Handle LUI_OP case
         
         ID_SourceOperand_3bits = 3'b101;
-        ID_ALU_OP = 4'b1011; //puede ser 1100
-        ID_Load_Instr = 1'b0;  //no se
+        ID_ALU_OP = 4'b1011; 
+        ID_Load_Instr = 1'b0; 
         ID_RF_Enable = 1'b1;
         ID_B_Instr = 1'b0;
         ID_TA_Instr = 1'b0;
@@ -149,27 +149,27 @@ module PPU_Control_Unit (
         ID_Enable_HI = 1'b0;
         ID_Enable_LO = 1'b0;
         ID_MEM_Enable = 1'b0;
-        conditional_inconditional = 1'b0; //bit 21
-        r31 = 1'b0; // bit 20
-        unconditional_Jump = 1'b0; //bit 19
-        destination = 1'b0; //bit 18
+        conditional_inconditional = 1'b0; 
+        r31 = 1'b0; 
+        unconditional_Jump = 1'b0;
+        destination = 1'b0; 
     end else if ((instruction[31:26] == R_TYPE) && (instruction[5:0] == JR_Funct)) begin
          ID_SourceOperand_3bits = 3'b000;
         ID_ALU_OP = 4'b0000;
         ID_Load_Instr = 1'b0;
         ID_RF_Enable = 1'b0;
         ID_B_Instr = 1'b0;
-        ID_TA_Instr = 1'b0;
+        ID_TA_Instr = 1'b0; 
         ID_MEM_Size = 2'b00;
         ID_MEM_RW = 1'b0;
         ID_MEM_SE = 1'b0;
         ID_Enable_HI = 1'b0;
         ID_Enable_LO = 1'b0;
         ID_MEM_Enable = 1'b0;
-        conditional_inconditional = 1'b1; //bit 21
-        r31 = 1'b0; // bit 20
-        unconditional_Jump = 1'b1; //bit 19
-        destination = 1'b0; //bit 18
+        conditional_inconditional = 1'b1; 
+        r31 = 1'b0; 
+        unconditional_Jump = 1'b1; 
+        destination = 1'b0; 
 
         
     end else if (instruction[31:26] == SB_OP) begin
@@ -179,7 +179,7 @@ module PPU_Control_Unit (
         ID_Load_Instr = 1'b0;
         ID_RF_Enable = 1'b0;
         ID_B_Instr = 1'b0;
-        ID_TA_Instr = 1'b0;
+        ID_TA_Instr = 1'b0; 
         ID_MEM_Size = 2'b00;
         ID_MEM_RW = 1'b0;
         ID_MEM_SE = 1'b0;
@@ -196,8 +196,8 @@ module PPU_Control_Unit (
         ID_ALU_OP = 4'b1001; //checquea si rs que es puerto A es mayor que 0
         ID_Load_Instr = 1'b0;
         ID_RF_Enable = 1'b0;
-        ID_B_Instr = 1'b1; //creo
-        ID_TA_Instr = 1'b0;
+        ID_B_Instr = 1'b1; 
+        ID_TA_Instr = 1'b1; // 1
         ID_MEM_Size = 2'b00;
         ID_MEM_RW = 1'b0;
         ID_MEM_SE = 1'b0;
@@ -213,8 +213,8 @@ module PPU_Control_Unit (
         ID_ALU_OP = 4'b0000;
         ID_Load_Instr = 1'b0;
         ID_RF_Enable = 1'b0;
-        ID_B_Instr = 1'b0;
-        ID_TA_Instr = 1'b0;
+        ID_B_Instr = 1'b1;
+        ID_TA_Instr = 1'b1; //debe ser uno creo
         ID_MEM_Size = 2'b00;
         ID_MEM_RW = 1'b0;
         ID_MEM_SE = 1'b0;

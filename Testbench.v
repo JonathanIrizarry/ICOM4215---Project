@@ -674,7 +674,7 @@ MEMWB_Stage wb_instance(
     #37 S = 1'b1;
 
     
-    #8 $finish;
+    #20 $finish;
   end
 
  always begin
@@ -714,15 +714,14 @@ MEMWB_Stage wb_instance(
 
  
 
-  // $monitor("\n\n\nLogicBoxMux: %d\n---------------------------------\
-  //           \n EXTA: %d\n---------------------------------\
-  //            \nID_TA: %d\n---------------------------------\
-  //         \nrs: %d\n---------------------------------\
-  //       \n IFMUX: %d | logic box out: %b \
+  // $monitor("\n\n\n \n-\
+  //           \n EXTA: %d |ID_TA:%d| rs: %d \n--\
+  //         \n  IFMUXOut : %d | nPc: %d | LogicMuxOut/Pc: %d | address: %d \
+  //         \n Instruction: %b    \n-----\
   //       \n--------------------------------------------------",
-  //        pc_wire_in,
-  //       targetAddress_out, targetAddress_in, mux_PA_out , if_mux_out , logicBox_mux_out
-                           //     );
+  //       targetAddress_out, targetAddress_in, mux_PA_out, if_mux_out, npc_wire_out,pc_wire_in, rt_out,instruction_wire_out 
+         
+  //                              );
 
 
 
