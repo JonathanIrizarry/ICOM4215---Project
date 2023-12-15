@@ -16,7 +16,7 @@ module EXMEM_Stage (
     output reg load_instr_reg,
     output reg rf_enable_reg,
     output reg [8:0] MEM_PC8_out,
-    output reg [31:0] MEM_ALU_out,
+    output reg [8:0] MEM_ALU_out,
     output reg [31:0] MEM_PA_out,
     output reg [15:11] MEM_rd_out,
      //changed from 31:0 to 8:0
@@ -36,7 +36,7 @@ module EXMEM_Stage (
 			rf_enable_reg <= 1'b0;
 			control_signals_out <= 22'b0;
             MEM_PA_out <= 32'b0;
-             MEM_ALU_out <= 32'b0;
+             MEM_ALU_out <= 9'b0;
              MEM_rd_out <= 5'b0;
              MEM_PC8_out <= 32'b0;
              MEM_R31_out <= 32'b0;
