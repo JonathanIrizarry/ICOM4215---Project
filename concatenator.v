@@ -5,7 +5,7 @@ module concatenator(
 );
 
 always @* begin
-    concatenated_result = {high_bits,low_bits};
+    concatenated_result = { low_bits, high_bits};
 end
 
 endmodule
