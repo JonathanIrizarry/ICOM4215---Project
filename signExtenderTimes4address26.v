@@ -1,5 +1,5 @@
-module signExtenderTimes4imm16( 
-    output reg [31:0] extended,
+module signExtenderTimes4address26( 
+    output reg [27:0] extended,
     input [25:0] extend
     );
 

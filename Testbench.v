@@ -19,7 +19,7 @@
 `include "DataMemory.v"
 `include "concatenator.v"
 `include "signExtenderTimes4address26.v"
-//`include "signExtenderTimes4imm16.v"
+`include "signExtenderTimes4imm16.v"
 `include "plus4AdderForPCSignal.v"
 `include "adderForTASignal.v"
 `include "adderPCAndEight.v"
@@ -156,7 +156,7 @@ wire [31:0] pb;
 
 //concatenator wires
 wire[8:0] pcPlusFourLastBits;
-wire[31:0] fourTimesAddressTwentySix;
+wire[27:0] fourTimesAddressTwentySix;
 wire[31:0] concatenated_result_out;
 
 //adderForTASignal wires
@@ -196,7 +196,7 @@ adderPCAndEight adderPCAndEight(
 
 concatenator concatenator(
 .high_bits(fourTimesAddressTwentySix),
-.low_bits(pcPlusFourLastBits),
+.low_bits(pcPlusFourLastBits[8:5]),
 .concatenated_result(concatenated_result_out)
 );
 
@@ -206,12 +206,12 @@ adderForTASignal adderForTASignal(
 .operandSmall(pcPlusFour)
 );
 
-signExtenderTimes4imm16 signExtenderTimes4imm16(
+signExtenderTimes4imm16 signExtenderTimes4imm16inbst(
 .extended(fourTimesimmSixteen),
 .extend(imm16_out)
 );
 
-signExtenderTimes4imm16 signExtenderTimes4address26(
+signExtenderTimes4address26 signExtenderTimes4address26inst(
 .extended(fourTimesAddressTwentySix),
 .extend(address_26_out)
 );
@@ -503,39 +503,43 @@ HazardForwardingUnit hazardUnit(
 );
 
 mux_4x1 mux_r31(
+  .Y(mux_out_ID_r31), 
 	.S({mux_out_wire[20], mux_out_wire[18]}), //select
 	.I0(rt_out),
 	.I1(rd_out),
 	.I2(),
-	.I3(5'b11111),
-	.Y(mux_out_ID_r31) //output
+	.I3(5'b11111)
+	//output
 );
 
 
 mux_4x1 mux_PA(
+  .Y(mux_PA_out),
 	.S(hazardUnit_mux1), //select
 	.I0(mux_WB_out),
 	.I1(mux_Mem_Out),
 	.I2(alu_out),
-	.I3(pa),
-	.Y(mux_PA_out) //output
+	.I3(pa)
+	 //output
 );
 
 mux_4x1 mux_PB(
+  .Y(mux_PB_out),
 	.S(hazardUnit_mux2), //select
 	.I0(mux_WB_out),
 	.I1(mux_Mem_Out),
 	.I2(alu_out),
-	.I3(pb),
-	.Y(mux_PB_out) //output
+	.I3(pb)
+	 //output
 );
 
 
 IFID_Stage if_instance(
     .clk(clk),
     .reset(reset),
-	.le(IFID_LE),
-	.logicbox(), // Falta output de Logicbox aqui
+	  .le(IFID_LE),
+    .input_pc(pc_wire_out[8:0]),
+	  .logicbox(), // Falta output de Logicbox aqui
     .instruction_in(DataOut),
     .instruction_out(instruction_wire_out),
     .address_26(address_26_out),
@@ -623,19 +627,21 @@ DataMemory dataMem(
 		address = 9'b000000000;
 		while (!$feof(fi)) begin
 			code = $fscanf(fi, "%b", data);
+      dataMem.Mem[address] = data;
 			address = address + 1;
 	end
 	$fclose(fi);
 	end
 
 mux_4x1 mux_Mem(
+  .Y(mux_Mem_Out),
     .S(mem_load_instr_reg), 
     .I0(mem_alu_out), 
 	.I1(mem_pc8_out), //replacing with input PC8
 	//.PC8(mem_pc8_out),
 	.I2(dataMem_Out),
-	.I3(),
-	.Y(mux_Mem_Out)
+	.I3()
+	
 );
 
 MEMWB_Stage wb_instance(
@@ -676,38 +682,47 @@ MEMWB_Stage wb_instance(
 	end
 
 	initial begin
-		// $monitor("\n\n\nPC: %d\n---------------------------------\
-		// 	\nAddress: %b\n--------------------------------------\
-		// 	\nR5: %d | R6: %d\
-		// 	\nR16: %d | R17: %d\
-		// 	\nR18: %d\
-		// 	\n--------------------------------------------------",
-		// 	pc_wire_out,
-		// 	rt_out,
-		// 	Q5, Q6, Q16, Q17, Q18);
+		$monitor("\n\n\nPC: %d\n---------------------------------\
+			\nAddress: %d\n--------------------------------------\
+			\nR5: %d | R6: %d\
+			\nR16: %d | R17: %d\
+			\nR18: %d\ | Instruction: %b\
+			\n--------------------------------------------------",
+			pc_wire_out,
+			rt_out,
+			Q5, Q6, Q16, Q17, Q18,instruction_wire_out);
 
-$monitor("\n\n\nPC: %d\n---------------------------------\
-        \nAddress: %b\n--------------------------------------\
-        \nR0: %d | R1: %d | R2: %d | R3: %d\
-        \nR4: %d | R5: %d | R6: %d | R7: %d\
-        \nR8: %d | R9: %d | R10: %d | R11: %d\
-        \nR12: %d | R13: %d | R14: %d | R15: %d\
-        \nR16: %d | R17: %d | R18: %d | R19: %d\
-        \nR20: %d | R21: %d | R22: %d | R23: %d\
-        \nR24: %d | R25: %d | R26: %d | R27: %d\
-        \nR28: %d | R29: %d | R30: %d | R31: %d\
-        \n Edecoder: %b | PW: %b | C: %b | RF: %b\
-        \n--------------------------------------------------",
-        pc_wire_out,
-        rt_out,
-        Q0, Q1, Q2, Q3, Q4, Q5, Q6, Q7, Q8, Q9,
-        Q10, Q11, Q12, Q13, Q14, Q15, Q16, Q17, Q18, Q19,
-        Q20, Q21, Q22, Q23, Q24, Q25, Q26, Q27, Q28, Q29,
-        Q30, Q31, E, mux_WB_out, r31_mux_outWb , MEM_rf_enable_reg );
-
-
+// $monitor("\n\n\nPC: %d\n---------------------------------\
+//         \nAddress: %b\n--------------------------------------\
+//         \nR0: %d | R1: %d | R2: %d | R3: %d\
+//         \nR4: %d | R5: %d | R6: %d | R7: %d\
+//         \nR8: %d | R9: %d | R10: %d | R11: %d\
+//         \nR12: %d | R13: %d | R14: %d | R15: %d\
+//         \nR16: %d | R17: %d | R18: %d | R19: %d\
+//         \nR20: %d | R21: %d | R22: %d | R23: %d\
+//         \nR24: %d | R25: %d | R26: %d | R27: %d\
+//         \nR28: %d | R29: %d | R30: %d | R31: %d\
+//         \n Edecoder: %b | PW: %b | C: %b | RF: %b\
+//         \n--------------------------------------------------",
+//         pc_wire_out,
+//         rt_out,
+//         Q0, Q1, Q2, Q3, Q4, Q5, Q6, Q7, Q8, Q9,
+//         Q10, Q11, Q12, Q13, Q14, Q15, Q16, Q17, Q18, Q19,
+//         Q20, Q21, Q22, Q23, Q24, Q25, Q26, Q27, Q28, Q29,
+//         Q30, Q31, E, mux_WB_out, r31_mux_outWb , MEM_rf_enable_reg );
 
 
+ 
+
+  // $monitor("\n\n\nLogicBoxMux: %d\n---------------------------------\
+  //           \n EXTA: %d\n---------------------------------\
+  //            \nID_TA: %d\n---------------------------------\
+  //         \nrs: %d\n---------------------------------\
+  //       \n IFMUX: %d | logic box out: %b \
+  //       \n--------------------------------------------------",
+  //        pc_wire_in,
+  //       targetAddress_out, targetAddress_in, mux_PA_out , if_mux_out , logicBox_mux_out
+                           //     );
 
 
 

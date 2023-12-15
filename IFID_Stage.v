@@ -35,16 +35,19 @@ module IFID_Stage (
                     rd <= instruction_in[15:11];
                     rs <= instruction_in[25:21];
                     rt <= instruction_in[20:16];
+                    PC<= input_pc;
 
                 end else if(instruction_in[31:26] == 6'b000011) begin
                     address_26 <= instruction_in[25:0];
                     opcode <= instruction_in[31:26];
+                    PC<= input_pc;
 
                 end else begin
                     opcode <= instruction_in[31:26];
                     rs <= instruction_in[25:21];
                     rt <= instruction_in[20:16];
                     imm16 <= instruction_in[15:0];
+                    PC<= input_pc;
     
                 end
 

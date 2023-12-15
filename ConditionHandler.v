@@ -68,7 +68,7 @@ endmodule
 module IF_Mux(
     input [31:0] EX_TA,
     input [31:0] ID_TA,   
-    input [5:0] rs,
+    input [31:0] rs,
     input TA_instruction, 
     input conditional_inconditional, // se anade esta senal pa determinar cual pasa entre ambas 
     output reg [31:0]mux_out
@@ -83,7 +83,7 @@ always @* begin
       mux_out <= ID_TA;
 
     end else if(TA_instruction == 1'b0 && conditional_inconditional == 1'b1) begin
-        mux_out = {26'b0 , rs};
+        mux_out = rs;
     end
 
 
