@@ -42,6 +42,12 @@ module PPU_Control_Unit (
     parameter BGEZ_OP = 6'b000001;
     parameter B_OP = 6'b000100;
     parameter LB_OP = 6'b100000;
+	parameter LHU_OP = 6'b100101;
+	parameter LW_OP = 6'b100011;
+	parameter LH_OP = 6'b100001;
+	parameter SW_OP = 6'b101011;
+	parameter SH_OP = 6'b101001;
+	
 
 
 
@@ -245,6 +251,100 @@ module PPU_Control_Unit (
         unconditional_Jump = 1'b0; //bit 19
         destination = 1'b1; //bit 18
 
+	end else if(instruction[31:26] == LW_OP) begin
+        
+        ID_SourceOperand_3bits = 3'b100;
+        ID_ALU_OP = 4'b0000; 
+        ID_Load_Instr = 1'b1;
+        ID_RF_Enable = 1'b1;
+        ID_B_Instr = 1'b0;
+        ID_TA_Instr = 1'b0;
+        ID_MEM_Size = 2'b10;
+        ID_MEM_RW = 1'b0;
+        ID_MEM_SE = 1'b1;  //0 
+        ID_Enable_HI = 1'b1;
+        ID_Enable_LO = 1'b0;
+        ID_MEM_Enable = 1'b1;
+        conditional_inconditional = 1'b0; //bit 21
+        r31 = 1'b1; // bit 20
+        unconditional_Jump = 1'b0; //bit 19
+        destination = 1'b1; //bit 18
+		
+	end else if(instruction[31:26] == LH_OP) begin
+        
+        ID_SourceOperand_3bits = 3'b100;
+        ID_ALU_OP = 4'b0000; 
+        ID_Load_Instr = 1'b1;
+        ID_RF_Enable = 1'b1;
+        ID_B_Instr = 1'b0;
+        ID_TA_Instr = 1'b0;
+        ID_MEM_Size = 2'b01;
+        ID_MEM_RW = 1'b0;
+        ID_MEM_SE = 1'b1;  //0 
+        ID_Enable_HI = 1'b1;
+        ID_Enable_LO = 1'b0;
+        ID_MEM_Enable = 1'b1;
+        conditional_inconditional = 1'b0; //bit 21
+        r31 = 1'b1; // bit 20
+        unconditional_Jump = 1'b0; //bit 19
+        destination = 1'b1; //bit 18
+
+	end else if(instruction[31:26] == LHU_OP) begin
+        
+        ID_SourceOperand_3bits = 3'b100;
+        ID_ALU_OP = 4'b0000; 
+        ID_Load_Instr = 1'b1;
+        ID_RF_Enable = 1'b1;
+        ID_B_Instr = 1'b0;
+        ID_TA_Instr = 1'b0;
+        ID_MEM_Size = 2'b01;
+        ID_MEM_RW = 1'b0;
+        ID_MEM_SE = 1'b0;  //0 
+        ID_Enable_HI = 1'b1;
+        ID_Enable_LO = 1'b0;
+        ID_MEM_Enable = 1'b1;
+        conditional_inconditional = 1'b0; //bit 21
+        r31 = 1'b1; // bit 20
+        unconditional_Jump = 1'b0; //bit 19
+        destination = 1'b1; //bit 18
+		
+	end else if(instruction[31:26] == SW_OP) begin
+        
+        ID_SourceOperand_3bits = 3'b100;
+        ID_ALU_OP = 4'b0000; 
+        ID_Load_Instr = 1'b1;
+        ID_RF_Enable = 1'b1;
+        ID_B_Instr = 1'b0;
+        ID_TA_Instr = 1'b0;
+        ID_MEM_Size = 2'b10;
+        ID_MEM_RW = 1'b1;
+        ID_MEM_SE = 1'b0;  //0 
+        ID_Enable_HI = 1'b1;
+        ID_Enable_LO = 1'b0;
+        ID_MEM_Enable = 1'b1;
+        conditional_inconditional = 1'b0; //bit 21
+        r31 = 1'b1; // bit 20
+        unconditional_Jump = 1'b0; //bit 19
+        destination = 1'b1; //bit 18
+
+	end else if(instruction[31:26] == SH_OP) begin
+        
+        ID_SourceOperand_3bits = 3'b100;
+        ID_ALU_OP = 4'b0000; 
+        ID_Load_Instr = 1'b1;
+        ID_RF_Enable = 1'b1;
+        ID_B_Instr = 1'b0;
+        ID_TA_Instr = 1'b0;
+        ID_MEM_Size = 2'b01;
+        ID_MEM_RW = 1'b1;
+        ID_MEM_SE = 1'b0;  //0 
+        ID_Enable_HI = 1'b1;
+        ID_Enable_LO = 1'b0;
+        ID_MEM_Enable = 1'b1;
+        conditional_inconditional = 1'b0; //bit 21
+        r31 = 1'b1; // bit 20
+        unconditional_Jump = 1'b0; //bit 19
+        destination = 1'b1; //bit 18
 
 
     end

@@ -149,15 +149,6 @@ endmodule
 
 
 
-
-
-
-
-
-
-
-
-
 //REGISTER - The register takes care of charging the data in D to the Q output register.
 //Ld signal will indicate the register that isn't 0 and make Q the output for the bits in the register.
 //clk is the clock that syncs the register with the rest.
