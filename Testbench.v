@@ -429,7 +429,7 @@ ALU alu_inst(
 Condition_Handler condition_Instance(
   .B_instr(ex_wire[8]),
   .opcode(opcode_out_Ex),
-  .flag(), //input 
+  .flag({alu_Z,alu_N}), //input 
   .rt(rt_out_Ex),
   .handler_Out(Condition_handler_out)
 );
@@ -656,8 +656,8 @@ mux_4x1 mux_Mem(
   .S(mem_wire[2:1]), // 1 bitmem_load_instr_reg
   .I0(mem_alu_out), 
 	.I1(mem_pc8_out), //replacing with input PC8
-	.I2(dataMem_Out),  // arreglar esdto
-  .I3()
+	.I2(dataMem_Out),    // arreglar esdto
+  .I3(32'b0)
 	 
 );
 
@@ -699,12 +699,11 @@ MEMWB_Stage wb_instance(
 	end
 
 	initial begin
-		$monitor("\n\n\nPC: %d |Address: %d | R5: %d | R6: %d | R16: %d | R17: %d | R18: %d | Instruction: %b \
-			\n\n PW: %d  | ALU: %d |  PC8: %d | datamem: %d | muxA: %d | muxB: %d | pa: %d | pb: %d | mux1Cntr: %b --------------------------------------\
-		   \n alu_out: %d \                                         ",
+		$monitor("\n\n\nPC: %d |Address: %d | R5: %d | R6: %d | R16: %d | R17: %d | R18: %d | mux_WB_out: %d \
+			\n\n  dataMem_Out: %d \                                     ",
 			pc_wire_out,
 			rt_out,
-			Z5, Z6, Z16, Z17, Z18,instruction_wire_out , mux_Mem_Out, mem_alu_out, mem_pc8_out, dataMem_Out, mux_PA_out, mux_PB_out, pa, pb, hazardUnit_mux1, alu_out );
+			Z5, Z6, Z16, Z17, Z18, mux_WB_out, dataMem_Out);
 
       // 		$monitor("\n\n\nPC: %d |Address: %d | R5: %d | R6: %d | R16: %d | R17: %d | R18: %d \                                       ",
 			// pc_wire_out,
