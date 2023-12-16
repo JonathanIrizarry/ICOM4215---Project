@@ -7,7 +7,7 @@ module PC_Register (
 );
 
     // PC register logic
-    always @(posedge clk or posedge reset) begin
+    always @(posedge clk) begin
         if (reset) begin
             // Reset: Set all bits to 0
             pc_out <= 32'b0;

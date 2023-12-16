@@ -27,6 +27,8 @@
 
 module Pipeline_TB;
 
+
+	wire [31:0] dummy;
   // Define parameters
 	reg clk, reset, S;
 	wire [31:0] test_instruction;
@@ -384,7 +386,7 @@ NPC_Register npc_instance(
     .clk(clk),
     .reset(reset),
     .npc_in(adder_wire_out),
-	  .le_npc(PC_LE),
+	  .le_npc(1'b1),
     .npc_out(npc_wire_out)
 );
 
@@ -397,7 +399,7 @@ PC_Register pc_instance(
     .clk(clk),
     .reset(reset),
     .pc_in(pc_wire_in),
-	  .le_pc(PC_LE),
+	  .le_pc(1'b1),
     .pc_out(pc_wire_out)  
 );
 
@@ -486,7 +488,7 @@ TargetAddressMux addressMux(
 
 
 PPU_Control_Unit control_unit(
-    .instruction(instruction_wire_out),
+    .instruction(/*instruction_wire_out*/ dummy),
     .control_signals(control_signals_wire)
   );    
 
@@ -503,11 +505,11 @@ HazardForwardingUnit hazardUnit(
 	.rt(rt_out),
 	.EX_load_instr(ID_load_instr_reg),
 	.EX_RF_Enable(ID_rf_enable_reg),
-	.MEM_RF_Enable(EX_rf_enable_reg),
+	.MEM_RF_Enable(mem_rf_enable_reg),
 	.WB_RF_Enable(MEM_rf_enable_reg),
-	.rd_ex(rd_out_Ex),
-	.rd_mem(rd_out_Mem),
-	.rd_wb(rd_out_Wb),
+	.rd_ex(r31_mux_outEx),
+	.rd_mem(r31_mux_outMem),
+	.rd_wb(r31_mux_outWb),
 	.mux1_select(hazardUnit_mux1),
 	.mux2_select(hazardUnit_mux2),
 	.control_select(hazardUnit_control_mux),
@@ -518,7 +520,7 @@ HazardForwardingUnit hazardUnit(
 mux_4x1 mux_r31(
   .Y(mux_out_ID_r31), 
 	.S({mux_out_wire[18], mux_out_wire[20]}), //select
-	.I0(32'b0),
+	.I0(5'b0),
 	.I1(5'b11111),
 	.I2(rd_out),
 	.I3(rt_out)
@@ -554,7 +556,7 @@ IFID_Stage if_instance(
     .input_pc(pc_wire_out[8:0]),
 	  .logicbox(), // Falta output de Logicbox aqui
     .instruction_in(DataOut),
-    .instruction_out(instruction_wire_out),
+    .instruction_out(/*instruction_wire_out*/ dummy),
     .address_26(address_26_out),
     .PC(PC_out),
     .rs(rs_out),
@@ -682,33 +684,22 @@ MEMWB_Stage wb_instance(
   
   initial begin
    
-    clk <= 1'b0;
-    reset <= 1'b1;
-    S <= 1'b0;
+    clk = 1'b0;
+    reset = 1'b1;
     
     #3 reset = 1'b0;
    
-    //#37 S = 1'b1;
-
-    
-    #100 $finish;
+	#100
+	//$display("Word at Address 52: %b", {dataMem.Mem[9'b000110100],dataMem.Mem[9'b000110101],dataMem.Mem[9'b000110110],dataMem.Mem[9'b000110111]});
+    #1 $finish;
   end
 
- always begin
-		#2 clk = ~clk; // Invert the clock every 2 time unit
+
+ initial begin
+		forever #2 clk = ~clk; // Invert the clock every 2 time unit
 	end
 
 	initial begin
-		// $monitor("\n\n\nPC: %d |Address: %d | R5: %d | R6: %d | R16: %d | R17: %d | R18: %d | mux_WB_out: %d \
-			// \n\n  dataMem_Out: %d \                                     ",
-			// pc_wire_out,
-			// rt_out,
-			// Z5, Z6, Z16, Z17, Z18, mux_WB_out, dataMem_Out);
-
-      // 		$monitor("\n\n\nPC: %d |Address: %d | R5: %d | R6: %d | R16: %d | R17: %d | R18: %d \                                       ",
-			// pc_wire_out,
-			// rt_out,
-			// Z5, Z6, Z16, Z17, Z18 );
 
 // $monitor("\n\n\nPC: %d\n---------------------------------\
 //         \nAddress: %b\n--------------------------------------\
@@ -730,31 +721,41 @@ MEMWB_Stage wb_instance(
 //         Q30, Q31, E, mux_WB_out, r31_mux_outWb , MEM_rf_enable_reg );
 
 
+
+
 $monitor("\n\n\nPC: %d\n---------------------------------\
-        \nAddress: %b\n--------------------------------------\
-        \nR5: %d | R6: %d\
-        \nR16: %d | R17: %d\
-		\nR18: %d\
+        \nSelect: %b\
+        \nI0: %d | I1: %d\
+        \nI2: %d | I3: %d\
+		\nOutput: %d\
+		\nAlu_A: %b | Alu_B: %b\
+		\nAlu_Op: %b | Alu_Out: %b\
+		\nimm16_EX: %b\
+		\nimm16_ID: %b\
+		\ninstr_IFID: %b\
+		\ninstr_in: %b\
         \n--------------------------------------------------",
         pc_wire_out,
-        mem_alu_out,
-        Q5, Q6,
-        Q16, Q17, Q18);
- 
-
-  // $monitor("\n\n\n \n-\
-  //           \n EXTA: %d |ID_TA:%d| rs: %d \n--\
-  //         \n  IFMUXOut : %d | nPc: %d | LogicMuxOut/Pc: %d | address: %d \
-  //         \n Instruction: %b    \n-----\
-  //       \n--------------------------------------------------",
-  //       targetAddress_out, targetAddress_in, mux_PA_out, if_mux_out, npc_wire_out,pc_wire_in, rt_out,instruction_wire_out 
-         
-  //                              );
+        hazardUnit_mux1,
+        pa, alu_out,
+        mux_Mem_Out, mux_WB_out, mux_PA_out, PA_out_Ex,
+		N_ALU, alu_op_reg, alu_out, imm16_out_Ex, imm16_out,
+		dummy, DataOut
+		);
 
 
+// $monitor("\n\n\nPC: %d\n---------------------------------\
+        // \nAddress: %b\n--------------------------------------\
+        // \nR5: %d | R6: %d\
+        // \nR16: %d | R17: %d\
+		// \nR18: %d\
+        // \n--------------------------------------------------",
+        // pc_wire_out,
+        // mem_alu_out,
+        // Q5, Q6,
+        // Q16, Q17, Q18);
 
-
-	end
+	 end
 
 
  // Printing Data from each phase

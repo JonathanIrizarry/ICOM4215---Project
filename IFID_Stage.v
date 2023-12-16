@@ -3,7 +3,7 @@ module IFID_Stage (
     input reset,
 	input le,
 	input [8:0] input_pc,
-	input logicbox,
+	input logicbox, //can be removed
     input wire [31:0] instruction_in,
     output reg [31:0] instruction_out,
     output reg [25:0] address_26, // bit 25:0 de instruction 
@@ -16,7 +16,7 @@ module IFID_Stage (
     //output reg [16:0] control_signals_out
 );
 
-    always @(posedge clk or posedge reset) begin
+    always @(posedge clk) begin
 		if (reset) begin
 				instruction_out <= 32'b0;
                 
@@ -29,8 +29,17 @@ module IFID_Stage (
                address_26 <= 26'b0;
 			end else if (le) begin
 				instruction_out <= instruction_in; 
-////////////////////////////////////////////////////////////////////////////////////////////////////////
-                PC<= input_pc;
+                PC <= input_pc;
+				opcode <= instruction_in[31:26];
+                rs <= instruction_in[25:21];
+                rt <= instruction_in[20:16];
+                imm16 <= instruction_in[15:0];
+				rd <= instruction_in[15:11];
+				address_26 <= instruction_in[25:0];
+				
+			end
+			end
+				
 //        case(instruction_in[31:26])
 //     // ADDIU
 //     6'b001001: begin
@@ -143,39 +152,39 @@ module IFID_Stage (
 
 
                 //////////////////////////////////////////////////////////////////////////////////////
-             if(instruction_in[31:26] == 6'b0) begin
-                    opcode <= instruction_in[31:26];
-                    rd <= instruction_in[15:11];
-                    rs <= instruction_in[25:21];
-                    rt <= instruction_in[20:16];
+             // if(instruction_in[31:26] == 6'b0) begin
+                    // opcode <= instruction_in[31:26];
+                    // rd <= instruction_in[15:11];
+                    // rs <= instruction_in[25:21];
+                    // rt <= instruction_in[20:16];
                    
 
-                    address_26 <= 26'b0;
-                    imm16 <= 16'b0;
-                end else if(instruction_in[31:26] == 6'b000011) begin
-                    address_26 <= instruction_in[25:0];
-                    opcode <= instruction_in[31:26];
+                    // address_26 <= 26'b0;
+                    // imm16 <= 16'b0;
+                // end else if(instruction_in[31:26] == 6'b000011) begin
+                    // address_26 <= instruction_in[25:0];
+                    // opcode <= instruction_in[31:26];
 
                    
-                     rd <= 6'b0;
-                      rs <= 6'b0;
-                    rt <= 6'b0;
-                    imm16 <= 16'b0;
+                     // rd <= 6'b0;
+                      // rs <= 6'b0;
+                    // rt <= 6'b0;
+                    // imm16 <= 16'b0;
 
-                end else begin
-                    opcode <= instruction_in[31:26];
-                    rs <= instruction_in[25:21];
-                    rt <= instruction_in[20:16];
-                    imm16 <= instruction_in[15:0];
+                // end else begin
+                    // opcode <= instruction_in[31:26];
+                    // rs <= instruction_in[25:21];
+                    // rt <= instruction_in[20:16];
+                    // imm16 <= instruction_in[15:0];
 
                    
-                    address_26 <= 26'b0;
-                     rd <= 6'b0;
-                end
+                    // address_26 <= 26'b0;
+                     // rd <= 6'b0;
+                // end
 
 
 
-        end
-    end
+        // end
+
 	
 endmodule

@@ -9,7 +9,7 @@ module Operand2Handler(
 );
 
 always @(*) begin
-    case(Si)
+    case(Si)	
         3'b000: N = PB;
         3'b001: N = HI;
         3'b010: N = LO;
@@ -18,6 +18,7 @@ always @(*) begin
         3'b101: N = {imm16,16'b0};
         default: N = 2'b00; 
     endcase
+	//$display("N = %b, imm16 = %b", N, imm16);
 end
 
 endmodule

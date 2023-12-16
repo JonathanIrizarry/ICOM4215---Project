@@ -47,3 +47,4 @@ always @ (*)
 					DataOut <= {Mem[Address], Mem[Address+1], Mem[Address+2], Mem[Address+3]};
 			endcase
 endmodule
+
