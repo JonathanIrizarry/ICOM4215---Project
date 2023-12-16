@@ -699,20 +699,16 @@ MEMWB_Stage wb_instance(
 	end
 
 	initial begin
-		$monitor("\n\n\nPC: %d |Address: %d | R5: %d | R6: %d | R16: %d | R17: %d | R18: %d | mux_WB_out: %d \
-			\n\n  dataMem_Out: %d \                                     ",
-			pc_wire_out,
-			rt_out,
-			Z5, Z6, Z16, Z17, Z18, mux_WB_out, dataMem_Out);
+		// $monitor("\n\n\nPC: %d |Address: %d | R5: %d | R6: %d | R16: %d | R17: %d | R18: %d | mux_WB_out: %d \
+			// \n\n  dataMem_Out: %d \                                     ",
+			// pc_wire_out,
+			// rt_out,
+			// Z5, Z6, Z16, Z17, Z18, mux_WB_out, dataMem_Out);
 
       // 		$monitor("\n\n\nPC: %d |Address: %d | R5: %d | R6: %d | R16: %d | R17: %d | R18: %d \                                       ",
 			// pc_wire_out,
 			// rt_out,
 			// Z5, Z6, Z16, Z17, Z18 );
-
-
-
-
 
 // $monitor("\n\n\nPC: %d\n---------------------------------\
 //         \nAddress: %b\n--------------------------------------\
@@ -734,6 +730,16 @@ MEMWB_Stage wb_instance(
 //         Q30, Q31, E, mux_WB_out, r31_mux_outWb , MEM_rf_enable_reg );
 
 
+$monitor("\n\n\nPC: %d\n---------------------------------\
+        \nAddress: %b\n--------------------------------------\
+        \nR5: %d | R6: %d\
+        \nR16: %d | R17: %d\
+		\nR18: %d\
+        \n--------------------------------------------------",
+        pc_wire_out,
+        mem_alu_out,
+        Q5, Q6,
+        Q16, Q17, Q18);
  
 
   // $monitor("\n\n\n \n-\
@@ -762,6 +768,11 @@ MEMWB_Stage wb_instance(
 		// // ADDIU
 		// 6'b001001: begin
 			// $display("\n Keyword: ADDIU, PC = %d, nPC = %d", pc_wire_out, npc_wire_out);
+			// end
+			
+		// // ADDI
+		// 6'b001000: begin
+			// $display("\n Keyword: ADDI, PC = %d, nPC = %d", pc_wire_out, npc_wire_out);
 			// end
   
 		// // LBU
@@ -793,7 +804,22 @@ MEMWB_Stage wb_instance(
 		// 6'b000100: begin
 			// $display("\n Keyword: B, PC = %d, nPC = %d", pc_wire_out, npc_wire_out);
 			// end
-
+		// // SLTI
+		// 6'b001010: begin
+			// $display("\n Keyword: SLTI, PC = %d, nPC = %d", pc_wire_out, npc_wire_out);
+			// end
+		// // SLTIU
+		// 6'b001011: begin
+			// $display("\n Keyword: SLTIU, PC = %d, nPC = %d", pc_wire_out, npc_wire_out);
+			// end
+		// // CLO & CLZ
+		// 6'b011100: begin
+			// // CLO
+			// if(instruction_wire_out[5:0] == 5'b100001) begin
+				// $display("\n Keyword: CLO, PC = %d, nPC = %d", pc_wire_out, npc_wire_out);
+			// end else if() begin
+			// end
+		
 		// // I
 		// 6'b000001: begin
 			// // BGEZ
@@ -801,7 +827,6 @@ MEMWB_Stage wb_instance(
 				// $display("\n Keyword: BGEZ, PC = %d, nPC = %d", pc_wire_out, npc_wire_out);
 			// end
 			// end
-		
 		// // R
 		// 6'b000000: begin
 			// // JR
@@ -810,9 +835,21 @@ MEMWB_Stage wb_instance(
 			// // SUBU
 			// end else if(instruction_wire_out[5:0] == 6'b100011) begin
 				// $display("\n Keyword: SUBU, PC = %d, nPC = %d", pc_wire_out, npc_wire_out);
+			// // SUB
+			// end else if(instruction_wire_out[5:0] == 6'b100010) begin
+				// $display("\n Keyword: SUB, PC = %d, nPC = %d", pc_wire_out, npc_wire_out);
 			// // ADDU
 			// end else if(instruction_wire_out[5:0] == 6'b100001) begin
 				// $display("\n Keyword: ADDU, PC = %d, nPC = %d", pc_wire_out, npc_wire_out);
+			// // ADD
+			// end else if(instruction_wire_out[5:0] == 6'b100000) begin
+				// $display("\n Keyword: ADDU, PC = %d, nPC = %d", pc_wire_out, npc_wire_out);
+			// // SLT
+			// end else if(instruction_wire_out[5:0] == 6'b101010) begin
+				// $display("\n Keyword: SLT, PC = %d, nPC = %d", pc_wire_out, npc_wire_out);
+			// // SLTU
+			// end else if(instruction_wire_out[5:0] == 6'b101011) begin
+				// $display("\n Keyword: SLTU, PC = %d, nPC = %d", pc_wire_out, npc_wire_out);
 			// // NOP
 			// end else if(instruction_wire_out[25:0] == 26'b0) begin
 				// $display("\n Keyword: NOP, PC = %d, nPC = %d", pc_wire_out, npc_wire_out);

@@ -622,7 +622,7 @@ module PPU_Control_Unit (
         r31 = 1'b0; // bit 20
         unconditional_Jump = 1'b0; //bit 19
         destination = 1'b1; //bit 18
-    en 
+    
 
 	end else if(instruction[31:26] == 6'b000000 && instruction[5:0] == 6'b100001) begin
         ID_SourceOperand_3bits = 3'b000;
@@ -659,7 +659,6 @@ module PPU_Control_Unit (
         r31 = 1'b0; // bit 20
         unconditional_Jump = 1'b0; //bit 19
         destination = 1'b0; //bit 18
-    end
 
 	//SLL
 	end else if(instruction[31:26] == 6'b000000 && instruction[5:0] == 6'b000000) begin
@@ -948,7 +947,7 @@ module PPU_Control_Unit (
         r31 = 1'b0; // bit 20
         unconditional_Jump = 1'b1; //bit 19
         destination = 1'b0; //bit 18
-
+	end
 
 	
     if(instruction == 32'b0  | instruction == 32'bx)begin
