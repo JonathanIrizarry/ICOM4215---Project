@@ -1,15 +1,30 @@
 module Condition_Handler(
     input B_instr,
     input [31:26] opcode,
-    input flag,   // Z and N los dos juntos?
+    input [1:0] flag,   // Z and N los dos juntos?
     input [4:0] rt, //bits 20:16 de instruction
     output reg  handler_Out
 );
 
 
 always @* begin
+    if(opcode == 6'b000001)begin
+        if(flag == 2'b01)begin //flag negative
+            handler_Out <= 1'b0;
+        end else begin
+            handler_Out <= B_instr;
+        end
+    end else if(opcode == 6'b000111) begin
+        if(flag == 2'b11 || flag == 2'b10)begin //flag negative
+            handler_Out <= 1'b0;
+        end else begin
+            handler_Out <= B_instr;
+        end
+    end else begin
+        handler_Out <= B_instr;
+    end
 
-    handler_Out <= B_instr;
+    
 end
 
 endmodule
