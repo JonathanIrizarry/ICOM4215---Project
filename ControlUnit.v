@@ -47,6 +47,7 @@ module PPU_Control_Unit (
 	parameter LH_OP = 6'b100001;
 	parameter SW_OP = 6'b101011;
 	parameter SH_OP = 6'b101001;
+	parameter SD_OP = 6'b111111;
 	
 
 
@@ -349,6 +350,42 @@ module PPU_Control_Unit (
 
     end
 
+	end else if(instruction[31:26] == 6'b000000 && instruction[5:0] == 6'b100001) begin
+        ID_SourceOperand_3bits = 3'b000;
+        ID_ALU_OP = 4'b0000;
+        ID_Load_Instr = 1'b0;
+        ID_RF_Enable = 1'b1;
+        ID_B_Instr = 1'b0;
+        ID_TA_Instr = 1'b0;
+        ID_MEM_Size = 2'b00;
+        ID_MEM_RW = 1'b0; // creo que es uno 
+        ID_MEM_SE = 1'b0;
+        ID_Enable_HI = 1'b0;
+        ID_Enable_LO = 1'b0;
+        ID_MEM_Enable = 1'b0;
+        conditional_inconditional = 1'b0; //bit 21
+        r31 = 1'b0; // bit 20
+        unconditional_Jump = 1'b0; //bit 19
+        destination = 1'b1; //bit 18
+
+    end else if(instruction[31:26] == SD_OP) begin
+        ID_SourceOperand_3bits = 3'b100;
+        ID_ALU_OP = 4'b0000; 
+        ID_Load_Instr = 1'b0;
+        ID_RF_Enable = 1'b0;
+        ID_B_Instr = 1'b0;
+        ID_TA_Instr = 1'b0;
+        ID_MEM_Size = 2'b00;
+        ID_MEM_RW = 1'b1;
+        ID_MEM_SE = 1'b0;  //0 
+        ID_Enable_HI = 1'b1;
+        ID_Enable_LO = 1'b1;
+        ID_MEM_Enable = 1'b1;
+        conditional_inconditional = 1'b0; //bit 21
+        r31 = 1'b0; // bit 20
+        unconditional_Jump = 1'b0; //bit 19
+        destination = 1'b0; //bit 18
+    end
 
 
 
