@@ -690,7 +690,7 @@ MEMWB_Stage wb_instance(
     #3 reset = 1'b0;
    
 	#140
-	//$display("Word at Address 52: %b", {dataMem.Mem[9'b000110100],dataMem.Mem[9'b000110101],dataMem.Mem[9'b000110110],dataMem.Mem[9'b000110111]});
+	$display("Word at Address 52: %b", {dataMem.Mem[9'b000110100],dataMem.Mem[9'b000110101],dataMem.Mem[9'b000110110],dataMem.Mem[9'b000110111]});
     #1 $finish;
   end
 
@@ -767,25 +767,25 @@ MEMWB_Stage wb_instance(
 // 		);
 
 
-// $monitor("\n\n\nPC: %d\n---------------------------------\
-        // \nAddress: %b\n--------------------------------------\
-        // \nR5: %d | R6: %d\
-        // \nR16: %d | R17: %d\
-		// \nR18: %d\
-        // \n--------------------------------------------------",
-        // pc_wire_out,
-        // mem_alu_out,
-        // Q5, Q6,
-        // Q16, Q17, Q18);
-
- 	  // end
-	  
-	  $monitor("PC: %d, R5: %d, R6: %d, R16: %d, R17: %d, R18: %d",
+$monitor("\n\n\nPC: %d\n---------------------------------\
+        \nAddress: %b\n--------------------------------------\
+        \nR5: %d | R6: %d\
+        \nR16: %d | R17: %d\
+		\nR18: %d\
+        \n--------------------------------------------------",
         pc_wire_out,
+        mem_alu_out,
         Q5, Q6,
         Q16, Q17, Q18);
 
  	  end
+	  
+	  // $monitor("PC: %d, R5: %d, R6: %d, R16: %d, R17: %d, R18: %d",
+        // pc_wire_out,
+        // Q5, Q6,
+        // Q16, Q17, Q18);
+
+ 	  // end
 
 
  // Printing Data from each phase
