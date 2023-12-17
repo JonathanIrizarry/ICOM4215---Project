@@ -244,7 +244,7 @@ module PPU_Control_Unit (
         ID_TA_Instr = 1'b0;
         ID_MEM_Size = 2'b00;
         ID_MEM_RW = 1'b0;
-        ID_MEM_SE = 1'b0;  //check 
+        ID_MEM_SE = 1'b1;  //check 
         ID_Enable_HI = 1'b1;
         ID_Enable_LO = 1'b0;
         ID_MEM_Enable = 1'b1;
