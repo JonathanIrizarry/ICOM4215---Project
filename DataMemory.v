@@ -1,9 +1,9 @@
 module DataMemory (
-output reg [31:0] DataOut, 
+output reg signed [31:0] DataOut, 
 input Enable, ReadWrite, SE, 
 input [1:0] Size, 
-input [8:0] Address, 
-input [31:0] DataIn
+input  [8:0] Address, 
+input signed [31:0] DataIn
 );
 reg [7:0] Mem[0:511]; //512 localizaciones de 32 bits
 always @ (*)
