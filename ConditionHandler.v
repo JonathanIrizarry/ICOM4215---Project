@@ -90,11 +90,11 @@ module IF_Mux(
 );
 
 always @* begin  
-    if(TA_instruction == 1'b1 && conditional_inconditional == 1'b1)begin
+    if(TA_instruction == 1'b1 && conditional_inconditional == 1'b0)begin
         mux_out <= EX_TA;   // cheuqear differencia entre id y EX TA
 
 
-    end else if(TA_instruction == 1'b1 && conditional_inconditional == 1'b0) begin
+    end else if(TA_instruction == 1'b1 && conditional_inconditional == 1'b1) begin
       mux_out <= ID_TA;
 
     end else if(TA_instruction == 1'b0 && conditional_inconditional == 1'b1) begin
