@@ -5,14 +5,14 @@ module IFID_Stage (
 	input [8:0] input_pc,
 	input logicbox, //can be removed
     input wire [31:0] instruction_in,
-    output reg [31:0] instruction_out,
-    output reg [25:0] address_26, // bit 25:0 de instruction 
+    output reg signed [31:0] instruction_out,
+    output reg signed [25:0] address_26, // bit 25:0 de instruction 
     output reg [8:0] PC, //bit8:0  entrada desde PC
-    output reg [25:21] rs, //bit 25:21
-    output reg [20:16] rt, //bit 20:16
-    output reg [15:0] imm16, //bit 15:0
+    output reg signed [25:21] rs, //bit 25:21
+    output reg signed [20:16] rt, //bit 20:16
+    output reg signed [15:0] imm16, //bit 15:0
     output reg [31:26] opcode, //bit 31:26
-    output reg [15:11] rd //bit 15:11
+    output reg signed [15:11] rd //bit 15:11
     //output reg [16:0] control_signals_out
 );
 

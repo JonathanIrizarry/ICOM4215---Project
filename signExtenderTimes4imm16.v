@@ -1,6 +1,6 @@
 module signExtenderTimes4imm16( 
-    output reg [31:0] extended,
-    input [15:0] extend
+    output reg signed [31:0] extended,
+    input signed [15:0] extend
     );
 
     always @* begin

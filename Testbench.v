@@ -442,13 +442,13 @@ IF_Mux if_mux_inst(
   .ID_TA(targetAddress_in), 
   .rs(mux_PA_out), //muxA output
   .TA_instruction(mux_out_wire[7]),
-  .conditional_inconditional( ex_wire[21]  /*mux_out_wire[21]*/),
+  .conditional_inconditional(  mux_out_wire[21] /*ex_wire[21]*/), //check 
   .mux_out(if_mux_out)
 );
 
 LogicBox logicBox_inst(
   .Handler_B_instr(Condition_handler_out),
-  .unconditional_jump_signal(mux_out_wire[21]),
+  .unconditional_jump_signal(ex_wire[19]/*mux_out_wire[19]*/ ), // chekc
   .logicbox_out(logicBox_mux_out)
 );
 
@@ -738,11 +738,11 @@ $monitor("\n\n\nPC: %d\n---------------------------------\
 		\n Target Address\
 		\n  ConcatenatedPC:%d | PC4*imm16: %d | ID_TA: %d | EX_TA: %d | rs_PC: %d \
 		\n IF_MUxOut: %d |  Npc: %d | PC_IN: %d | Instruction: %b \
-		\n  ConditionHandlerout: %b |  UNcodnitionalSignalID: %b | LogicBoxOut: %b\                                                ",
+		\n  ConditionHandlerout: %b |  UNcodnitionalSignalID: %b | LogicBoxOut: %b | TaINstrID: %b\                                                ",
         pc_wire_out,  PA_out_Ex, N_ALU, alu_op_reg, alu_out, 
 	    mux_out_wire[9], ID_rf_enable_reg, mem_rf_enable_reg, MEM_rf_enable_reg,mem_pc8_out, dataMem_Out,mem_alu_out, mux_WB_out,
 		concatenated_result_out, addedPCFourAndFourTimesimmSixteen, targetAddress_in, targetAddress_out, mux_PA_out,
-		if_mux_out, npc_wire_out, pc_wire_in, instruction_wire_out, Condition_handler_out, mux_out_wire[21], logicBox_mux_out
+		if_mux_out, npc_wire_out, pc_wire_in, instruction_wire_out, Condition_handler_out, mux_out_wire[21], logicBox_mux_out,mux_out_wire[7]
 		);
 
 
