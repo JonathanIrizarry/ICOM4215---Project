@@ -659,7 +659,7 @@ mux_4x1 mux_Mem(
   .I0(mem_alu_out), 
 	.I1(mem_pc8_out), //replacing with input PC8
 	.I2(dataMem_Out),    // arreglar esdto
-  .I3(32'b0)
+  .I3(32'bx)
 	 
 );
 
@@ -767,24 +767,23 @@ MEMWB_Stage wb_instance(
 // 		);
 
 
-$monitor("\n\n\nPC: %d\n---------------------------------\
-        \nAddress: %b\n--------------------------------------\
-        \nR5: %d | R6: %d\
-        \nR16: %d | R17: %d\
-		\nR18: %d\
-        \n--------------------------------------------------",
+// $monitor("\n\n\nPC: %d\n---------------------------------\
+        // \nAddress: %b\n--------------------------------------\
+        // \nR5: %d | R6: %d\
+        // \nR16: %d | R17: %d\
+		// \nR18: %d\
+        // \n--------------------------------------------------",
+        // pc_wire_out,
+        // mem_alu_out,
+        // Q5, Q6,
+        // Q16, Q17, Q18);
+
+ 	  // end
+	  
+	  $monitor("PC: %d, R5: %d, R6: %d, R16: %d, R17: %d, R18: %d",
         pc_wire_out,
-        mem_alu_out,
         Q5, Q6,
         Q16, Q17, Q18);
-
-
-
-
-
-
-
-
 
  	  end
 

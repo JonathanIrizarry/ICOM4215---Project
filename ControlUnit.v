@@ -83,8 +83,8 @@ module PPU_Control_Unit (
         ID_MEM_Size = 2'b00;
         ID_MEM_RW = 1'b0;  //creo que es uno 
         ID_MEM_SE = 1'b0;
-        ID_Enable_HI = 1'b0;  //testing 
-        ID_Enable_LO = 1'b0; 
+        ID_Enable_HI = 1'b1;  //testing 
+        ID_Enable_LO = 1'b1; 
         ID_MEM_Enable = 1'b0;
         conditional_inconditional = 1'b0; //bit 21
         r31 = 1'b0; // bit 20
