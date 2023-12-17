@@ -117,12 +117,14 @@ module Pipeline_TB;
   
   wire [1:0] hazardUnit_mux1;
   wire [1:0] hazardUnit_mux2;
+  wire [1:0] hazardUnit_mux3;
   wire hazardUnit_control_mux;
   wire IFID_LE;
   wire PC_LE;
   
   wire [31:0] mux_PA_out;
   wire [31:0] mux_PB_out;
+  wire [31:0] mux_PC_out;
 
   wire [31:0] if_mux_out;
   wire logicBox_mux_out;
@@ -377,6 +379,44 @@ mux_32bit mux_32x1B (
   .R31(Q31)
 );
 
+// Multiplexer for PC register instantiation
+mux_32bit mux_32x1C (
+  .Y(pc),
+  .S(rs_out),
+  .R0(32'b0),
+  .R1(Q1),
+  .R2(Q2),
+  .R3(Q3),
+  .R4(Q4),
+  .R5(Q5),
+  .R6(Q6),
+  .R7(Q7),
+  .R8(Q8),
+  .R9(Q9),
+  .R10(Q10),
+  .R11(Q11),
+  .R12(Q12),
+  .R13(Q13),
+  .R14(Q14),
+  .R15(Q15),
+  .R16(Q16),
+  .R17(Q17),
+  .R18(Q18),
+  .R19(Q19),
+  .R20(Q20),
+  .R21(Q21),
+  .R22(Q22),
+  .R23(Q23),
+  .R24(Q24),
+  .R25(Q25),
+  .R26(Q26),
+  .R27(Q27),
+  .R28(Q28),
+  .R29(Q29),
+  .R30(Q30),
+  .R31(Q31)
+);
+
 
 
 
@@ -504,14 +544,17 @@ HazardForwardingUnit hazardUnit(
 	.rs(rs_out),
 	.rt(rt_out),
 	.EX_load_instr(ID_load_instr_reg),
+	.ID_RW_instr(mux_out_wire[4]),
 	.EX_RF_Enable(ID_rf_enable_reg),
 	.MEM_RF_Enable(mem_rf_enable_reg),
 	.WB_RF_Enable(MEM_rf_enable_reg),
+	.rd_id(mux_out_ID_r31),
 	.rd_ex(r31_mux_outEx),
 	.rd_mem(r31_mux_outMem),
 	.rd_wb(r31_mux_outWb),
 	.mux1_select(hazardUnit_mux1),
 	.mux2_select(hazardUnit_mux2),
+	.mux3_select(hazardUnit_mux3),
 	.control_select(hazardUnit_control_mux),
 	.IFID_LE(IFID_LE),
 	.PC_LE(PC_LE)
@@ -549,6 +592,17 @@ mux_4x1 mux_PB(
 );
 
 
+mux_4x1 mux_PC(
+  .Y(mux_PC_out),
+	.S(hazardUnit_mux3), //select
+	.I0(pc),
+	.I1(alu_out),
+	.I2(mux_Mem_Out),
+	.I3(mux_WB_out)
+	 //output
+);
+
+
 IFID_Stage if_instance(
     .clk(clk),
     .reset(reset),
@@ -576,6 +630,7 @@ IDEX_Stage ex_instance(
 	.ID_lo(ID_lo),
 	.ID_muxA(mux_PA_out),
 	.ID_muxB(mux_PB_out), 
+	.ID_muxC(mux_PC_out),
 	.ID_PB(pb),
 	.ID_imm16(imm16_out),
 	.ID_opcode(opcode_out),
@@ -759,8 +814,8 @@ $monitor("\n\n\nPC: %d\n---------------------------------\
 		alu_op_reg,
 		alu_out,
 		hazardUnit_mux1,
-		mux_PA_out,
-		pa,
+		mux_PB_out,
+		pb,
 		alu_out,
 		mux_Mem_Out,
 		mux_WB_out
