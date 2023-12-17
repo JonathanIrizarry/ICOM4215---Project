@@ -723,48 +723,48 @@ MEMWB_Stage wb_instance(
 
 
 
-// $monitor("\n\n\nPC: %d\n---------------------------------\
-// 		\nAlu_A: %d | Alu_B: %d\
-// 		\nAlu_Op: %b | Alu_Out: %d\
-// 		\nID_RF: %b\
-// 		\nEX_RF: %b\
-// 		\nMEM_RF: %b\
-// 		\nWB_RF: %b\
-// 		\n PC8: %d\
-// 		\n DataMEM_out: %d\
-// 		\n MEM_ALUOut: %d\
-// 		\n Valor_GuardarEnRF: %d\
-//         \n--------------------------------------------------\
-// 		\n Target Address\
-// 		\n  ConcatenatedPC:%d | PC4*imm16: %d | ID_TA: %d | EX_TA: %d | rs_PC: %d \
-// 		\n IF_MUxOut: %d |  Npc: %d | PC_IN: %d | Instruction: %b \
-// 		\n  ConditionHandlerout: %b |  UNcodnitionalSignalID: %b | LogicBoxOut: %b\                                                ",
-//         pc_wire_out,  PA_out_Ex, N_ALU, alu_op_reg, alu_out, 
-// 	    mux_out_wire[9], ID_rf_enable_reg, mem_rf_enable_reg, MEM_rf_enable_reg,mem_pc8_out, dataMem_Out,mem_alu_out, mux_WB_out,
-// 		concatenated_result_out, addedPCFourAndFourTimesimmSixteen, targetAddress_in, targetAddress_out, mux_PA_out,
-// 		if_mux_out, npc_wire_out, pc_wire_in, instruction_wire_out, Condition_handler_out, mux_out_wire[21], logicBox_mux_out
-// 		);
-
-
 $monitor("\n\n\nPC: %d\n---------------------------------\
-        \nSelect: %b\
-        \nI0: %d | I1: %d\
-        \nI2: %d | I3: %d\
-		\nOutput: %d\
-		\nAlu_A: %b | Alu_B: %b\
-		\nAlu_Op: %b | Alu_Out: %b\
-		\nimm16_EX: %b\
-		\nimm16_ID: %b\
-		\ninstr_IFID: %b\
-		\ninstr_in: %b\
-        \n--------------------------------------------------",
-        pc_wire_out,
-        hazardUnit_mux1,
-        pa, alu_out,
-        mux_Mem_Out, mux_WB_out, mux_PA_out, PA_out_Ex,
-		N_ALU, alu_op_reg, alu_out, imm16_out_Ex, imm16_out,
-		instruction_wire_out, DataOut
+		\nAlu_A: %d | Alu_B: %d\
+		\nAlu_Op: %b | Alu_Out: %d\
+		\nID_RF: %b\
+		\nEX_RF: %b\
+		\nMEM_RF: %b\
+		\nWB_RF: %b\
+		\n PC8: %d\
+		\n DataMEM_out: %d\
+		\n MEM_ALUOut: %d\
+		\n Valor_GuardarEnRF: %d\
+        \n--------------------------------------------------\
+		\n Target Address\
+		\n  ConcatenatedPC:%d | PC4*imm16: %d | ID_TA: %d | EX_TA: %d | rs_PC: %d \
+		\n IF_MUxOut: %d |  Npc: %d | PC_IN: %d | Instruction: %b \
+		\n  ConditionHandlerout: %b |  UNcodnitionalSignalID: %b | LogicBoxOut: %b\                                                ",
+        pc_wire_out,  PA_out_Ex, N_ALU, alu_op_reg, alu_out, 
+	    mux_out_wire[9], ID_rf_enable_reg, mem_rf_enable_reg, MEM_rf_enable_reg,mem_pc8_out, dataMem_Out,mem_alu_out, mux_WB_out,
+		concatenated_result_out, addedPCFourAndFourTimesimmSixteen, targetAddress_in, targetAddress_out, mux_PA_out,
+		if_mux_out, npc_wire_out, pc_wire_in, instruction_wire_out, Condition_handler_out, mux_out_wire[21], logicBox_mux_out
 		);
+
+
+// $monitor("\n\n\nPC: %d\n---------------------------------\
+//         \nSelect: %b\
+//         \nI0: %d | I1: %d\
+//         \nI2: %d | I3: %d\
+// 		\nOutput: %d\
+// 		\nAlu_A: %b | Alu_B: %b\
+// 		\nAlu_Op: %b | Alu_Out: %b\
+// 		\nimm16_EX: %b\
+// 		\nimm16_ID: %b\
+// 		\ninstr_IFID: %b\
+// 		\ninstr_in: %b\
+//         \n--------------------------------------------------",
+//         pc_wire_out,
+//         hazardUnit_mux1,
+//         pa, alu_out,
+//         mux_Mem_Out, mux_WB_out, mux_PA_out, PA_out_Ex,
+// 		N_ALU, alu_op_reg, alu_out, imm16_out_Ex, imm16_out,
+// 		instruction_wire_out, DataOut
+// 		);
 
 
 // $monitor("\n\n\nPC: %d\n---------------------------------\
