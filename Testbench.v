@@ -747,15 +747,36 @@ MEMWB_Stage wb_instance(
 
 
 $monitor("\n\n\nPC: %d\n---------------------------------\
-        \nAddress: %b\n--------------------------------------\
-        \nR5: %d | R6: %d\
-        \nR16: %d | R17: %d\
-		\nR18: %d\
+        \nSelect: %b\
+        \nI0: %d | I1: %d\
+        \nI2: %d | I3: %d\
+		\nOutput: %d\
+		\nAlu_A: %b | Alu_B: %b\
+		\nAlu_Op: %b | Alu_Out: %b\
+		\nimm16_EX: %b\
+		\nimm16_ID: %b\
+		\ninstr_IFID: %b\
+		\ninstr_in: %b\
         \n--------------------------------------------------",
         pc_wire_out,
-        mem_alu_out,
-        Q5, Q6,
-        Q16, Q17, Q18);
+        hazardUnit_mux1,
+        pa, alu_out,
+        mux_Mem_Out, mux_WB_out, mux_PA_out, PA_out_Ex,
+		N_ALU, alu_op_reg, alu_out, imm16_out_Ex, imm16_out,
+		instruction_wire_out, DataOut
+		);
+
+
+// $monitor("\n\n\nPC: %d\n---------------------------------\
+        // \nAddress: %b\n--------------------------------------\
+        // \nR5: %d | R6: %d\
+        // \nR16: %d | R17: %d\
+		// \nR18: %d\
+        // \n--------------------------------------------------",
+        // pc_wire_out,
+        // mem_alu_out,
+        // Q5, Q6,
+        // Q16, Q17, Q18);
 
 	  end
 
