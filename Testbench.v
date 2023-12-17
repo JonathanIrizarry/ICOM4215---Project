@@ -101,6 +101,7 @@ module Pipeline_TB;
   wire HI_out_EX;
   wire Lo_out_EX;
   wire [31:0] PA_out_Ex;
+  wire [31:0] DataIn_EX;
   wire [31:0] PB_out_Ex;
   wire [8:0] PC_out_Ex;
   wire [15:0] imm16_out_Ex;
@@ -595,6 +596,7 @@ IDEX_Stage ex_instance(
 	.SourceOperand_Lo(Lo_out_EX),
 	.SourceOperand_PB(PB_out_Ex),
 	.alu_A(PA_out_Ex), 
+	.DataIn_B(DataIn_EX),
 	.EX_PC(PC_out_Ex),
 	.EX_imm16(imm16_out_Ex),
 	.EX_rd(rd_out_Ex),
@@ -610,6 +612,7 @@ EXMEM_Stage mem_instance(
     .reset(reset),
     .control_signals(ex_wire),
     .EX_PA(PA_out_Ex),
+	.EX_PB(DataIn_EX),
     .EX_ALU(alu_out),
     .flag(),
     .EX_rd(rd_out_Ex),
@@ -746,28 +749,49 @@ MEMWB_Stage wb_instance(
 //  		);
 
 
-$monitor("\n\n\nPC: %d\n---------------------------------\
-		\nAlu_A: %d | Alu_B: %d\
-		\nAlu_Op: %b | Alu_Out: %d\
-		\nmux_Select: %b | mux_out: %d\
-		\ni0: %d | i1: %d\
-		\ni2: %d | i3: %d\
+// $monitor("\n\n\nPC: %d\n---------------------------------\
+		// \nAlu_A: %d | Alu_B: %d\
+		// \nAlu_Op: %b | Alu_Out: %d\
+		// \nmux_Select: %b | mux_out: %d\
+		// \ni0: %d | i1: %d\
+		// \ni2: %d | i3: %d\
+        // \n--------------------------------------------------",
+        // pc_wire_out,
+		// PA_out_Ex,
+		// N_ALU,
+		// alu_op_reg,
+		// alu_out,
+		// hazardUnit_mux1,
+		// mux_PB_out,
+		// pb,
+		// alu_out,
+		// mux_Mem_Out,
+		// mux_WB_out
+		// );
+		
+	// end
+	
+	
+	$monitor("\n\n\nPC: %d\n---------------------------------\
+		\nDataOut: %d\
+		\nEnable: %b | RW: %b\
+		\nSE: %b | Size: %b\
+		\nAddress: %d | DataIn: %d\
         \n--------------------------------------------------",
         pc_wire_out,
-		PA_out_Ex,
-		N_ALU,
-		alu_op_reg,
-		alu_out,
-		hazardUnit_mux1,
-		mux_PA_out,
-		pa,
-		alu_out,
-		mux_Mem_Out,
-		mux_WB_out
+		dataMem_Out,
+		mem_enable_reg,
+		mem_rw_reg,
+		mem_se_reg,
+		mem_size_reg,
+		mem_alu_out,
+		mem_pa_out
 		);
 		
 	end
 	
+
+
 
 
 // $monitor("\n\n\nPC: %d\n---------------------------------\
@@ -783,7 +807,7 @@ $monitor("\n\n\nPC: %d\n---------------------------------\
 
  	  // end
 	  
-	  // $monitor("PC: %d, R5: %d, R6: %d, R16: %d, R17: %d, R18: %d",
+ // $monitor("PC: %d, R5: %d, R6: %d, R16: %d, R17: %d, R18: %d",
         // pc_wire_out,
         // Q5, Q6,
         // Q16, Q17, Q18);

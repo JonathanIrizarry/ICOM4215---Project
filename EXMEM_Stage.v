@@ -3,6 +3,7 @@ module EXMEM_Stage (
     input reset,
     input [21:0] control_signals,
     input [31:0] EX_PA,
+	input [31:0] EX_PB,
     input [31:0] EX_ALU,
     input flag,
     input [15:11] EX_rd,
@@ -52,7 +53,7 @@ module EXMEM_Stage (
 			load_instr_reg <= control_signals[10];
 			rf_enable_reg <= control_signals[9];
 			control_signals_out <= control_signals;
-			 MEM_PA_out <= EX_PA;
+			 MEM_PA_out <= EX_PB;
              MEM_ALU_out <= EX_ALU;
              MEM_rd_out <= EX_rd;
              MEM_PC8_out <= EX_PC8;

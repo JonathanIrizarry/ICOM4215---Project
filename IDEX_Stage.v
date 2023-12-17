@@ -26,6 +26,7 @@ module IDEX_Stage (
     output reg SourceOperand_Lo,
     output reg [31:0] SourceOperand_PB,
     output reg [31:0] alu_A,
+	output reg [31:0] DataIn_B,
     output reg [8:0] EX_PC,
     output reg [15:0] EX_imm16,
     output reg [15:11] EX_rd,
@@ -78,7 +79,7 @@ module IDEX_Stage (
             EX_rt <= ID_rt;
             EX_R31 <= ID_r31;
             targetAddress_out <= targetAddress_in;
-
+			DataIn_B <= ID_muxB;
 
         end
 
