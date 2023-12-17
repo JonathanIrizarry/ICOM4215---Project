@@ -488,14 +488,14 @@ TargetAddressMux addressMux(
 
 
 PPU_Control_Unit control_unit(
-    .instruction(/*instruction_wire_out*/ dummy),
+    .instruction(instruction_wire_out /* dummy */),
     .control_signals(control_signals_wire)
   );    
 
 
 mux mux_instance(
     .input_0(control_signals_wire),
-    .S(/*hazardUnit_control_mux*/ 1'b0), 
+    .S(hazardUnit_control_mux), 
     .mux_control_signals(mux_out_wire)
 );
 
@@ -556,7 +556,7 @@ IFID_Stage if_instance(
     .input_pc(pc_wire_out[8:0]),
 	  .logicbox(), // Falta output de Logicbox aqui
     .instruction_in(DataOut),
-    .instruction_out(/*instruction_wire_out*/ dummy),
+    .instruction_out(instruction_wire_out /* dummy */),
     .address_26(address_26_out),
     .PC(PC_out),
     .rs(rs_out),
@@ -740,7 +740,7 @@ $monitor("\n\n\nPC: %d\n---------------------------------\
         pa, alu_out,
         mux_Mem_Out, mux_WB_out, mux_PA_out, PA_out_Ex,
 		N_ALU, alu_op_reg, alu_out, imm16_out_Ex, imm16_out,
-		dummy, DataOut
+		instruction_wire_out, DataOut
 		);
 
 
@@ -755,7 +755,7 @@ $monitor("\n\n\nPC: %d\n---------------------------------\
         // Q5, Q6,
         // Q16, Q17, Q18);
 
-	 end
+	  end
 
 
  // Printing Data from each phase

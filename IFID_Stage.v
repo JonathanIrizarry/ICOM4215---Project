@@ -16,7 +16,7 @@ module IFID_Stage (
     //output reg [16:0] control_signals_out
 );
 
-    always @(posedge clk) begin
+    always @(posedge clk or posedge reset) begin
 		if (reset) begin
 				instruction_out <= 32'b0;
                 

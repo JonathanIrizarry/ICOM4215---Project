@@ -18,7 +18,7 @@ module HazardForwardingUnit(
 	always @* begin
 
 	//Forwarding RA
-	$display("rd_mem: %b, rs: %b, MEM_RF_Enable: %b", rd_mem, rs, MEM_RF_Enable);
+	//$display("rd_mem: %b, rs: %b, MEM_RF_Enable: %b", rd_mem, rs, MEM_RF_Enable);
 	if(EX_RF_Enable && (rs == rd_ex))
 		mux1_select <= 2'b01;
 		else if(MEM_RF_Enable && (rs == rd_mem))

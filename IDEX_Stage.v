@@ -36,7 +36,7 @@ module IDEX_Stage (
     output reg [31:0] targetAddress_out
 );
     // Execute stage logic
-    always @(posedge clk or posedge reset) begin
+    always @(posedge clk) begin
         if (reset) begin
         // Inicializar registros en caso de reset'
 			alu_op_reg <= 4'b0000;
