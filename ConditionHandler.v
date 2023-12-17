@@ -41,7 +41,7 @@ module LogicBox(
 );
 
     always @* begin
-        if(Handler_B_instr == 1'b1 || unconditional_jump_signal == 1'b1)begin
+        if((Handler_B_instr == 1'b1 && unconditional_jump_signal == 1'b1) || (Handler_B_instr == 1'b1 && unconditional_jump_signal == 1'b0) )begin
                 logicbox_out <= 1'b1;
         end else begin
                 logicbox_out <= 1'b0;

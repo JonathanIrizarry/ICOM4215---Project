@@ -72,76 +72,76 @@
 //A case for S is used to select one of the R0-R31 and assign the output to Y.
 //We will be instantiating 2 of them due to it being a 2 port register file.
 
-// module mux_32bit (output reg [31:0] Y, input [4:0] S, 
-// input [31:0] R0, R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R14, R15,
-// R16, R17, R18, R19, R20, R21, R22, R23, R24, R25, R26, R27, R28, R29, R30, R31);
+module mux_32bit (output reg [31:0] Y, input [4:0] S, 
+input [31:0] R0, R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R14, R15,
+R16, R17, R18, R19, R20, R21, R22, R23, R24, R25, R26, R27, R28, R29, R30, R31);
     
-//     always @ (*)
-//     begin
-//     case (S)
-//     5'b00000: Y = R0;
-//     5'b00001: Y = R1;
-//     5'b00010: Y = R2;
-//     5'b00011: Y = R3;
-//     5'b00100: Y = R4;
-//     5'b00101: Y = R5;
-//     5'b00110: Y = R6;
-//     5'b00111: Y = R7;
-//     5'b01000: Y = R8;
-//     5'b01001: Y = R9;
-//     5'b01010: Y = R10;
-//     5'b01011: Y = R11;
-//     5'b01100: Y = R12;
-//     5'b01101: Y = R13;
-//     5'b01110: Y = R14;
-//     5'b01111: Y = R15;
-//     5'b10000: Y = R16;
-//     5'b10001: Y = R17;
-//     5'b10010: Y = R18;
-//     5'b10011: Y = R19;
-//     5'b10100: Y = R20;
-//     5'b10101: Y = R21;
-//     5'b10110: Y = R22;
-//     5'b10111: Y = R23;
-//     5'b11000: Y = R24;
-//     5'b11001: Y = R25;
-//     5'b11010: Y = R26;
-//     5'b11011: Y = R27;
-//     5'b11100: Y = R28;
-//     5'b11101: Y = R29;
-//     5'b11110: Y = R30;
-//     5'b11111: Y = R31;
-//     endcase
+    always @ (*)
+    begin
+    case (S)
+    5'b00000: Y = R0;
+    5'b00001: Y = R1;
+    5'b00010: Y = R2;
+    5'b00011: Y = R3;
+    5'b00100: Y = R4;
+    5'b00101: Y = R5;
+    5'b00110: Y = R6;
+    5'b00111: Y = R7;
+    5'b01000: Y = R8;
+    5'b01001: Y = R9;
+    5'b01010: Y = R10;
+    5'b01011: Y = R11;
+    5'b01100: Y = R12;
+    5'b01101: Y = R13;
+    5'b01110: Y = R14;
+    5'b01111: Y = R15;
+    5'b10000: Y = R16;
+    5'b10001: Y = R17;
+    5'b10010: Y = R18;
+    5'b10011: Y = R19;
+    5'b10100: Y = R20;
+    5'b10101: Y = R21;
+    5'b10110: Y = R22;
+    5'b10111: Y = R23;
+    5'b11000: Y = R24;
+    5'b11001: Y = R25;
+    5'b11010: Y = R26;
+    5'b11011: Y = R27;
+    5'b11100: Y = R28;
+    5'b11101: Y = R29;
+    5'b11110: Y = R30;
+    5'b11111: Y = R31;
+    endcase
 
 
-//     end
-// endmodule
-
-
-
-
-module mux_32bit (
-    output reg [4:0] PA, PB,
-    output reg [31:0] Y0, Y1, Y2, Y3, Y4, Y5, Y6, Y7, Y8, Y9,
-    output reg [31:0] Y10, Y11, Y12, Y13, Y14, Y15, Y16, Y17, Y18, Y19,
-    output reg [31:0] Y20, Y21, Y22, Y23, Y24, Y25, Y26, Y27, Y28, Y29,
-    output reg [31:0] Y30, Y31,
-    input [4:0] rs, rt,
-    input [31:0] R0, R1, R2, R3, R4, R5, R6, R7, R8, R9,
-    input [31:0] R10, R11, R12, R13, R14, R15, R16, R17, R18, R19,
-    input [31:0] R20, R21, R22, R23, R24, R25, R26, R27, R28, R29,
-    input [31:0] R30, R31
-);
-    
-always @ (*)
-begin
-    PA = rs; Y0 = R0; Y1 = R1; Y2 = R2; Y3 = R3; Y4 = R4; Y5 = R5; Y6 = R6; Y7 = R7; Y8 = R8; Y9 = R9;
-    Y10 = R10; Y11 = R11; Y12 = R12; Y13 = R13; Y14 = R14; Y15 = R15; Y16 = R16; Y17 = R17; Y18 = R18; Y19 = R19;
-    Y20 = R20; Y21 = R21; Y22 = R22; Y23 = R23; Y24 = R24; Y25 = R25; Y26 = R26; Y27 = R27; Y28 = R28; Y29 = R29;
-    Y30 = R30; Y31 = R31; PB = rt;
-end
-
+    end
 endmodule
+
+
+
+
+// module mux_32bit (
+//     output reg [4:0] PA, PB,
+//     output reg [31:0] Y0, Y1, Y2, Y3, Y4, Y5, Y6, Y7, Y8, Y9,
+//     output reg [31:0] Y10, Y11, Y12, Y13, Y14, Y15, Y16, Y17, Y18, Y19,
+//     output reg [31:0] Y20, Y21, Y22, Y23, Y24, Y25, Y26, Y27, Y28, Y29,
+//     output reg [31:0] Y30, Y31,
+//     input [4:0] rs, rt,
+//     input [31:0] R0, R1, R2, R3, R4, R5, R6, R7, R8, R9,
+//     input [31:0] R10, R11, R12, R13, R14, R15, R16, R17, R18, R19,
+//     input [31:0] R20, R21, R22, R23, R24, R25, R26, R27, R28, R29,
+//     input [31:0] R30, R31
+// );
+    
+// always @ (*)
+// begin
+//     PA = rs; Y0 = R0; Y1 = R1; Y2 = R2; Y3 = R3; Y4 = R4; Y5 = R5; Y6 = R6; Y7 = R7; Y8 = R8; Y9 = R9;
+//     Y10 = R10; Y11 = R11; Y12 = R12; Y13 = R13; Y14 = R14; Y15 = R15; Y16 = R16; Y17 = R17; Y18 = R18; Y19 = R19;
+//     Y20 = R20; Y21 = R21; Y22 = R22; Y23 = R23; Y24 = R24; Y25 = R25; Y26 = R26; Y27 = R27; Y28 = R28; Y29 = R29;
+//     Y30 = R30; Y31 = R31; PB = rt;
+// end
+
+// endmodule
 
 
 

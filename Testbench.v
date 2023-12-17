@@ -287,95 +287,95 @@ register_32bit R31 (.Q(Q31), .D(mux_WB_out), .clk(clk), .Ld(E[31]));
 
 
 
-mux_32bit mux_32x1A (
-  .PA(pa), .PB(pb), .Y0(Z0), .Y1(Z1), .Y2(Z2), .Y3(Z3), .Y4(Z4), .Y5(Z5), .Y6(Z6), .Y7(Z7),
-  .Y8(Z8), .Y9(Z9), .Y10(Z10), .Y11(Z11), .Y12(Z12), .Y13(Z13), .Y14(Z14), .Y15(Z15),
-  .Y16(Z16), .Y17(Z17), .Y18(Z18), .Y19(Z19), .Y20(Z20), .Y21(Z21), .Y22(Z22), .Y23(Z23),
-  .Y24(Z24), .Y25(Z25), .Y26(Z26), .Y27(Z27), .Y28(Z28), .Y29(Z29), .Y30(Z30), .Y31(Z31),
+// mux_32bit mux_32x1A (
+//   .PA(pa), .PB(pb), .Y0(Z0), .Y1(Z1), .Y2(Z2), .Y3(Z3), .Y4(Z4), .Y5(Z5), .Y6(Z6), .Y7(Z7),
+//   .Y8(Z8), .Y9(Z9), .Y10(Z10), .Y11(Z11), .Y12(Z12), .Y13(Z13), .Y14(Z14), .Y15(Z15),
+//   .Y16(Z16), .Y17(Z17), .Y18(Z18), .Y19(Z19), .Y20(Z20), .Y21(Z21), .Y22(Z22), .Y23(Z23),
+//   .Y24(Z24), .Y25(Z25), .Y26(Z26), .Y27(Z27), .Y28(Z28), .Y29(Z29), .Y30(Z30), .Y31(Z31),
   
-  .rs(rs_out), .rt(rt_out), .R0(Q0), .R1(Q1), .R2(Q2), .R3(Q3), .R4(Q4), .R5(Q5), .R6(Q6), .R7(Q7),
-  .R8(Q8), .R9(Q9), .R10(Q10), .R11(Q11), .R12(Q12), .R13(Q13), .R14(Q14), .R15(Q15),
-  .R16(Q16), .R17(Q17), .R18(Q18), .R19(Q19), .R20(Q20), .R21(Q21), .R22(Q22), .R23(Q23),
-  .R24(Q24), .R25(Q25), .R26(Q26), .R27(Q27), .R28(Q28), .R29(Q29), .R30(Q30), .R31(Q31)
-);
+//   .rs(rs_out), .rt(rt_out), .R0(Q0), .R1(Q1), .R2(Q2), .R3(Q3), .R4(Q4), .R5(Q5), .R6(Q6), .R7(Q7),
+//   .R8(Q8), .R9(Q9), .R10(Q10), .R11(Q11), .R12(Q12), .R13(Q13), .R14(Q14), .R15(Q15),
+//   .R16(Q16), .R17(Q17), .R18(Q18), .R19(Q19), .R20(Q20), .R21(Q21), .R22(Q22), .R23(Q23),
+//   .R24(Q24), .R25(Q25), .R26(Q26), .R27(Q27), .R28(Q28), .R29(Q29), .R30(Q30), .R31(Q31)
+// );
 
 
 
 // Multiplexer for PA register instantiation
-// mux_32bit mux_32x1A (
-//   .Y(pa), //out
-//   .S(rs_out), // input
-//   .R0(32'b0), //32'b0 
-//   .R1(Q1),
-//   .R2(Q2),
-//   .R3(Q3),
-//   .R4(Q4),
-//   .R5(Q5),
-//   .R6(Q6),
-//   .R7(Q7),
-//   .R8(Q8),
-//   .R9(Q9),
-//   .R10(Q10),
-//   .R11(Q11),
-//   .R12(Q12),
-//   .R13(Q13),
-//   .R14(Q14),
-//   .R15(Q15),
-//   .R16(Q16),
-//   .R17(Q17),
-//   .R18(Q18),
-//   .R19(Q19),
-//   .R20(Q20),
-//   .R21(Q21),
-//   .R22(Q22),
-//   .R23(Q23),
-//   .R24(Q24),
-//   .R25(Q25),
-//   .R26(Q26),
-//   .R27(Q27),
-//   .R28(Q28),
-//   .R29(Q29),
-//   .R30(Q30),
-//   .R31(Q31)
-// );
+mux_32bit mux_32x1A (
+  .Y(pa), //out
+  .S(rs_out), // input
+  .R0(32'b0), //32'b0 
+  .R1(Q1),
+  .R2(Q2),
+  .R3(Q3),
+  .R4(Q4),
+  .R5(Q5),
+  .R6(Q6),
+  .R7(Q7),
+  .R8(Q8),
+  .R9(Q9),
+  .R10(Q10),
+  .R11(Q11),
+  .R12(Q12),
+  .R13(Q13),
+  .R14(Q14),
+  .R15(Q15),
+  .R16(Q16),
+  .R17(Q17),
+  .R18(Q18),
+  .R19(Q19),
+  .R20(Q20),
+  .R21(Q21),
+  .R22(Q22),
+  .R23(Q23),
+  .R24(Q24),
+  .R25(Q25),
+  .R26(Q26),
+  .R27(Q27),
+  .R28(Q28),
+  .R29(Q29),
+  .R30(Q30),
+  .R31(Q31)
+);
 
 // Multiplexer for PB register instantiation
-// mux_32bit mux_32x1B (
-//   .Y(pb),
-//   .S(rt_out),
-//   .R0(32'b0),
-//   .R1(Q1),
-//   .R2(Q2),
-//   .R3(Q3),
-//   .R4(Q4),
-//   .R5(Q5),
-//   .R6(Q6),
-//   .R7(Q7),
-//   .R8(Q8),
-//   .R9(Q9),
-//   .R10(Q10),
-//   .R11(Q11),
-//   .R12(Q12),
-//   .R13(Q13),
-//   .R14(Q14),
-//   .R15(Q15),
-//   .R16(Q16),
-//   .R17(Q17),
-//   .R18(Q18),
-//   .R19(Q19),
-//   .R20(Q20),
-//   .R21(Q21),
-//   .R22(Q22),
-//   .R23(Q23),
-//   .R24(Q24),
-//   .R25(Q25),
-//   .R26(Q26),
-//   .R27(Q27),
-//   .R28(Q28),
-//   .R29(Q29),
-//   .R30(Q30),
-//   .R31(Q31)
-// );
+mux_32bit mux_32x1B (
+  .Y(pb),
+  .S(rt_out),
+  .R0(32'b0),
+  .R1(Q1),
+  .R2(Q2),
+  .R3(Q3),
+  .R4(Q4),
+  .R5(Q5),
+  .R6(Q6),
+  .R7(Q7),
+  .R8(Q8),
+  .R9(Q9),
+  .R10(Q10),
+  .R11(Q11),
+  .R12(Q12),
+  .R13(Q13),
+  .R14(Q14),
+  .R15(Q15),
+  .R16(Q16),
+  .R17(Q17),
+  .R18(Q18),
+  .R19(Q19),
+  .R20(Q20),
+  .R21(Q21),
+  .R22(Q22),
+  .R23(Q23),
+  .R24(Q24),
+  .R25(Q25),
+  .R26(Q26),
+  .R27(Q27),
+  .R28(Q28),
+  .R29(Q29),
+  .R30(Q30),
+  .R31(Q31)
+);
 
 
 
@@ -386,7 +386,7 @@ NPC_Register npc_instance(
     .clk(clk),
     .reset(reset),
     .npc_in(adder_wire_out),
-	  .le_npc(1'b1),
+	  .le_npc(PC_LE),
     .npc_out(npc_wire_out)
 );
 
@@ -399,7 +399,7 @@ PC_Register pc_instance(
     .clk(clk),
     .reset(reset),
     .pc_in(pc_wire_in),
-	  .le_pc(1'b1),
+	  .le_pc(PC_LE),
     .pc_out(pc_wire_out)  
 );
 
@@ -442,7 +442,7 @@ IF_Mux if_mux_inst(
   .ID_TA(targetAddress_in), 
   .rs(mux_PA_out), //muxA output
   .TA_instruction(mux_out_wire[7]),
-  .conditional_inconditional(mux_out_wire[21]),
+  .conditional_inconditional( ex_wire[21]  /*mux_out_wire[21]*/),
   .mux_out(if_mux_out)
 );
 
@@ -689,7 +689,7 @@ MEMWB_Stage wb_instance(
     
     #3 reset = 1'b0;
    
-	#100
+	#140
 	//$display("Word at Address 52: %b", {dataMem.Mem[9'b000110100],dataMem.Mem[9'b000110101],dataMem.Mem[9'b000110110],dataMem.Mem[9'b000110111]});
     #1 $finish;
   end
@@ -723,37 +723,39 @@ MEMWB_Stage wb_instance(
 
 
 
+// $monitor("\n\n\nPC: %d\n---------------------------------\
+// 		\nAlu_A: %d | Alu_B: %d\
+// 		\nAlu_Op: %b | Alu_Out: %d\
+// 		\nID_RF: %b\
+// 		\nEX_RF: %b\
+// 		\nMEM_RF: %b\
+// 		\nWB_RF: %b\
+// 		\n PC8: %d\
+// 		\n DataMEM_out: %d\
+// 		\n MEM_ALUOut: %d\
+// 		\n Valor_GuardarEnRF: %d\
+//         \n--------------------------------------------------\
+// 		\n Target Address\
+// 		\n  ConcatenatedPC:%d | PC4*imm16: %d | ID_TA: %d | EX_TA: %d | rs_PC: %d \
+// 		\n IF_MUxOut: %d |  Npc: %d | PC_IN: %d | Instruction: %b \
+// 		\n  ConditionHandlerout: %b |  UNcodnitionalSignalID: %b | LogicBoxOut: %b\                                                ",
+//         pc_wire_out,  PA_out_Ex, N_ALU, alu_op_reg, alu_out, 
+// 	    mux_out_wire[9], ID_rf_enable_reg, mem_rf_enable_reg, MEM_rf_enable_reg,mem_pc8_out, dataMem_Out,mem_alu_out, mux_WB_out,
+// 		concatenated_result_out, addedPCFourAndFourTimesimmSixteen, targetAddress_in, targetAddress_out, mux_PA_out,
+// 		if_mux_out, npc_wire_out, pc_wire_in, instruction_wire_out, Condition_handler_out, mux_out_wire[21], logicBox_mux_out
+// 		);
+
+
 $monitor("\n\n\nPC: %d\n---------------------------------\
-        \nSelect: %b\
-        \nI0: %d | I1: %d\
-        \nI2: %d | I3: %d\
-		\nOutput: %d\
-		\nAlu_A: %b | Alu_B: %b\
-		\nAlu_Op: %b | Alu_Out: %b\
-		\nimm16_EX: %b\
-		\nimm16_ID: %b\
-		\ninstr_IFID: %b\
-		\ninstr_in: %b\
+        \nAddress: %b\n--------------------------------------\
+        \nR5: %d | R6: %d\
+        \nR16: %d | R17: %d\
+		\nR18: %d\
         \n--------------------------------------------------",
         pc_wire_out,
-        hazardUnit_mux1,
-        pa, alu_out,
-        mux_Mem_Out, mux_WB_out, mux_PA_out, PA_out_Ex,
-		N_ALU, alu_op_reg, alu_out, imm16_out_Ex, imm16_out,
-		instruction_wire_out, DataOut
-		);
-
-
-// $monitor("\n\n\nPC: %d\n---------------------------------\
-        // \nAddress: %b\n--------------------------------------\
-        // \nR5: %d | R6: %d\
-        // \nR16: %d | R17: %d\
-		// \nR18: %d\
-        // \n--------------------------------------------------",
-        // pc_wire_out,
-        // mem_alu_out,
-        // Q5, Q6,
-        // Q16, Q17, Q18);
+        mem_alu_out,
+        Q5, Q6,
+        Q16, Q17, Q18);
 
 	  end
 

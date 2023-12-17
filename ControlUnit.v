@@ -202,7 +202,7 @@ module PPU_Control_Unit (
 
     end else if(instruction[31:26] == BGEZ_OP)begin
         ID_SourceOperand_3bits = 3'b000;
-        ID_ALU_OP = 4'b1001; //checquea si rs que es puerto A es mayor que 0
+        ID_ALU_OP = 4'b1010; //checquea si rs que es puerto A es mayor que 0
         ID_Load_Instr = 1'b0;
         ID_RF_Enable = 1'b0;
         ID_B_Instr = 1'b1; 
@@ -244,7 +244,7 @@ module PPU_Control_Unit (
         ID_TA_Instr = 1'b0;
         ID_MEM_Size = 2'b00;
         ID_MEM_RW = 1'b0;
-        ID_MEM_SE = 1'b1;  //0 
+        ID_MEM_SE = 1'b1;  
         ID_Enable_HI = 1'b1;
         ID_Enable_LO = 1'b0;
         ID_MEM_Enable = 1'b1;
@@ -386,9 +386,9 @@ module PPU_Control_Unit (
         destination = 1'b1; //bit 18
 
     end else if(instruction[31:26] == SD_OP) begin
-        ID_SourceOperand_3bits = 3'b100;
-        ID_ALU_OP = 4'b0000; 
-        ID_Load_Instr = 1'b0;
+        ID_SourceOperand_3bits = 3'b000;
+        ID_ALU_OP = 4'b1011; 
+        ID_Load_Instr = 1'b1;
         ID_RF_Enable = 1'b0;
         ID_B_Instr = 1'b0;
         ID_TA_Instr = 1'b0;
