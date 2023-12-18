@@ -772,40 +772,56 @@ MEMWB_Stage wb_instance(
 	// end
 	
 	
-	$monitor("\n\n\nPC: %d\n---------------------------------\
-		\nDataOut: %d\
-		\nEnable: %b | RW: %b\
-		\nSE: %b | Size: %b\
-		\nAddress: %d | DataIn: %d\
-        \n--------------------------------------------------",
-        pc_wire_out,
-		dataMem_Out,
-		mem_enable_reg,
-		mem_rw_reg,
-		mem_se_reg,
-		mem_size_reg,
-		mem_alu_out,
-		mem_pa_out
-		);
+	// $monitor("\n\n\nPC: %d\n---------------------------------\
+		// \nDataOut: %b\
+		// \nEnable: %b | RW: %b\
+		// \nSE: %b | Size: %b\
+		// \nAddress: %b | DataIn: %d\
+        // \n--------------------------------------------------",
+        // pc_wire_out,
+		// dataMem_Out,
+		// mem_enable_reg,
+		// mem_rw_reg,
+		// mem_se_reg,
+		// mem_size_reg,
+		// mem_alu_out,
+		// mem_pa_out
+		// );
 		
-	end
+	// end
+	
+	// $monitor("\n\n\nPC: %d\n---------------------------------\
+		// \Select: %b\
+		// \nI0: %d | I1: %d\
+		// \nI2: %d | I3: %d\
+		// \nOut: %d\
+        // \n--------------------------------------------------",
+        // pc_wire_out,
+		// hazardUnit_mux1,
+		// pa,
+		// alu_out,
+		// mux_Mem_Out,
+		// mux_WB_out,
+		// mux_PA_out
+		// );
+		
+	// end
 	
 
 
 
+$monitor("\n\n\nPC: %d\n---------------------------------\
+        \nAddress: %b\n--------------------------------------\
+        \nR5: %d | R6: %d\
+        \nR16: %d | R17: %d\
+		\nR18: %d\
+        \n--------------------------------------------------",
+        pc_wire_out,
+        mem_alu_out,
+        Q5, Q6,
+        Q16, Q17, Q18);
 
-// $monitor("\n\n\nPC: %d\n---------------------------------\
-        // \nAddress: %b\n--------------------------------------\
-        // \nR5: %d | R6: %d\
-        // \nR16: %d | R17: %d\
-		// \nR18: %d\
-        // \n--------------------------------------------------",
-        // pc_wire_out,
-        // mem_alu_out,
-        // Q5, Q6,
-        // Q16, Q17, Q18);
-
- 	  // end
+ 	  end
 	  
  // $monitor("PC: %d, R5: %d, R6: %d, R16: %d, R17: %d, R18: %d",
         // pc_wire_out,
@@ -813,6 +829,7 @@ MEMWB_Stage wb_instance(
         // Q16, Q17, Q18);
 
  	  // end
+
 
 
  // Printing Data from each phase

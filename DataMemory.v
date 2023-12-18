@@ -30,14 +30,15 @@ always @ (*)
 				2'b00: 
 					if (!SE) begin
 					DataOut <= {24'b000000000000000000000000, Mem[Address]};
-					end else if (Mem[Address][8] == 1'b1) begin
-					DataOut <= {{24{1'b1}}, Mem[Address]};  
-					end else 
+					end else if (Mem[Address][7] == 1'b1) begin
+					DataOut <= {{24{1'b1}}, Mem[Address]}; 
+					end else begin
 					DataOut <= {{24{1'b0}}, Mem[Address]}; 
+					end
 				2'b01:
 					if (!SE) begin
 					DataOut <= {16'b0000000000000000, Mem[Address], Mem[Address+1]};
-					end else if (Mem[Address][8] == 1'b1) begin
+					end else if (Mem[Address][7] == 1'b1) begin
 					 DataOut <= {{16{1'b1}}, Mem[Address], Mem[Address+1]}; 
 					end else 
 					DataOut <= {{16{1'b0}}, Mem[Address], Mem[Address+1]};
